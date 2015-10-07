@@ -1,0 +1,6 @@
+# services definition for this particular bundle
+services:
+#    servicios para proformas
+    mayorbundle.proformas_service:
+        class: Novamoda\MayorBundle\Services\ProformasService
+        arguments: ["@doctrine.orm.entity_manager"]
