@@ -1,5 +1,5 @@
 /**
- * This file includes the required ext-all js and css files based upon "theme" and "rtl"
+ * This file includes the required ext-all js and css files based upon "theme" and "direction"
  * url parameters.  It first searches for these parameters on the page url, and if they
  * are not found there, it looks for them on the script tag src query string.
  * For example, to include the neptune flavor of ext from an index page in a subdirectory
@@ -10,7 +10,7 @@
     function getQueryParam(name) {
         var regex = RegExp('[?&]' + name + '=([^&]*)');
 
-        var match = regex.exec(location.search) || regex.exec(scriptPath);
+        var match = regex.exec(location.search) || regex.exec(path);
         return match && decodeURIComponent(match[1]);
     }
 
@@ -22,94 +22,79 @@
         return m ? (m[1] === undefined || m[1] === '' ? true : m[1]) : false;
     }
 
-    function loadCss(url) {
-        document.write('<link rel="stylesheet" type="text/css" href="' + url + '"/>');
+    function getCookieValue(name){
+        var cookies = document.cookie.split('; '),
+            i = cookies.length,
+            cookie, value;
+
+        while(i--) {
+           cookie = cookies[i].split('=');
+           if (cookie[0] === name) {
+               value = cookie[1];
+           }
+        }
+
+        return value;
     }
-
-    function loadScript(url, defer) {
-        document.write('<script type="text/javascript" src="' + url + '"' +
-                (defer ? ' defer' : '') + '></script>');
-    }
-
-    Ext = window.Ext || {};
-
-    // The value of Ext.repoDevMode gets replaced during a build - do not change this line
-    // 2 == internal dev mode, 1 == external dev mode, 0 == build mode
-    Ext.devMode = 1;
 
     var scriptEls = document.getElementsByTagName('script'),
-        scriptPath = scriptEls[scriptEls.length - 1].src,
+        path = scriptEls[scriptEls.length - 1].src,
         rtl = getQueryParam('rtl'),
-        themeName = getQueryParam('theme') || 'triton',
-        includeCSS = !hasOption('nocss', scriptPath),
-        useDebug = hasOption('debug'),
-        hasOverrides = !hasOption('nooverrides', scriptPath) && !!{
-            // TODO: remove neptune
-            neptune: 1,
-            triton: 1,
-            classic: 1,
-            gray: 1,
-            triton: 1,
-            'neptune-touch': 1,
-            crisp: 1,
-            'crisp-touch': 1
-        }[themeName],
-        i = 4,
-        devMode = Ext.devMode,
-        extDir = scriptPath,
-        rtlSuffix = (rtl ? '-rtl' : ''),
-        debugSuffix = (devMode ? '-debug' : ''),
-        cssSuffix = rtlSuffix + debugSuffix + '.css',
-        themePackageDir, chartsJS, uxJS, themeOverrideJS, extPrefix, extPackagesRoot;
+        theme = getQueryParam('theme') || 'classic',
+        includeCSS = !hasOption('nocss', path),
+        neptune = (theme === 'neptune'),
+        repoDevMode = getCookieValue('ExtRepoDevMode'),
+        suffix = [],
+        i = 2,
+        neptunePath;
 
-    rtl = rtl && rtl.toString() === 'true';
+    rtl = rtl && rtl.toString() === 'true'
 
     while (i--) {
-        extDir = extDir.substring(0, extDir.lastIndexOf('/'));
+        path = path.substring(0, path.lastIndexOf('/'));
     }
-    //console.log(devMode);
-    extPackagesRoot = devMode ? (extDir + '/Scripts/extjs') : extDir;
-    //console.log(extPackagesRoot);
-    uxJS = extPackagesRoot + '/packages/ux/classic/ux' + debugSuffix + '.js';
-    chartsJS = extPackagesRoot + '/packages/charts/classic/charts' + debugSuffix + '.js';
-    themePackageDir = extPackagesRoot + '/classic/theme-' + themeName + '/';
+        
+    if (theme && theme !== 'classic') {
+        suffix.push(theme);
+    }
+    if (rtl) {
+        suffix.push('rtl');
+    } 
+
+    suffix = (suffix.length) ? ('-' + suffix.join('-')) : '';
 
     if (includeCSS) {
-        loadCss(themePackageDir + 'resources/theme-' + themeName + '-all' + cssSuffix);
-        loadCss(extPackagesRoot + '/packages/charts/classic/' + themeName + '/resources/charts-all' + cssSuffix);
-        loadCss(extPackagesRoot + '/packages/ux/classic/' + themeName + '/resources/ux-all' + cssSuffix);
+        //document.write('<link rel="stylesheet" type="text/css" href="' + path + '/resources/css/ext-all' + suffix + '.css"/>');
+        document.write('<link rel="stylesheet" type="text/css" href="' + path + '/resources/ext-theme-classic/ext-theme-classic-all' + suffix + '.css"/>');
+        
     }
-
-    extPrefix = useDebug ? '/ext' : '/ext-all';
-    console.log(extDir);
-    document.write('<script type="text/javascript" src="' + extDir + extPrefix + rtlSuffix + '.js"></script>');
-
-    if (hasOverrides) {
-        // since document.write('<script>') does not block execution in IE, we need to
-        // make sure we prevent theme overrides from executing before ext-all.js
+    document.write('<script type="text/javascript" src="' + path + '/ext-all' + (rtl ? '-rtl' : '') + '.js"></script>');
+    document.write('<script type="text/javascript" src="' + path + '/locale/ext-lang-es' + (rtl ? '-rtl' : '') + '.js"></script>');
+    document.write('<script type="text/javascript" src="App/Config/Overrides/Store' + (rtl ? '-rtl' : '') + '.js"></script>');
+    //document.write('<script type="text/javascript" src="App/Config/ux/form/ClearButton' + (rtl ? '-rtl' : '') + '.js"></script>');
+    //App.Config.ux.form.ClearButton
+    //document.write('<script type="text/javascript" src="App/extensible/locale/extensible-lang-es' + (rtl ? '-rtl' : '') + '.js"></script>');
+    if (neptune) {
+        // since document.write('<script>') does not block execution in IE, we need to 
+        // makes sure we prevent ext-theme-neptune.js from executing before ext-all.js
         // normally this can be done using the defer attribute on the script tag, however
         // this method does not work in IE when in repoDevMode.  It seems the reason for
         // this is because in repoDevMode ext-all.js is simply a script that loads other
         // scripts and so Ext is still undefined when the neptune overrides are executed.
-        // To work around this we use the _beforereadyhandler hook to load the theme
+        // To work around this we use the _beforereadyhandler hook to load the neptune
         // overrides dynamically after Ext has been defined.
-        themeOverrideJS = themePackageDir + 'theme-' + themeName + debugSuffix + '.js';
+        neptunePath = (repoDevMode ? path + '/..' : path) +
+            '/packages/ext-theme-neptune/build/ext-theme-neptune' +
+            (repoDevMode ? '-dev' : '') + '.js';
 
-        if (devMode) {
-            if (window.ActiveXObject) {
-                Ext = {
-                    _beforereadyhandler: function() {
-                        Ext.Loader.loadScript({url: themeOverrideJS});
-                    }
-                };
-            } else {
-                loadScript(themeOverrideJS, true);
-            }
+        if (repoDevMode &&  window.ActiveXObject) {
+            Ext = {
+                _beforereadyhandler: function() {
+                    Ext.Loader.loadScript({ url: neptunePath });
+                }
+            };
         } else {
-            loadScript(themeOverrideJS, true);
-            // ux and charts js are not needed in dev mode because they are included in bootstrap
-            loadScript(uxJS);
-            loadScript(chartsJS);
+            document.write('<script type="text/javascript" src="' + neptunePath + '" defer></script>');
         }
     }
 

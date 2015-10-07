@@ -13,36 +13,17 @@
     }
 
     var scriptTags = document.getElementsByTagName('script'),
-        defaultTheme = 'triton',
+        defaultTheme = 'neptune',
         defaultRtl = false,
         i = scriptTags.length,
         requires = [
-            'Ext.window.MessageBox',
             'Ext.toolbar.Toolbar',
             'Ext.form.field.ComboBox',
             'Ext.form.FieldContainer',
             'Ext.form.field.Radio'
 
         ],
-        comboWidth = {
-            classic: 160,
-            gray: 160,
-            neptune: 180,
-            triton: 180,
-            crisp: 180,
-            'neptune-touch': 220,
-            'crisp-touch': 220
-        },
-        labelWidth = {
-            classic: 40,
-            gray: 40,
-            neptune: 45,
-            triton: 45,
-            crisp: 45,
-            'neptune-touch': 55,
-            'crisp-touch': 55
-        },
-        defaultQueryString, src, theme, rtl, toolbar;
+        defaultQueryString, src, theme, rtl;
 
     while (i--) {
         src = scriptTags[i].src;
@@ -61,9 +42,9 @@
     rtl = getQueryParam('rtl') || defaultRtl;
 
     if (rtl.toString() === 'true') {
-        requires.unshift('Ext.rtl.*');
-        Ext.define('Ext.examples.RtlComponent', {
-            override: 'Ext.Component',
+        requires.push('Ext.rtl.*');
+        Ext.define('Ext.GlobalRtlComponent', {
+            override: 'Ext.AbstractComponent',
             rtl: true
         });
     }
@@ -73,29 +54,19 @@
     Ext.onReady(function() {
         Ext.getBody().addCls(Ext.baseCSSPrefix + 'theme-' + Ext.themeName);
 
-        // prevent touchmove from panning the viewport in mobile safari
-        if (Ext.supports.TouchEvents) {
-            Ext.getDoc().on({
-                touchmove: function(e) {
-                    // If within a scroller, don't let the document use it
-                    if (Ext.scroll.Scroller.isTouching) {
-                        e.preventDefault();
-                    }
-                },
-                translate: false,
-                delegated: false
+        if (Ext.isIE6 && theme === 'neptune') {
+            Ext.Msg.show({
+                title: 'Browser Not Supported',
+                msg: 'The Neptune theme is not supported in IE6.',
+                buttons: Ext.Msg.OK,
+                icon: Ext.Msg.WARNING
             });
         }
-
+        
         if (hasOption('nocss3')) {
             Ext.supports.CSS3BorderRadius = false;
             Ext.getBody().addCls('x-nbr x-nlg');
         }
-
-        if (hasOption('nlg')) {
-            Ext.getBody().addCls('x-nlg');
-        }
-
         function setParam(param) {
             var queryString = Ext.Object.toQueryString(
                 Ext.apply(Ext.Object.fromQueryString(location.search), param)
@@ -110,15 +81,9 @@
 
             location.search = Ext.Object.toQueryString(params);
         }
-        
-        if (hasOption('no-toolbar') || /no-toolbar/.test(document.cookie)) {
-            return;
-        }
 
-        if (hasOption('no-toolbar') || /no-toolbar/.test(document.cookie)) {
-            return;
-        }
-
+        var toolbar;
+            
         setTimeout(function() {
             toolbar = Ext.widget({
                 xtype: 'toolbar',
@@ -131,28 +96,23 @@
                 draggable: {
                     constrain: true
                 },
-                defaults : { rtl : false },
                 items: [{
                     xtype: 'combo',
-                    width: comboWidth[Ext.themeName],
-                    labelWidth: labelWidth[Ext.themeName],
+                    rtl: false,
+                    width: 170,
+                    labelWidth: 45,
                     fieldLabel: 'Theme',
                     displayField: 'name',
                     valueField: 'value',
                     labelStyle: 'cursor:move;',
                     margin: '0 5 0 0',
-                    queryMode: 'local',
                     store: Ext.create('Ext.data.Store', {
                         fields: ['value', 'name'],
                         data : [
-                            { value: 'triton', name: 'Triton' },
-                            { value: 'neptune', name: 'Neptune' },
-                            { value: 'neptune-touch', name: 'Neptune Touch' },
-                            { value: 'crisp', name: 'Crisp' },
-                            { value: 'crisp-touch', name: 'Crisp Touch' },
+                            { value: 'access', name: 'Accessibility' },
                             { value: 'classic', name: 'Classic' },
                             { value: 'gray', name: 'Gray' },
-                            { value: 'triton', name: 'Triton' }
+                            { value: 'neptune', name: 'Neptune' }
                         ]
                     }),
                     value: theme,
@@ -167,11 +127,8 @@
                         }
                     }
                 }, {
-
-                    /**
-                     * Only visible in repoDevMode and on QA sites
-                     */
                     xtype: 'button',
+                    rtl: false,
                     hidden: !(Ext.repoDevMode || location.href.indexOf('qa.sencha.com') !== -1),
                     enableToggle: true,
                     pressed: rtl,
@@ -189,23 +146,33 @@
                 }, {
                     xtype: 'tool',
                     type: 'close',
+                    rtl: false,
                     handler: function() {
                         toolbar.destroy();
                     }
                 }],
 
                 // Extra constraint margins within default constrain region of parentNode
-                constraintInsets: '0 -' + (Ext.getScrollbarSize().width + 5) + ' 0 0'
+                constraintInsets: '0 -' + (Ext.getScrollbarSize().width + 4) + ' 0 0'
             });
             toolbar.show();
-            toolbar.anchorTo(
+            toolbar.alignTo(
                 document.body,
                 Ext.optionsToolbarAlign || 'tr-tr',
-                [-(Ext.getScrollbarSize().width + 5), 0],  //adjust for scrollbar offsets
-                false,                                     //anim
-                true                                       //monitor scroll
+                [
+                    (Ext.getScrollbarSize().width + 4) * (Ext.rootHierarchyState.rtl ? 1 : -1),
+                    -(document.body.scrollTop || document.documentElement.scrollTop)
+                ]
             );
-
+            
+            var constrainer = function() {
+                toolbar.doConstrain();
+            };
+            
+            Ext.EventManager.onWindowResize(constrainer);
+            toolbar.on('destroy', function() { 
+                Ext.EventManager.removeResizeListener(constrainer);
+            });
         }, 100);
 
     });

@@ -221,6 +221,7 @@ Ext.define("App.Config.Abstract.Controller", {
     },
     show: function () {
         var me = this;
+        console.dir(this.datosTab);
         var open = !Ext.getCmp(this.datosTab.id);
         if (open) {
             me.cmpPrincipal = Ext.create(me.classPrincipal);

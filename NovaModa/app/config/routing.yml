@@ -6,6 +6,6 @@ novamoda_mayor:
     resource: "@NovamodaMayorBundle/Resources/config/routing.yml"
     prefix:   /backend
 
-front-end-mayor:
-    pattern:  /
-    defaults: { _controller: NovamodaMayorBundle:Default:index }
+front-end-mayor-proformas:
+    pattern:  /proformas
+    defaults: { _controller: NovamodaMayorBundle:Proformas:index }

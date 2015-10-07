@@ -8,6 +8,10 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 class ProformasController extends BaseController
 {
+    public function indexAction()
+    {
+        return $this->render('NovamodaMayorBundle:Proformas:index.html.twig');
+    }
 
     /**
      * lista de los tipos de Alarma paginados formato de paginacion

@@ -1,4 +1,4 @@
 proformas:
     type:     rest
-    prefix:   /profromas
+    prefix:   /proformas
     resource: Novamoda\MayorBundle\Controller\ProformasController
