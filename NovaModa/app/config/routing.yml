@@ -5,3 +5,7 @@ NelmioApiDocBundle:
 novamoda_mayor:
     resource: "@NovamodaMayorBundle/Resources/config/routing.yml"
     prefix:   /backend
+
+front-end-mayor:
+    pattern:  /
+    defaults: { _controller: NovamodaMayorBundle:Default:index }
