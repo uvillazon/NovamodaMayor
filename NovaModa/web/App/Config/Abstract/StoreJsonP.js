@@ -23,7 +23,7 @@ Ext.define("App.Config.Abstract.StoreJsonP", {
         Ext.apply(me, options || {});
         me.proxy = {
             type: 'jsonp',
-            url:  me.url,
+            url: Constantes.OTHERHOST + "" + me.url,
             reader: {
                 type: "json",
                 root: "resultado",

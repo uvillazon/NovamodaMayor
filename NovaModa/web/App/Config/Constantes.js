@@ -12,6 +12,7 @@ Ext.define("App.Config.Constantes", {
     singleton: true,
     /* Aqui Defino todas mis contanstantes */
     HOST: 'http://localhost:8000/backend/',
+    OTHERHOST : 'http://sistema.novamoda-bo.com/mayor/php/',
     //HOST                : 'http://elfpre02/SisMan/',
     REQUERIDO: '<span style="color:red;font-weight:bold" data-qtip="Requerido">*</span>',
     PIEPAGINA: '<font color="black"><h2  style="font-size:12px;height:14px">Copyright &copy;  ' + (Ext.Date.format(new Date(), 'Y')) + '  -  Version 1.0</h2></font>',

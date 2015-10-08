@@ -84,6 +84,13 @@ class Proformas
      */
     private $nroFactura;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="estado", type="string", length=20, nullable=true)
+     */
+    private $estado;
+
 
 
     /**
@@ -310,5 +317,29 @@ class Proformas
     public function getNroFactura()
     {
         return $this->nroFactura;
+    }
+
+    /**
+     * Set estado
+     *
+     * @param string $estado
+     *
+     * @return Proformas
+     */
+    public function setEstado($estado)
+    {
+        $this->estado = $estado;
+
+        return $this;
+    }
+
+    /**
+     * Get estado
+     *
+     * @return string
+     */
+    public function getEstado()
+    {
+        return $this->estado;
     }
 }
