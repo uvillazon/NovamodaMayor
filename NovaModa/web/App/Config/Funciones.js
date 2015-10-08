@@ -1043,6 +1043,99 @@ Ext.define("App.Config.Funciones", {
 
         });
         return rec;
-    }
+    },
+
+    //funciones para conectarse al sistema antiguo de haydee
+    AjaxRequestCargarStore: function (accion, mask, cbx, name, param) {
+        mask.el.mask('Procesando...', 'x-mask-loading');
+        Ext.Ajax.request({
+            url: Constantes.OTHERHOST + '' + accion,
+            params: param,
+            success: function (response) {
+                mask.el.unmask();
+                var str = Ext.JSON.decode(response.responseText);
+                //console.dir(str);
+                if (str.error === "true") {
+                    var value = Funciones.ObtenerValorDeObjeto(str.resultado,name);
+                    if(value !=  null){
+                        //console.dir(value);
+                        cbx.getStore().loadData(value);
+                    }
+
+                }
+                else {
+                    console.log("No Existen Registros Consultar con Ti");
+                }
+
+
+            },
+        });
+    },
+    ObtenerValorDeObjeto: function (obj, valor) {
+        var result = null;
+        Ext.Object.each(obj, function (key, value, myself) {
+            if (key === valor) {
+                result = value
+                return result; // stop the iteration
+            }
+        });
+        return result;
+    },
+
+    AjaxRequestWinFn: function (controlador, accion, mask, form, grid, msg, param, win,func) {
+
+        var formSend = form.getForm();
+        //var time = (timeout == null) ?
+        var mensaje = (msg == null) ? 'Esta Seguro de Guardar Los cambios?' : msg;
+        if (formSend.isValid()) {
+
+            Ext.MessageBox.confirm('Confirmacion?', mensaje, function (btn) {
+                if (btn == 'yes') {
+                    mask.el.mask('Procesando...', 'x-mask-loading');
+                    formSend.submit({
+                        submitEmptyText: false,
+                        url: Constantes.HOST + '' + controlador + '/' + accion + '',
+                        params: param,
+                        timeout: 1200,
+                        success: function (form, action) {
+                            mask.el.unmask();
+                            //Ext.MessageBox.alert('Exito', action.result.msg);
+                            //me.Formulario.Bloquear();
+                            if (grid != null) {
+                                try {
+                                    grid.getStore().load();
+                                }
+                                catch (err) {
+                                    grid.load();
+                                }
+                            }
+                            if (win != null) {
+                                try {
+                                    win.destruirWin ? win.close() : win.hide();
+
+                                }
+                                catch (err) {
+                                    win.hide();
+                                }
+
+                            }
+
+                            func === null? null : func(action.result);
+                        },
+                        failure: function (form, action) {
+                            mask.el.unmask();
+                            //Ext.MessageBox.alert('Error', action.result.msg);
+                            func === null? null : func(action.result);
+                        }
+                    });
+
+                }
+            });
+
+        }
+        else {
+            Ext.MessageBox.alert('Error', "Falta Parametros. Revisar Formulario.");
+        }
+    },
 });
 //Rep.VerReporteObjeto("POSTE-L24A41");

@@ -3,8 +3,10 @@
 namespace Novamoda\MayorBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Novamoda\MayorBundle\Model\CsvModel;
 use Symfony\Component\HttpFoundation\Request;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ProformasController extends BaseController
 {
@@ -47,4 +49,39 @@ class ProformasController extends BaseController
         $result = $servicio->obtenerProformasPaginado($paginacion, $array);
         return $result;
     }
+
+    /**
+     * Este Metodo Guarda una Proforma
+     * como resultado devuelve los sig. datos{ success= true cuando esta correcto o false si ocurrio algun problema}
+     * msg = "mensaje de la accion" , id = "Id del objeto guardado" , data = datos del objeto guardado}
+     * Se debe enviar los nombres de las propiedades de las tablas de la BD
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Guardar Proforma",
+     *   output = "Array",
+     *   authentication = true,
+     *   statusCodes = {
+     *     200 = "Returned when successful",
+     *     404 = "Returned when the page is not found",
+     *     403 = "Returned when permission denied"
+     *   }
+     * )
+     *
+     */
+    public function postProformasAction(Request $request)
+    {
+        $data = $request->request->all();
+        $csv = new CsvModel($request->files);
+        $servicio = $this->get('mayorbundle.proformas_service');
+        if($csv->isValid()){
+        $result = $servicio->guardarProforma($csv->getArchivos(), $data);
+        }
+        else{
+            $result =array("success" => false , "msg"=>"Archivos no validos");
+        }
+        return $result;
+//            return ["success" => true, "msg" => "Proceso Ejecutado Correctamente"];
+
+    }
+
 }

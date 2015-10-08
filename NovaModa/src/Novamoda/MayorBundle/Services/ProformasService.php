@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManager;
 use Novamoda\MayorBundle\Entity;
 use Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Ddeboer\DataImport\Reader\CsvReader;
 
 class ProformasService
 {
@@ -43,6 +44,28 @@ class ProformasService
         $result->success = true;
 
         return $result;
+    }
+
+    public function guardarProforma($archivo, $data){
+
+//        var_dump($data);
+        var_dump($archivo[0]);
+        $file = new \SplFileObject($archivo[0]["url_archivo"]);
+        $reader = new CsvReader($file);
+//        $reader->setHeaderRowNumber(0);
+        $row = $reader->getFields();
+        var_dump($row);
+        foreach ($reader as $row) {
+            var_dump($row);die();
+            // $row will be an array containing the comma-separated elements of the line:
+            // array(
+            //   0 => 'James',
+            //   1 => 'Bond'
+            //   etc...
+            // )
+        }
+
+        return null;
     }
 
 }

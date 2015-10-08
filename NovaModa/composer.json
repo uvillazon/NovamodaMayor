@@ -21,7 +21,8 @@
         "friendsofsymfony/rest-bundle": "@dev",
         "jms/serializer-bundle": "@dev",
         "nelmio/api-doc-bundle": "@dev",
-        "jaspersoft/rest-client": "v2.0.0"
+        "jaspersoft/rest-client": "v2.0.0",
+        "ddeboer/data-import": "@stable"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

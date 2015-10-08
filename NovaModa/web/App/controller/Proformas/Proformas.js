@@ -22,9 +22,39 @@ Ext.define('App.controller.Proformas.Proformas', {
         this.callParent();
         //me.cargarEventos();
     },
-    winCrearProforma : function(){
-        alert("sasda");
-    }
+    winCrearProforma: function () {
+        var me = this;
+
+        var win = Ext.create("App.Config.Abstract.Window", {botones: true, destruirWin: true});
+        var form = Ext.create("App.View.Proformas.FormProforma", {botones: false});
+        win.add(form);
+        win.show();
+
+        win.btn_guardar.on('click', function () {
+            Funciones.AjaxRequestWinFn('proformas', 'proformas', win, form, null,null, null, win,function(str){
+                console.log(str.success);
+                if(str.success){
+                    Ext.MessageBox.alert('Exito', str.msg,function(){
+                        me.cargarVentanaGrid();
+                    });
+                }
+                else{
+                    Ext.MessageBox.alert('Error', str.msg);
+                }
+
+            });
+        });
+        //Funciones.AjaxRequestCargarStore( "Marca.php?funcion=BuscarMarca", win, form.cbx_marca, "marcaM", null);
+        //alert("sasda");
+        //App.View.Proformas.FormProformas
+    },
+    cargarVentanaGrid : function(){
+        var me = this;
+        var win = Ext.create("App.Config.Abstract.Window", {botones: true, destruirWin: true});
+        var form = Ext.create("App.View.Proformas.GridProformas", {botones: false});
+        win.add(form);
+        win.show();
+    },
 
     //cargarEventos: function () {
     //    var me = this;
