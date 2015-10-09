@@ -17,7 +17,9 @@ use Ddeboer\DataImport\Reader\CsvReader;
 class ProformasService
 {
     protected $em;
-    public function __construct(\Doctrine\ORM\EntityManager $em ){
+
+    public function __construct(\Doctrine\ORM\EntityManager $em)
+    {
 
         $this->em = $em;
     }
@@ -27,18 +29,19 @@ class ProformasService
      * @param array $array
      * @return \Novamoda\MayorBundle\Model\ResultPaginacion
      */
-    public function obtenerProformasPaginado($paginacion,$array){
+    public function obtenerProformasPaginado($paginacion, $array)
+    {
 
         $result = new \Novamoda\MayorBundle\Model\ResultPaginacion();
         $repo = $this->em->getRepository('NovamodaMayorBundle:Proformas');
         $query = $repo->createQueryBuilder('alr');
-        $query = $repo->filtrarDatos($query,$array);
-        if(!is_null($paginacion->contiene)){
-            $query = $repo->consultaContiene($query,["nombre","almacen","marca","responsable","nro_factura"],$paginacion->contiene);
+        $query = $repo->filtrarDatos($query, $array);
+        if (!is_null($paginacion->contiene)) {
+            $query = $repo->consultaContiene($query, ["nombre", "almacen", "marca", "responsable", "nro_factura"], $paginacion->contiene);
         }
-        $result->total=$repo->total($query);
-        if(!$paginacion->isEmpty()){
-            $query = $repo->obtenerElementosPaginados($query,$paginacion);
+        $result->total = $repo->total($query);
+        if (!$paginacion->isEmpty()) {
+            $query = $repo->obtenerElementosPaginados($query, $paginacion);
         }
         $result->rows = $query->getQuery()->getResult();
         $result->success = true;
@@ -46,26 +49,40 @@ class ProformasService
         return $result;
     }
 
-    public function guardarProforma($archivo, $data){
+    public function guardarProforma($archivo, $data)
+    {
 
-//        var_dump($data);
-        var_dump($archivo[0]);
-        $file = new \SplFileObject($archivo[0]["url_archivo"]);
-        $reader = new CsvReader($file);
-//        $reader->setHeaderRowNumber(0);
-        $row = $reader->getFields();
-        var_dump($row);
-        foreach ($reader as $row) {
-            var_dump($row);die();
-            // $row will be an array containing the comma-separated elements of the line:
-            // array(
-            //   0 => 'James',
-            //   1 => 'Bond'
-            //   etc...
-            // )
+        $result = new \Novamoda\MayorBundle\Model\RespuestaSP();
+        try {
+            $repo = $this->em->getRepository('NovamodaMayorBundle:Proformas');
+            $repoDet = $this->em->getRepository('NovamodaMayorBundle:DetallesProforma');
+            $idProforma = $repo->guardarProforma($data);
+            if (is_numeric($idProforma)) {
+                $file = new \SplFileObject($archivo[0]["url_archivo"]);
+                $reader = new CsvReader($file, ";");
+                $proforma = $repo->find($idProforma);
+
+                foreach ($reader as $key => $value) {
+                    foreach ($value as $key1 => $value1) {
+                        $repoDet->guardarDetalle(array("columna" => $key1, "fila" => $key, "valor" => $value1, "id_proforma" => $idProforma),$proforma);
+//                        var_dump($res);
+                    }
+
+                }
+                $this->em->flush();
+                $result->msg = "proceso Ejecutado Correctamente";
+                $result->success = true;
+
+
+            } else {
+                $result->msg = $idProforma;
+                $result->success = false;
+            }
+        } catch (\Exception $e) {
+            $result->msg = $e->getMessage();
+            $result->success = false;
         }
-
-        return null;
+        return $result;
     }
 
 }
