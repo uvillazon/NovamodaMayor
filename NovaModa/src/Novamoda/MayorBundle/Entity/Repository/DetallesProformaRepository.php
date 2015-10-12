@@ -6,6 +6,7 @@
  * Time: 09:01
  */
 namespace Novamoda\MayorBundle\Entity\Repository;
+
 use Doctrine\ORM\EntityRepository;
 use Novamoda\MayorBundle\Entity\DetallesProforma;
 use Novamoda\MayorBundle\Entity\Repository\BaseRepository;
@@ -18,10 +19,13 @@ use Novamoda\MayorBundle\Entity\Repository\BaseRepository;
  */
 class DetallesProformaRepository extends BaseRepository
 {
-    public function guardarDetalle($data , $proforma){
-        $result ="";
+    private $nombresModelos = array("MODELO" => "modelo", "MATERIAL" => "material", "COLOR" => "color", "ITEM" => "item", "VENDEDOR" => "vendedor", "CJS" => "cajas", "PRECIO VENTA" => "precio_venta", "UNITARIO" => "precio_unitario","TOTAL"=>"total","PARES"=>"pares","ESTADO"=>"estado");
+
+    public function guardarDetalle($data, $proforma)
+    {
+        $result = "";
 //        var_dump($data);
-        try{
+        try {
             $detalle = new DetallesProforma();
             $detalle->setColumna($data["columna"]);
             $detalle->setIdProforma($data["id_proforma"]);
@@ -32,11 +36,59 @@ class DetallesProformaRepository extends BaseRepository
 //            var_dump($detalle);die();
             $this->_em->persist($detalle);
 //            $this->_em->flush();
-            $result= $detalle->getIdDetalle();
-        }
-        catch(\Exception $e){
+            $result = $detalle->getIdDetalle();
+        } catch (\Exception $e) {
             $result = $e->getMessage();
         }
         return $result;
+    }
+
+    public function obtenerDetallesPorProforma($idProforma)
+    {
+        $max = $this->createQueryBuilder("det")->select("MAX(det.fila)")->andWhere("det.idProforma=:idProforma")->setParameter("idProforma", $idProforma)->getQuery()->getSingleScalarResult();
+        $cnt = 1;
+        $rows = array();
+        while ($cnt < $max) {
+
+            $query = $this->createQueryBuilder("det")->andWhere("det.idProforma=:idProforma")
+                ->andWhere("det.fila = :fila")
+                ->setParameters(array("idProforma" => $idProforma, "fila" => $cnt));
+            $row = array();
+            $pos = 0;
+            $row["fila"]=$cnt;
+            foreach ($query->getQuery()->getResult() as $detalle) {
+                /**
+                 * @var DetallesProforma $detalle
+                 */
+                $key = $this->obtenerCabecera($pos, $idProforma);
+                $row[$key] = $detalle->getValor();
+                $pos++;
+
+            }
+            array_push($rows, $row);
+
+            $cnt++;
+        }
+        return $rows;
+    }
+
+    public function obtenerCabecera($pos, $idProforma)
+    {
+        $query = $this->createQueryBuilder("det")
+            ->select("det.valor")
+            ->andWhere("det.idProforma=:idProforma")
+            ->andWhere("det.fila = 0")
+            ->andWhere("det.columna = :columna")
+            ->setParameters(array("idProforma" => $idProforma, "columna" => $pos));
+        $valor = $query->getQuery()->getSingleScalarResult();
+        if (array_key_exists($valor, $this->nombresModelos)) {
+            return $this->nombresModelos[$valor];
+        } else {
+            return $valor;
+        }
+    }
+
+    public function obtenerDetallesTallasPorProforma($idProforma , $fila){
+
     }
 }

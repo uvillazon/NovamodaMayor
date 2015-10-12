@@ -1137,5 +1137,12 @@ Ext.define("App.Config.Funciones", {
             Ext.MessageBox.alert('Error', "Falta Parametros. Revisar Formulario.");
         }
     },
+    countObject : function(obj){
+        var cnt=0;
+        Ext.each(obj, function (record) {
+            cnt++;
+        });
+        return cnt;
+    }
 });
 //Rep.VerReporteObjeto("POSTE-L24A41");

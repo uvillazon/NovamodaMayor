@@ -11,6 +11,7 @@ namespace Novamoda\MayorBundle\Services;
 use Doctrine\ORM\EntityManager;
 use Novamoda\MayorBundle\Entity;
 use Exception;
+use Novamoda\MayorBundle\Entity\DetallesProforma;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Ddeboer\DataImport\Reader\CsvReader;
 
@@ -82,6 +83,27 @@ class ProformasService
             $result->msg = $e->getMessage();
             $result->success = false;
         }
+        return $result;
+    }
+
+    public function obtenerModelos($idProforma){
+        $result = new \Novamoda\MayorBundle\Model\ResultPaginacion();
+        $repo = $this->em->getRepository('NovamodaMayorBundle:DetallesProforma');
+
+        $rows = $repo->obtenerDetallesPorProforma($idProforma);
+        $result->rows = $rows;
+        $result->success = true;
+        $result->total = count($rows);
+        return $result;
+    }
+    public function obtenerTallas($idProforma , $fila){
+        $result = new \Novamoda\MayorBundle\Model\ResultPaginacion();
+        $repo = $this->em->getRepository('NovamodaMayorBundle:DetallesProforma');
+
+        $rows = $repo->obtenerDetallesTallasPorProforma($idProforma,$fila);
+        $result->rows = $rows;
+        $result->success = true;
+        $result->total = count($rows);
         return $result;
     }
 
