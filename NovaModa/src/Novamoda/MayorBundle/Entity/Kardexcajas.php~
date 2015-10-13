@@ -1,0 +1,173 @@
+<?php
+
+namespace Novamoda\MayorBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Kardexcajas
+ *
+ * @ORM\Table(name="kardexcajas", indexes={@ORM\Index(name="idkardex", columns={"idkardex"}), @ORM\Index(name="idmodelo", columns={"idmodelo"})})
+ * @ORM\Entity
+ */
+class Kardexcajas
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="idkardexunico", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $idkardexunico;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idkardex", type="string", length=20, nullable=false)
+     */
+    private $idkardex;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idmodelo", type="string", length=20, nullable=true)
+     */
+    private $idmodelo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idtienda", type="string", length=20, nullable=true)
+     */
+    private $idtienda;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="codigobarra", type="string", length=20, nullable=true)
+     */
+    private $codigobarra;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="saldocantidad", type="decimal", precision=4, scale=1, nullable=true)
+     */
+    private $saldocantidad = '0.0';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="numero", type="integer", nullable=false)
+     */
+    private $numero = '0';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="numeroparesfila", type="integer", nullable=false)
+     */
+    private $numeroparesfila = '0';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="totalparescaja", type="integer", nullable=false)
+     */
+    private $totalparescaja = '0';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="numerocajas", type="decimal", precision=4, scale=1, nullable=false)
+     */
+    private $numerocajas = '0.0';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="precioventa", type="decimal", precision=22, scale=2, nullable=true)
+     */
+    private $precioventa = '0.00';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="preciounitario", type="decimal", precision=22, scale=11, nullable=true)
+     */
+    private $preciounitario = '0.00000000000';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="preciototalcaja", type="decimal", precision=22, scale=11, nullable=true)
+     */
+    private $preciototalcaja = '0.00000000000';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idingresoetalle", type="string", length=20, nullable=true)
+     */
+    private $idingresoetalle;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idoperacion", type="string", length=20, nullable=true)
+     */
+    private $idoperacion;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="codigobarraean13", type="string", length=20, nullable=true)
+     */
+    private $codigobarraean13;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="generado", type="integer", nullable=false)
+     */
+    private $generado = '0';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="unido", type="string", length=12, nullable=false)
+     */
+    private $unido = 'no';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="fallado", type="string", length=1, nullable=false)
+     */
+    private $fallado = '0';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="idperiodo", type="integer", nullable=false)
+     */
+    private $idperiodo = '8';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="cantidadlector", type="integer", nullable=false)
+     */
+    private $cantidadlector = '0';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idimpresion", type="string", length=20, nullable=false)
+     */
+    private $idimpresion;
+
+
+}
+

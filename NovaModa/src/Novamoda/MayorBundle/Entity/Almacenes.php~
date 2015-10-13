@@ -1,0 +1,110 @@
+<?php
+
+namespace Novamoda\MayorBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Almacenes
+ *
+ * @ORM\Table(name="almacenes")
+ * @ORM\Entity
+ */
+class Almacenes
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idalmacen", type="string", length=20, nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $idalmacen;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idciudad", type="string", length=20, nullable=true)
+     */
+    private $idciudad;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nombre", type="string", length=50, nullable=true)
+     */
+    private $nombre;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="codigo", type="string", length=30, nullable=true)
+     */
+    private $codigo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="direccion", type="string", length=50, nullable=true)
+     */
+    private $direccion;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="tipo", type="string", length=30, nullable=true)
+     */
+    private $tipo;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="numero", type="integer", nullable=true)
+     */
+    private $numero;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="telefono", type="string", length=20, nullable=true)
+     */
+    private $telefono;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="fax", type="string", length=20, nullable=true)
+     */
+    private $fax;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="opcion", type="integer", nullable=false)
+     */
+    private $opcion;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="estado", type="string", length=20, nullable=false)
+     */
+    private $estado = 'activo';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nombrecompleto", type="string", length=30, nullable=false)
+     */
+    private $nombrecompleto;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="tipoalmacen", type="string", length=20, nullable=false)
+     */
+    private $tipoalmacen = 'mayor';
+
+
+}
+

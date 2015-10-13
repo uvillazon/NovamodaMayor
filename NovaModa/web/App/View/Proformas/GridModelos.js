@@ -120,7 +120,7 @@ Ext.define("App.View.Proformas.GridModelos", {
     cargarGridMoleca: function () {
         var me = this;
         me.store = Ext.create("App.Store.Proformas.Modelos");
-        me.store.load();
+        //me.store.load();
         //me.CargarComponentes();
         me.columns = [
             {xtype: "rownumberer", width: 30, sortable: false},

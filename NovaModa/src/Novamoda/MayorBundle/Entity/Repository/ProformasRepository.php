@@ -23,7 +23,7 @@ class ProformasRepository extends BaseRepository
      * @param $data
      * @return int|string
      */
-    public function guardarProforma($data){
+    public function guardarProforma($data,$archivo){
         $result = "0";
         try{
 //            var_dump($data);
@@ -31,6 +31,11 @@ class ProformasRepository extends BaseRepository
 //            var_dump($date);
             $proforma = new Proformas();
             $proforma->setAlmacen($data["almacen"]);
+            $proforma->setIdAlmacen($data["idalmacen"]);
+            $proforma->setIdMarca($data["idmarca"]);
+            $proforma->setNombreArchivo($archivo["nombre_archivo"]);
+            $proforma->setTipoArchivo($archivo["tipo_archivo"]);
+            $proforma->setUrlArchivo($archivo["url_archivo"]);
             $proforma->setMarca($data["marca"]);
             $proforma->setEstado("NUEVO");
             $proforma->setNombre($data["nombre"]);

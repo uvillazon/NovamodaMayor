@@ -7,6 +7,7 @@ Ext.define('App.Model.Proformas.Proformas', {
         { type: "int", name: "id_proforma" },
         { type: "string", name: "nombre" },
         { type: "date", name: "fecha"},
+        { type: "string", name: "fecha_string" },
         { type: "string", name: "responsable" },
         { type: "string", name: "almacen" },
         { type: "string", name: "marca" },

@@ -4,8 +4,8 @@
 Ext.define('App.Store.Proformas.Marcas', {
 
     model: 'App.Model.Proformas.Marcas',
-    //url: 'proformas/proformas',
+    url: 'marcas/marcas',
     //url : 'Almacen.php?funcion=ListarAlmacen',
-    sortProperty: 'id_marca',
+    sortProperty: 'idmarca',
     extend: 'App.Config.Abstract.Store'
 });

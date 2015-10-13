@@ -8,7 +8,14 @@ Ext.define("App.View.Proformas.FormEditarProforma", {
     initComponent: function () {
         var me = this;
         me.cargarComponentes();
+        me.cargarEventos();
         this.callParent(arguments);
+    },
+    cargarEventos : function(){
+      var me = this;
+        me.grid.getStore().on('load',function(str,sucess){
+                console.dir(str);
+        });
     },
     cargarComponentes: function () {
         var me = this;
@@ -32,7 +39,7 @@ Ext.define("App.View.Proformas.FormEditarProforma", {
             maximo: 'no',
             opcion: 'no',
             fieldLabel: "Fecha Llegada",
-            name: "fecha",
+            name: "fecha_string",
             readOnly : true
         });
         me.txt_marca = Ext.create("App.Config.Componente.TextFieldBase", {
@@ -106,6 +113,7 @@ Ext.define("App.View.Proformas.FormEditarProforma", {
 
             ]
         });
+
         me.items = [
             me.hid_id,
             me.txt_nombre, me.txt_nroFactura,me.date_fecha,me.txt_marca,
@@ -114,5 +122,11 @@ Ext.define("App.View.Proformas.FormEditarProforma", {
             me.num_total_cajas,me.num_total_pares,me.num_total,
             cmpButton
         ];
+    },
+    cargarDatos : function (id) {
+        var me = this;
+        me.loadFormulario("proformas", "proformas/"+id, null,null);
+        me.grid.getStore().setExtraParams({id_proforma : id});
+        me.grid.getStore().load();
     }
 });

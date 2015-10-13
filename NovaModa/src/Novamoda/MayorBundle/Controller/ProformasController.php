@@ -81,7 +81,7 @@ class ProformasController extends BaseController
          */
         $servicio = $this->get('mayorbundle.proformas_service');
         $array = $request->query;
-        $result = $servicio->obtenerModelos(2);
+        $result = $servicio->obtenerModelos($array->get('id_proforma'));
         return $result;
     }
 
@@ -108,15 +108,38 @@ class ProformasController extends BaseController
         $data = $request->request->all();
         $csv = new CsvModel($request->files);
         $servicio = $this->get('mayorbundle.proformas_service');
-        if($csv->isValid()){
-        $result = $servicio->guardarProforma($csv->getArchivos(), $data);
-        }
-        else{
-            $result =array("success" => false , "msg"=>"Archivos no validos");
+        if ($csv->isValid()) {
+            $result = $servicio->guardarProforma($csv->getArchivos(), $data);
+        } else {
+            $result = array("success" => false, "msg" => "Archivos no validos");
         }
         return $result;
-//            return ["success" => true, "msg" => "Proceso Ejecutado Correctamente"];
+    }
 
+    /**
+     * Este Recupera todos los datos de profomrmas
+     * como resultado devuelve los sig. datos{ success= true cuando esta correcto o false si ocurrio algun problema}
+     * msg = "mensaje de la accion" , id = "Id del objeto guardado" , data = datos del objeto guardado}
+     * Se debe enviar los nombres de las propiedades de las tablas de la BD
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Obtener datos Proforma",
+     *   output = "Array",
+     *   authentication = true,
+     *   statusCodes = {
+     *     200 = "Returned when successful",
+     *     404 = "Returned when the page is not found",
+     *     403 = "Returned when permission denied"
+     *   }
+     * )
+     *
+     */
+    public function postProformaAction($id)
+    {
+        $servicio = $this->get('mayorbundle.proformas_service');
+
+        $result = $servicio->obtenerProformaPorId($id);
+        return $result;
     }
 
 }

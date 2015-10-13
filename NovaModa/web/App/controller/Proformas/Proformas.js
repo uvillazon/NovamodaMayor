@@ -6,7 +6,12 @@ Ext.define('App.controller.Proformas.Proformas', {
     refs: [{
         ref: 'gridModelo',
         selector: '#grid_modelos'
-    }],
+    },
+        {
+            ref: 'grid',
+            selector: '#gridPrincipalProforma'
+        }
+    ],
     init: function () {
         var me = this;
         me.control({
@@ -39,19 +44,19 @@ Ext.define('App.controller.Proformas.Proformas', {
         var modified = me.getGridModelo().getSelectionModel().getSelection();
         var count = 0;
         if (!Ext.isEmpty(modified)) {
-           if(fn.countObject(modified) == 1){
-               me.winRegistrarCodigoBarra(modified);
-           }
-            else{
-            Ext.Msg.alert("Aviso","Selecciono mas de un registro")
-           }
+            if (fn.countObject(modified) == 1) {
+                me.winRegistrarCodigoBarra(modified);
+            }
+            else {
+                Ext.Msg.alert("Aviso", "Selecciono mas de un registro")
+            }
         }
         else {
             Ext.Msg.alert("Aviso", "Seleccione solo un Registro");
         }
 
     },
-    winRegistrarCodigoBarra : function(record){
+    winRegistrarCodigoBarra: function (record) {
         var me = this;
         var win = Ext.create("App.Config.Abstract.Window", {botones: true, destruirWin: true});
         var form = Ext.create("App.View.Proformas.GridRegistroCodigoBarra", {botones: false});
@@ -103,7 +108,7 @@ Ext.define('App.controller.Proformas.Proformas', {
                 console.log(str.success);
                 if (str.success) {
                     Ext.MessageBox.alert('Exito', str.msg, function () {
-                        me.cargarVentanaGrid();
+                        me.cargarVentanaGrid(null, null, null, str.id);
                     });
                 }
                 else {
@@ -117,10 +122,17 @@ Ext.define('App.controller.Proformas.Proformas', {
         //App.View.Proformas.FormProformas
     }
     ,
-    cargarVentanaGrid: function () {
+    cargarVentanaGrid: function (btn, e, ob, id) {
         var me = this;
         var win = Ext.create("App.Config.Abstract.Window", {botones: false, destruirWin: true});
         var form = Ext.create("App.View.Proformas.FormEditarProforma", {botones: false});
+        if (btn != null) {
+            form.cargarDatos(me.getGrid().record.get('id_proforma'));
+        }
+        else {
+            form.cargarDatos(id);
+        }
+
         win.add(form);
         win.show();
     }

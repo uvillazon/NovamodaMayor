@@ -98,6 +98,25 @@ class Proformas
      */
     private $estado;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idmarca", type="string", length=20, nullable=true)
+     */
+    private $idMarca;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idalmacen", type="string", length=20, nullable=true)
+     */
+    private $idAlmacen;
+
+
+    /**
+     * @var string
+     */
+    private  $fechaString ;
+
 
 
     /**
@@ -372,5 +391,59 @@ class Proformas
     public function getEstado()
     {
         return $this->estado;
+    }
+
+    /**
+     * Set idmarca
+     *
+     * @param string $idMarca
+     *
+     * @return Proformas
+     */
+    public function setIdMarca($idMarca)
+    {
+        $this->idMarca = $idMarca;
+
+        return $this;
+    }
+
+    /**
+     * Get idmarca
+     *
+     * @return string
+     */
+    public function getIdMarca()
+    {
+        return $this->idMarca;
+    }
+
+    /**
+     * Set idalmacen
+     *
+     * @param string $idAlmacen
+     *
+     * @return Proformas
+     */
+    public function setIdAlmacen($idAlmacen)
+    {
+        $this->idAlmacen = $idAlmacen;
+
+        return $this;
+    }
+
+    /**
+     * Get idalmacen
+     *
+     * @return string
+     */
+    public function getIdAlmacen()
+    {
+        return $this->idAlmacen;
+    }
+
+
+    public function cargarFecha(){
+        $this->fechaString = $this->fecha->format("d/m/Y");
+//        $this->fecha = $this->fecha->format("d/m/Y");
     }
 }

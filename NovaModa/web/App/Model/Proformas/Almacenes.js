@@ -8,6 +8,8 @@ Ext.define('App.Model.Proformas.Almacenes', {
         {type: "string", name: "idalmacen"},
         {type: "string", name: "nombre"},
         {type: "string", name: "codigo"},
-        {type: "string", name: "direccion"}
+        {type: "string", name: "direccion"},
+        {type: "string", name: "nombrecompleto"}
+
     ]
 });

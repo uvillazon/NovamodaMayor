@@ -59,5 +59,134 @@ class DetallesProforma
     private $proforma;
 
 
-}
 
+    /**
+     * Get idDetalle
+     *
+     * @return integer
+     */
+    public function getIdDetalle()
+    {
+        return $this->idDetalle;
+    }
+
+    /**
+     * Set idProforma
+     *
+     * @param integer $idProforma
+     *
+     * @return DetallesProforma
+     */
+    public function setIdProforma($idProforma)
+    {
+        $this->idProforma = $idProforma;
+    
+        return $this;
+    }
+
+    /**
+     * Get idProforma
+     *
+     * @return integer
+     */
+    public function getIdProforma()
+    {
+        return $this->idProforma;
+    }
+
+    /**
+     * Set fila
+     *
+     * @param integer $fila
+     *
+     * @return DetallesProforma
+     */
+    public function setFila($fila)
+    {
+        $this->fila = $fila;
+    
+        return $this;
+    }
+
+    /**
+     * Get fila
+     *
+     * @return integer
+     */
+    public function getFila()
+    {
+        return $this->fila;
+    }
+
+    /**
+     * Set columna
+     *
+     * @param integer $columna
+     *
+     * @return DetallesProforma
+     */
+    public function setColumna($columna)
+    {
+        $this->columna = $columna;
+    
+        return $this;
+    }
+
+    /**
+     * Get columna
+     *
+     * @return integer
+     */
+    public function getColumna()
+    {
+        return $this->columna;
+    }
+
+    /**
+     * Set valor
+     *
+     * @param string $valor
+     *
+     * @return DetallesProforma
+     */
+    public function setValor($valor)
+    {
+        $this->valor = $valor;
+    
+        return $this;
+    }
+
+    /**
+     * Get valor
+     *
+     * @return string
+     */
+    public function getValor()
+    {
+        return $this->valor;
+    }
+
+    /**
+     * Set proforma
+     *
+     * @param \Novamoda\MayorBundle\Entity\Proformas $proforma
+     *
+     * @return DetallesProforma
+     */
+    public function setProforma(\Novamoda\MayorBundle\Entity\Proformas $proforma = null)
+    {
+        $this->proforma = $proforma;
+    
+        return $this;
+    }
+
+    /**
+     * Get proforma
+     *
+     * @return \Novamoda\MayorBundle\Entity\Proformas
+     */
+    public function getProforma()
+    {
+        return $this->proforma;
+    }
+}

@@ -4,8 +4,9 @@
 Ext.define('App.Store.Proformas.Almacenes', {
 
     model: 'App.Model.Proformas.Almacenes',
-    //url: 'proformas/proformas',
-    url : 'Almacen.php?funcion=ListarAlmacen',
+    url: 'almacenes/almacenes',
+    //url : 'Almacen.php?funcion=ListarAlmacen',
     sortProperty: 'codigo',
-    extend: 'App.Config.Abstract.StoreJsonP'
+    extend: 'App.Config.Abstract.Store'
+    //extend: 'App.Config.Abstract.StoreJsonP'
 });

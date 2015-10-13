@@ -1,0 +1,278 @@
+<?php
+
+namespace Novamoda\MayorBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Modelo
+ *
+ * @ORM\Table(name="modelo", indexes={@ORM\Index(name="idingreso", columns={"idingreso"})})
+ * @ORM\Entity
+ */
+class Modelo
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idmodelo", type="string", length=20, nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $idmodelo = '';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idmodelodetalle", type="string", length=40, nullable=false)
+     */
+    private $idmodelodetalle;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idmarca", type="string", length=20, nullable=false)
+     */
+    private $idmarca;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idvendedor", type="string", length=20, nullable=false)
+     */
+    private $idvendedor;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="codigo", type="string", length=20, nullable=false)
+     */
+    private $codigo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="color", type="string", length=18, nullable=false)
+     */
+    private $color = '-';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="material", type="string", length=20, nullable=false)
+     */
+    private $material = '-';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="linea", type="string", length=20, nullable=false)
+     */
+    private $linea = '-';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="cliente", type="string", length=20, nullable=false)
+     */
+    private $cliente;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="numero", type="integer", nullable=true)
+     */
+    private $numero;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idingreso", type="string", length=20, nullable=true)
+     */
+    private $idingreso;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fecha", type="date", nullable=true)
+     */
+    private $fecha;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="hora", type="time", nullable=true)
+     */
+    private $hora;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="generado", type="integer", nullable=false)
+     */
+    private $generado = '0';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="opciont", type="integer", nullable=false)
+     */
+    private $opciont = '0';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="unido", type="string", length=12, nullable=false)
+     */
+    private $unido = 'no';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="inventario", type="integer", nullable=false)
+     */
+    private $inventario = '0';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="rebaja", type="string", length=20, nullable=false)
+     */
+    private $rebaja = '0';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="estado", type="string", length=8, nullable=false)
+     */
+    private $estado = 'activo';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idcoleccion", type="string", length=20, nullable=false)
+     */
+    private $idcoleccion;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idcliente", type="string", length=20, nullable=false)
+     */
+    private $idcliente;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="precioventa", type="decimal", precision=11, scale=2, nullable=true)
+     */
+    private $precioventa;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="preciounitario", type="decimal", precision=11, scale=2, nullable=true)
+     */
+    private $preciounitario;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="preciototalcaja", type="decimal", precision=11, scale=2, nullable=true)
+     */
+    private $preciototalcaja;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="numerocajas", type="decimal", precision=4, scale=1, nullable=true)
+     */
+    private $numerocajas = '0.0';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="numeroparesfila", type="integer", nullable=true)
+     */
+    private $numeroparesfila;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="totalparescaja", type="integer", nullable=true)
+     */
+    private $totalparescaja;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="numeracion", type="integer", nullable=false)
+     */
+    private $numeracion = '0';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="modificar", type="integer", nullable=false)
+     */
+    private $modificar = '0';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="talla", type="string", length=5, nullable=false)
+     */
+    private $talla;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idalmacen", type="string", length=10, nullable=false)
+     */
+    private $idalmacen = 'alm-3';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="estadotraspaso", type="string", length=20, nullable=false)
+     */
+    private $estadotraspaso = 'ninguno';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="fechaingreso", type="string", length=8, nullable=false)
+     */
+    private $fechaingreso;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="preciooficina", type="decimal", precision=11, scale=5, nullable=false)
+     */
+    private $preciooficina = '0.00000';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="preciobs", type="decimal", precision=11, scale=2, nullable=false)
+     */
+    private $preciobs = '0.00';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="tipocambio", type="decimal", precision=11, scale=2, nullable=false)
+     */
+    private $tipocambio;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="boleta", type="string", length=20, nullable=false)
+     */
+    private $boleta;
+
+
+}
+

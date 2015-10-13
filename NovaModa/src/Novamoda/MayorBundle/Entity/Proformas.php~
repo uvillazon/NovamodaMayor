@@ -40,7 +40,7 @@ class Proformas
      *
      * @ORM\Column(name="fecha_reg", type="datetime", nullable=false)
      */
-    private $fechaReg = 'CURRENT_TIMESTAMP';
+    private $fechaReg;
 
     /**
      * @var string
@@ -98,6 +98,340 @@ class Proformas
      */
     private $estado;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idmarca", type="string", length=20, nullable=true)
+     */
+    private $idMarca;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idalmacen", type="string", length=20, nullable=true)
+     */
+    private $idAlmacen;
 
+
+
+    /**
+     * Get idProforma
+     *
+     * @return integer
+     */
+    public function getIdProforma()
+    {
+        return $this->idProforma;
+    }
+
+    /**
+     * Set nombre
+     *
+     * @param string $nombre
+     *
+     * @return Proformas
+     */
+    public function setNombre($nombre)
+    {
+        $this->nombre = $nombre;
+    
+        return $this;
+    }
+
+    /**
+     * Get nombre
+     *
+     * @return string
+     */
+    public function getNombre()
+    {
+        return $this->nombre;
+    }
+
+    /**
+     * Set fecha
+     *
+     * @param \DateTime $fecha
+     *
+     * @return Proformas
+     */
+    public function setFecha($fecha)
+    {
+        $this->fecha = $fecha;
+    
+        return $this;
+    }
+
+    /**
+     * Get fecha
+     *
+     * @return \DateTime
+     */
+    public function getFecha()
+    {
+        return $this->fecha;
+    }
+
+    /**
+     * Set fechaReg
+     *
+     * @param \DateTime $fechaReg
+     *
+     * @return Proformas
+     */
+    public function setFechaReg($fechaReg)
+    {
+        $this->fechaReg = $fechaReg;
+    
+        return $this;
+    }
+
+    /**
+     * Get fechaReg
+     *
+     * @return \DateTime
+     */
+    public function getFechaReg()
+    {
+        return $this->fechaReg;
+    }
+
+    /**
+     * Set responsable
+     *
+     * @param string $responsable
+     *
+     * @return Proformas
+     */
+    public function setResponsable($responsable)
+    {
+        $this->responsable = $responsable;
+    
+        return $this;
+    }
+
+    /**
+     * Get responsable
+     *
+     * @return string
+     */
+    public function getResponsable()
+    {
+        return $this->responsable;
+    }
+
+    /**
+     * Set almacen
+     *
+     * @param string $almacen
+     *
+     * @return Proformas
+     */
+    public function setAlmacen($almacen)
+    {
+        $this->almacen = $almacen;
+    
+        return $this;
+    }
+
+    /**
+     * Get almacen
+     *
+     * @return string
+     */
+    public function getAlmacen()
+    {
+        return $this->almacen;
+    }
+
+    /**
+     * Set marca
+     *
+     * @param string $marca
+     *
+     * @return Proformas
+     */
+    public function setMarca($marca)
+    {
+        $this->marca = $marca;
+    
+        return $this;
+    }
+
+    /**
+     * Get marca
+     *
+     * @return string
+     */
+    public function getMarca()
+    {
+        return $this->marca;
+    }
+
+    /**
+     * Set nombreArchivo
+     *
+     * @param string $nombreArchivo
+     *
+     * @return Proformas
+     */
+    public function setNombreArchivo($nombreArchivo)
+    {
+        $this->nombreArchivo = $nombreArchivo;
+    
+        return $this;
+    }
+
+    /**
+     * Get nombreArchivo
+     *
+     * @return string
+     */
+    public function getNombreArchivo()
+    {
+        return $this->nombreArchivo;
+    }
+
+    /**
+     * Set tipoArchivo
+     *
+     * @param string $tipoArchivo
+     *
+     * @return Proformas
+     */
+    public function setTipoArchivo($tipoArchivo)
+    {
+        $this->tipoArchivo = $tipoArchivo;
+    
+        return $this;
+    }
+
+    /**
+     * Get tipoArchivo
+     *
+     * @return string
+     */
+    public function getTipoArchivo()
+    {
+        return $this->tipoArchivo;
+    }
+
+    /**
+     * Set urlArchivo
+     *
+     * @param string $urlArchivo
+     *
+     * @return Proformas
+     */
+    public function setUrlArchivo($urlArchivo)
+    {
+        $this->urlArchivo = $urlArchivo;
+    
+        return $this;
+    }
+
+    /**
+     * Get urlArchivo
+     *
+     * @return string
+     */
+    public function getUrlArchivo()
+    {
+        return $this->urlArchivo;
+    }
+
+    /**
+     * Set nroFactura
+     *
+     * @param string $nroFactura
+     *
+     * @return Proformas
+     */
+    public function setNroFactura($nroFactura)
+    {
+        $this->nroFactura = $nroFactura;
+    
+        return $this;
+    }
+
+    /**
+     * Get nroFactura
+     *
+     * @return string
+     */
+    public function getNroFactura()
+    {
+        return $this->nroFactura;
+    }
+
+    /**
+     * Set estado
+     *
+     * @param string $estado
+     *
+     * @return Proformas
+     */
+    public function setEstado($estado)
+    {
+        $this->estado = $estado;
+    
+        return $this;
+    }
+
+    /**
+     * Get estado
+     *
+     * @return string
+     */
+    public function getEstado()
+    {
+        return $this->estado;
+    }
+
+    /**
+     * Set idmarca
+     *
+     * @param string $idMarca
+     *
+     * @return Proformas
+     */
+    public function setIdMarca($idMarca)
+    {
+        $this->idMarca = $idMarca;
+
+        return $this;
+    }
+
+    /**
+     * Get idmarca
+     *
+     * @return string
+     */
+    public function getIdMarca()
+    {
+        return $this->idMarca;
+    }
+
+    /**
+     * Set idalmacen
+     *
+     * @param string $idAlmacen
+     *
+     * @return Proformas
+     */
+    public function setIdAlmacen($idAlmacen)
+    {
+        $this->idAlmacen = $idAlmacen;
+
+        return $this;
+    }
+
+    /**
+     * Get idalmacen
+     *
+     * @return string
+     */
+    public function getIdAlmacen()
+    {
+        return $this->idAlmacen;
+    }
 }
-

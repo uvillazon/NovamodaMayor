@@ -15,6 +15,13 @@
     labelWidth: 110,
     initComponent: function () {
         var me = this;
+        if (me.textoTpl != null) {
+            me.listConfig = {
+                loadingText: me.textoResultado,
+                emptyText: me.textoVacio,
+                getInnerTpl: me.textoTpl
+            };
+        }
         me.on('assertValue', function () {
             var me = this;
             if (!me.forceSelection) {

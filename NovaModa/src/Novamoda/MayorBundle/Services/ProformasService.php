@@ -50,14 +50,33 @@ class ProformasService
         return $result;
     }
 
+    public function obtenerProformaPorId($id){
+        $result = new \Novamoda\MayorBundle\Model\RespuestaSP();
+        $repo = $this->em->getRepository('NovamodaMayorBundle:Proformas');
+        $proforma = $repo->find($id);
+        if(is_null($proforma)){
+            $result->success = false;
+            $result->msg="No existe el registro";
+        }
+        else{
+            $result->success = true;
+            $result->msg="Proceso Ejecutado Correctamente";
+            $proforma->cargarFecha();
+            $result->data = $proforma;
+        }
+        return $result;
+
+    }
+
     public function guardarProforma($archivo, $data)
     {
 
+//        var_dump($data);die();
         $result = new \Novamoda\MayorBundle\Model\RespuestaSP();
         try {
             $repo = $this->em->getRepository('NovamodaMayorBundle:Proformas');
             $repoDet = $this->em->getRepository('NovamodaMayorBundle:DetallesProforma');
-            $idProforma = $repo->guardarProforma($data);
+            $idProforma = $repo->guardarProforma($data,$archivo[0]);
             if (is_numeric($idProforma)) {
                 $file = new \SplFileObject($archivo[0]["url_archivo"]);
                 $reader = new CsvReader($file, ";");
@@ -73,6 +92,7 @@ class ProformasService
                 $this->em->flush();
                 $result->msg = "proceso Ejecutado Correctamente";
                 $result->success = true;
+                $result->id = $idProforma;
 
 
             } else {

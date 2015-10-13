@@ -2,3 +2,13 @@ proformas:
     type:     rest
     prefix:   /proformas
     resource: Novamoda\MayorBundle\Controller\ProformasController
+
+almacenes:
+    type:     rest
+    prefix:   /almacenes
+    resource: Novamoda\MayorBundle\Controller\AlmacenesController
+
+marcas:
+    type:     rest
+    prefix:   /marcas
+    resource: Novamoda\MayorBundle\Controller\MarcasController

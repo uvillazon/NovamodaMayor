@@ -18,6 +18,7 @@ Ext.define("App.View.Proformas.Proformas", {
 
         me.grid = Ext.create('App.View.Proformas.GridProformas', {
             width: '100%',
+            itemId : 'gridPrincipalProforma',
             region: 'center',
             borrarParametros: true,
             fbarmenu: me.toolbar,

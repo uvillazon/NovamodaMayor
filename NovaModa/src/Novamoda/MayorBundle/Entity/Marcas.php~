@@ -1,0 +1,166 @@
+<?php
+
+namespace Novamoda\MayorBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Marcas
+ *
+ * @ORM\Table(name="marcas", uniqueConstraints={@ORM\UniqueConstraint(name="codigobarra", columns={"codigobarra"})}, indexes={@ORM\Index(name="fk_2", columns={"idproveedor"})})
+ * @ORM\Entity
+ */
+class Marcas
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idmarca", type="string", length=20, nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $idmarca;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idproveedor", type="string", length=20, nullable=true)
+     */
+    private $idproveedor;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="codigo", type="string", length=50, nullable=true)
+     */
+    private $codigo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="codigobarra", type="string", length=50, nullable=true)
+     */
+    private $codigobarra;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nombre", type="string", length=50, nullable=true)
+     */
+    private $nombre;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="imagen", type="string", length=500, nullable=true)
+     */
+    private $imagen;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="numero", type="integer", nullable=true)
+     */
+    private $numero;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idalmacen", type="string", length=20, nullable=true)
+     */
+    private $idalmacen;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="pedido", type="string", length=50, nullable=true)
+     */
+    private $pedido;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="origen", type="string", length=50, nullable=true)
+     */
+    private $origen;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="talla", type="string", length=20, nullable=true)
+     */
+    private $talla;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="opcion", type="integer", nullable=true)
+     */
+    private $opcion;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="opcionb", type="integer", nullable=false)
+     */
+    private $opcionb;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="tipo", type="string", length=10, nullable=false)
+     */
+    private $tipo = 'pedido';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="categoria", type="string", length=20, nullable=false)
+     */
+    private $categoria;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idgrupo", type="string", length=3, nullable=false)
+     */
+    private $idgrupo;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="numeroorden", type="integer", nullable=false)
+     */
+    private $numeroorden = '0';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="opcioncategoria", type="integer", nullable=false)
+     */
+    private $opcioncategoria = '0';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="estado", type="string", length=10, nullable=false)
+     */
+    private $estado = 'activo';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="formatomayor", type="integer", nullable=false)
+     */
+    private $formatomayor = '0';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="encargado", type="string", length=20, nullable=false)
+     */
+    private $encargado = '-';
+
+
+}
+
