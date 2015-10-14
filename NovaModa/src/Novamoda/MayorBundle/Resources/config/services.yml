@@ -14,3 +14,13 @@ services:
     mayorbundle.almacen_service:
         class: Novamoda\MayorBundle\Services\AlmacenesService
         arguments: ["@doctrine.orm.entity_manager"]
+
+#    servicios para proformas
+    mayorbundle.empleados_service:
+        class: Novamoda\MayorBundle\Services\EmpleadosService
+        arguments: ["@doctrine.orm.entity_manager"]
+
+#    servicios para proformas
+    mayorbundle.clientes_service:
+        class: Novamoda\MayorBundle\Services\ClientesService
+        arguments: ["@doctrine.orm.entity_manager"]

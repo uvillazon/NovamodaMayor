@@ -15,38 +15,44 @@ Ext.define("App.View.Proformas.FormAsignarCliente", {
     cargarComponentes: function () {
         var me = this;
 
-        me.store_marca = Ext.create("App.Store.Proformas.Marcas");
-        me.cbx_marca = Ext.create("App.Config.Componente.ComboBase", {
+        me.store_clientes = Ext.create("App.Store.Proformas.Clientes");
+        me.cbx_cliente = Ext.create("App.Config.Componente.ComboAutoBase", {
             fieldLabel: 'Cliente',
             displayField: 'nombre',
-            valueField: 'nombre',
-            name: 'marca',
+            valueField: 'codigo',
+            name: 'cliente',
             colspan: 2,
             width: 480,
             afterLabelTextTpl: Constantes.REQUERIDO,
             allowBlank: false,
-            store: me.store_marca
+            store: me.store_clientes,
+            textoTpl: function () {
+                return "{codigo} - {nombre} {apellido}"
+            },
         });
         //App.Store.Proformas.Almacenes
-        me.store_almacen = Ext.create("App.Store.Proformas.Almacenes");
-        me.cbx_almacen = Ext.create("App.Config.Componente.ComboBase", {
+        me.store_vendedor = Ext.create("App.Store.Proformas.Empleados");
+        me.cbx_vendedor = Ext.create("App.Config.Componente.ComboAutoBase", {
             fieldLabel: 'Vendedor',
-            displayField: 'nombre',
-            valueField: 'nombre',
-            name: 'almacen',
+            displayField: 'nombres',
+            valueField: 'codigo',
+            name: 'vendedor',
             colspan: 2,
             width: 480,
             afterLabelTextTpl: Constantes.REQUERIDO,
             allowBlank: false,
-            store: me.store_almacen.load()
+            store: me.store_vendedor,
+            textoTpl: function () {
+                return "{codigo} - {nombres} {apellidos}"
+            },
         });
 
 
 
         me.items = [
 
-            me.cbx_marca,
-            me.cbx_almacen,
+            me.cbx_cliente,
+            me.cbx_vendedor,
 
         ];
     }

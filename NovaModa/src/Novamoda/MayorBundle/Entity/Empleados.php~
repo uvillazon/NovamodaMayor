@@ -1,0 +1,145 @@
+<?php
+
+namespace Novamoda\MayorBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Empleados
+ *
+ * @ORM\Table(name="empleados", uniqueConstraints={@ORM\UniqueConstraint(name="codigo", columns={"codigo"})}, indexes={@ORM\Index(name="tipoempleado", columns={"idtipoempleado"}), @ORM\Index(name="idciudad", columns={"idciudad"})})
+ * @ORM\Entity
+ */
+class Empleados
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idempleado", type="string", length=20, nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $idempleado;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="codigo", type="string", length=20, nullable=true)
+     */
+    private $codigo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nombres", type="string", length=50, nullable=true)
+     */
+    private $nombres;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="apellidos", type="string", length=30, nullable=true)
+     */
+    private $apellidos;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="telefeno", type="string", length=20, nullable=true)
+     */
+    private $telefeno;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="celular", type="string", length=20, nullable=true)
+     */
+    private $celular;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="direccion", type="string", length=50, nullable=true)
+     */
+    private $direccion;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idtipoempleado", type="string", length=20, nullable=true)
+     */
+    private $idtipoempleado;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="estado", type="string", length=20, nullable=true)
+     */
+    private $estado;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="numero", type="integer", nullable=true)
+     */
+    private $numero;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="observacion", type="string", length=100, nullable=true)
+     */
+    private $observacion;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=50, nullable=true)
+     */
+    private $email;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idtienda", type="string", length=20, nullable=true)
+     */
+    private $idtienda;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idalmacen", type="string", length=20, nullable=true)
+     */
+    private $idalmacen;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idciudad", type="string", length=20, nullable=true)
+     */
+    private $idciudad;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fechainicio", type="date", nullable=true)
+     */
+    private $fechainicio;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fechabaja", type="date", nullable=true)
+     */
+    private $fechabaja;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="turno", type="string", length=10, nullable=false)
+     */
+    private $turno = 'todo';
+
+
+}
+

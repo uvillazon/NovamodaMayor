@@ -19,7 +19,9 @@ use Novamoda\MayorBundle\Entity\Repository\BaseRepository;
  */
 class DetallesProformaRepository extends BaseRepository
 {
-    private $nombresModelos = array("MODELO" => "modelo", "MATERIAL" => "material", "COLOR" => "color", "ITEM" => "item", "VENDEDOR" => "vendedor", "CJS" => "cajas", "PRECIO VENTA" => "precio_venta", "UNITARIO" => "precio_unitario","TOTAL"=>"total","PARES"=>"pares","ESTADO"=>"estado");
+    private $nombresModelos = array("CJS" => "CAJAS", "PRECIO VENTA" => "PRECIO_VENTA", "UNITARIO" => "PRECIO_UNITARIO");
+    private $nombreKey = array("CAJAS" => "CJS", "PRECIO_VENTA" => "PRECIO VENTA", "PRECIO_UNITARIO" => "UNITARIO");
+    private $tallas = array("33","34","35","36","37","38","39","40","41","42","43");
 
     public function guardarDetalle($data, $proforma)
     {
@@ -55,7 +57,7 @@ class DetallesProformaRepository extends BaseRepository
                 ->setParameters(array("idProforma" => $idProforma, "fila" => $cnt));
             $row = array();
             $pos = 0;
-            $row["fila"]=$cnt;
+            $row["fila"] = $cnt;
             foreach ($query->getQuery()->getResult() as $detalle) {
                 /**
                  * @var DetallesProforma $detalle
@@ -88,7 +90,60 @@ class DetallesProformaRepository extends BaseRepository
         }
     }
 
-    public function obtenerDetallesTallasPorProforma($idProforma , $fila){
+    public function actualizarDetalle($data)
+    {
+        if (array_key_exists($data["columna"], $this->nombreKey)) {
+            $columna = $this->nombreKey[$data["columna"]];
+        } else {
+            $columna = $data["columna"];
+        }
+        $row = $this->obtenerColumnaPorEncabezado($data["id_proforma"], $columna);
+
+        $detalle = $this->findOneBy(array("idProforma"=>$data["id_proforma"] , "columna"=> $row , "fila"=>$data["fila"]));
+        /**
+         * @var DetallesProforma $detalle
+         */
+        if(!is_null($detalle)){
+            $detalle->setValor($data["valor"]);
+            $this->_em->persist($detalle);
+            $this->_em->flush();
+            return $detalle->getIdDetalle();
+        }
+        else{
+            return "Ocurrio algun Problema";
+        }
 
     }
+
+    public function obtenerColumnaPorEncabezado($idProforma, $cabecera)
+    {
+        $columna = 0;
+        $result = $this->findOneBy(array("fila" => 0, "idProforma" => $idProforma, "valor" => $cabecera));
+        if (!is_null($result)) {
+            $columna = $result->getColumna();
+        }
+        return $columna;
+    }
+
+    public function esTalla($columna,$idProforma){
+        $result = array();
+        $detalle = $this->findOneBy(array("fila" => 0, "idProforma" => $idProforma, "columna" => $columna));
+        if (!is_null($detalle)) {
+            $valor = $detalle->getValor();
+            if(in_array($valor,$this->tallas)){
+                $result["talla"] = $valor;
+                $result["columna"] = $columna;
+            }
+        }
+        return $result;
+    }
+//    public function esValido($idProforma , $fila){
+//        $result = false;
+//        $detalle = $this->findOneBy(array("fila" => $fila, "idProforma" => $idProforma, "columna" => $columna));
+//    }
+
+//    public function obtenerDetallesTallasPorProforma($idProforma, $fila)
+//    {
+//
+//    }
 }

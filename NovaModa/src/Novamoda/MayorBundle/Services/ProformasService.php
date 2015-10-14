@@ -19,6 +19,7 @@ class ProformasService
 {
     protected $em;
 
+
     public function __construct(\Doctrine\ORM\EntityManager $em)
     {
 
@@ -50,17 +51,17 @@ class ProformasService
         return $result;
     }
 
-    public function obtenerProformaPorId($id){
+    public function obtenerProformaPorId($id)
+    {
         $result = new \Novamoda\MayorBundle\Model\RespuestaSP();
         $repo = $this->em->getRepository('NovamodaMayorBundle:Proformas');
         $proforma = $repo->find($id);
-        if(is_null($proforma)){
+        if (is_null($proforma)) {
             $result->success = false;
-            $result->msg="No existe el registro";
-        }
-        else{
+            $result->msg = "No existe el registro";
+        } else {
             $result->success = true;
-            $result->msg="Proceso Ejecutado Correctamente";
+            $result->msg = "Proceso Ejecutado Correctamente";
             $proforma->cargarFecha();
             $result->data = $proforma;
         }
@@ -76,7 +77,7 @@ class ProformasService
         try {
             $repo = $this->em->getRepository('NovamodaMayorBundle:Proformas');
             $repoDet = $this->em->getRepository('NovamodaMayorBundle:DetallesProforma');
-            $idProforma = $repo->guardarProforma($data,$archivo[0]);
+            $idProforma = $repo->guardarProforma($data, $archivo[0]);
             if (is_numeric($idProforma)) {
                 $file = new \SplFileObject($archivo[0]["url_archivo"]);
                 $reader = new CsvReader($file, ";");
@@ -84,9 +85,10 @@ class ProformasService
 
                 foreach ($reader as $key => $value) {
                     foreach ($value as $key1 => $value1) {
-                        $repoDet->guardarDetalle(array("columna" => $key1, "fila" => $key, "valor" => $value1, "id_proforma" => $idProforma),$proforma);
+                        $repoDet->guardarDetalle(array("columna" => $key1, "fila" => $key, "valor" => $value1, "id_proforma" => $idProforma), $proforma);
 //                        var_dump($res);
                     }
+                    $repoDet->guardarDetalle(array("columna" => $key1 + 1, "fila" => $key, "valor" => $key == 0 ? "CLIENTE" : "", "id_proforma" => $idProforma), $proforma);
 
                 }
                 $this->em->flush();
@@ -106,7 +108,8 @@ class ProformasService
         return $result;
     }
 
-    public function obtenerModelos($idProforma){
+    public function obtenerModelos($idProforma)
+    {
         $result = new \Novamoda\MayorBundle\Model\ResultPaginacion();
         $repo = $this->em->getRepository('NovamodaMayorBundle:DetallesProforma');
 
@@ -116,14 +119,72 @@ class ProformasService
         $result->total = count($rows);
         return $result;
     }
-    public function obtenerTallas($idProforma , $fila){
+
+    public function obtenerTallas($idProforma, $fila)
+    {
         $result = new \Novamoda\MayorBundle\Model\ResultPaginacion();
         $repo = $this->em->getRepository('NovamodaMayorBundle:DetallesProforma');
 
-        $rows = $repo->obtenerDetallesTallasPorProforma($idProforma,$fila);
+        $rows = $repo->obtenerDetallesTallasPorProforma($idProforma, $fila);
         $result->rows = $rows;
         $result->success = true;
         $result->total = count($rows);
+        return $result;
+    }
+
+    public function actualizarDetalle($data)
+    {
+        $result = new \Novamoda\MayorBundle\Model\RespuestaSP();
+        $repoDet = $this->em->getRepository('NovamodaMayorBundle:DetallesProforma');
+        $res = $repoDet->actualizarDetalle($data);
+        if (is_numeric($res)) {
+            $result->success = true;
+            $result->msg = "proceso Ejectuado Correctamente";
+        } else {
+            $result->success = false;
+        }
+        return $result;
+
+    }
+
+    public function obtenerDetallesCaja($idProforma, $fila)
+    {
+        $result = new \Novamoda\MayorBundle\Model\ResultPaginacion();
+        $repoDet = $this->em->getRepository('NovamodaMayorBundle:DetallesProforma');
+        $detalles = $repoDet->findBy(array("idProforma" => $idProforma, "fila" => $fila));
+        $rows = array();
+        foreach ($detalles as $detalle) {
+
+            /**
+             * @var DetallesProforma $detalle
+             */
+//            var_dump($detalle->getValor());
+            $talla = $repoDet->esTalla($detalle->getColumna(), $idProforma);
+            if (count($talla) > 0) {
+                if($detalle->getValor()> 0){
+                    $cnt = 0;
+//                    var_dump($talla);
+                    while($cnt<$detalle->getValor()) {
+
+                        $row = array();
+                        $row["cantidad"] = 1;
+                        $row["talla"] = $talla["talla"];
+                        $row["codigobarra"] = null;
+//                        var_dump($row);
+                        array_push($rows, $row);
+                        $cnt++;
+                    }
+                }
+
+
+            }
+
+        }
+        $result->rows = $rows;
+        $result->total = count($rows);
+
+//        var_dump($idProforma);
+//        var_dump($fila);
         return $result;
     }
 

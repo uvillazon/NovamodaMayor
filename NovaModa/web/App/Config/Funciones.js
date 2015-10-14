@@ -631,6 +631,20 @@ Ext.define("App.Config.Funciones", {
         }
 
     },
+    convertirJsonRecord : function(records){
+        var modified = records
+        var recordsToSend = [];
+        if (!Ext.isEmpty(modified)) {
+            Ext.each(modified, function (record) { //step 2
+                recordsToSend.push(Ext.apply(record.data));
+            });
+            recordsToSend = Ext.JSON.encode(recordsToSend);
+            return recordsToSend;
+        }
+        else {
+            return false;
+        }
+    },
     //obtener un componente de un formulario 
     cargarValorComponeteForm: function (form, cmp) {
         var els = form.query('.field');

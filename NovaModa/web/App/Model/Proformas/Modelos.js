@@ -4,14 +4,15 @@
 Ext.define('App.Model.Proformas.Modelos', {
     extend: 'Ext.data.Model',
     fields: [
-        {type: "string", name: "modelo"},
-        {type: "string", name: "material"},
-        {type: "string", name: "color"},
-        {type: "string", name: "item"},
-        {type: "string", name: "vendedor"},
-        {type: "float", name: "cajas"},
-        {type: "float", name: "precio_venta"},
-        {type: "float", name: "precio_unitario"},
+        {type: "string", name: "MODELO"},
+        {type: "string", name: "MATERIAL"},
+        {type: "string", name: "COLOR"},
+        {type: "string", name: "ITEM"},
+        {type: "string", name: "VENDEDOR"},
+        {type: "string", name: "CLIENTE"},
+        {type: "float", name: "CAJAS"},
+        {type: "float", name: "PRECIO_VENTA"},
+        {type: "float", name: "PRECIO_UNITARIO"},
         {type: "float", name: "33"},
         {type: "float", name: "34"},
         {type: "float", name: "35"},
@@ -22,9 +23,10 @@ Ext.define('App.Model.Proformas.Modelos', {
         {type: "float", name: "40"},
         {type: "float", name: "41"},
         {type: "float", name: "42"},
-        {type: "float", name: "pares"},
-        {type: "float", name: "total"},
-        {type: "string", name: "estado"},
+        {type: "float", name: "PARES"},
+        {type: "float", name: "TOTAL"},
+        {type: "string", name: "ESTADO"},
+        {type: "float", name: "fila"}
 
 
     ]

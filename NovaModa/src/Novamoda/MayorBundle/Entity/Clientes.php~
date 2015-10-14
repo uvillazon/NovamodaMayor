@@ -1,0 +1,131 @@
+<?php
+
+namespace Novamoda\MayorBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Clientes
+ *
+ * @ORM\Table(name="clientes")
+ * @ORM\Entity
+ */
+class Clientes
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idcliente", type="string", length=11, nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $idcliente;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="codigo", type="string", length=15, nullable=true)
+     */
+    private $codigo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="apellido", type="string", length=50, nullable=true)
+     */
+    private $apellido;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nombre", type="string", length=50, nullable=true)
+     */
+    private $nombre;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nit", type="string", length=10, nullable=true)
+     */
+    private $nit;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="direccion", type="string", length=40, nullable=false)
+     */
+    private $direccion;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="telefono", type="integer", nullable=false)
+     */
+    private $telefono;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="mail", type="string", length=20, nullable=false)
+     */
+    private $mail;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="referencia", type="string", length=30, nullable=false)
+     */
+    private $referencia;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item", type="string", length=10, nullable=true)
+     */
+    private $item;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idalmacen", type="string", length=6, nullable=true)
+     */
+    private $idalmacen;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="estado", type="string", length=20, nullable=false)
+     */
+    private $estado = 'ACTIVO';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="numero", type="integer", nullable=false)
+     */
+    private $numero;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="saldoactual", type="decimal", precision=7, scale=2, nullable=false)
+     */
+    private $saldoactual;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="idciudad", type="string", length=10, nullable=false)
+     */
+    private $idciudad = 'ciu-1000';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="tipocliente", type="string", length=30, nullable=false)
+     */
+    private $tipocliente = 'cliente';
+
+
+}
+

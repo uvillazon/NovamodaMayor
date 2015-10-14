@@ -9,7 +9,7 @@ Ext.define("App.View.Proformas.GridRegistroCodigoBarra", {
     //parametros obligados para mostrar reporte de historico de estados por tabla
     initComponent: function () {
         var me = this;
-        me.selType = 'cellmodel';
+        me.selType = 'rowmodel';
         me.plugins = [
             Ext.create('Ext.grid.plugin.CellEditing', {
                 clicksToEdit: 1
@@ -21,10 +21,11 @@ Ext.define("App.View.Proformas.GridRegistroCodigoBarra", {
     },
     cargarComponentes: function () {
         var me = this;
-        me.store = Ext.create("App.Store.Proformas.Modelos");
+        me.store = Ext.create("App.Store.Proformas.CodigosBarra");
         me.columns = [
             {xtype: "rownumberer", width: 30, sortable: false},
-            {header: "Talla", width: 90, sortable: true, dataIndex: "talla"},
+            {header: "Cant", width: 50, sortable: true, dataIndex: "cantidad"},
+            {header: "Talla", width: 50, sortable: true, dataIndex: "talla"},
             {
                 header: "Codigo <br>Barra", width: 200, sortable: true, dataIndex: "codigo_barra", editor: {
                 xtype: 'numberfield'

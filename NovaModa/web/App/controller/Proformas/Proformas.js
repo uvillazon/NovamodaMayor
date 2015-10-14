@@ -3,6 +3,7 @@
  */
 Ext.define('App.controller.Proformas.Proformas', {
     extend: "Ext.app.Controller",
+    idProforma : 0,
     refs: [{
         ref: 'gridModelo',
         selector: '#grid_modelos'
@@ -58,9 +59,12 @@ Ext.define('App.controller.Proformas.Proformas', {
     },
     winRegistrarCodigoBarra: function (record) {
         var me = this;
+        //console.dir(record);
         var win = Ext.create("App.Config.Abstract.Window", {botones: true, destruirWin: true});
-        var form = Ext.create("App.View.Proformas.GridRegistroCodigoBarra", {botones: false});
-        win.add(form);
+        var grid = Ext.create("App.View.Proformas.GridRegistroCodigoBarra", {botones: false});
+        grid.getStore().setExtraParams({fila : record[0].get('fila') , id_proforma : me.idProforma});
+        grid.getStore().load();
+        win.add(grid);
         win.show();
 
 
@@ -84,6 +88,9 @@ Ext.define('App.controller.Proformas.Proformas', {
         var form = Ext.create("App.View.Proformas.FormAsignarCliente", {botones: false});
         win.add(form);
         win.show();
+        win.btn_guardar.on('click' ,function () {
+            Funciones.AjaxRequestWin("proformas", "asignars", win, form, me.getGridModelo(), null, {detalles : Funciones.convertirJsonRecord(records) , id_proforma : me.idProforma}, win)
+        });
     }
     ,
     winCrearProformaCabecera: function () {
@@ -128,9 +135,11 @@ Ext.define('App.controller.Proformas.Proformas', {
         var form = Ext.create("App.View.Proformas.FormEditarProforma", {botones: false});
         if (btn != null) {
             form.cargarDatos(me.getGrid().record.get('id_proforma'));
+            me.idProforma = me.getGrid().record.get('id_proforma');
         }
         else {
             form.cargarDatos(id);
+            me.idProforma = id;
         }
 
         win.add(form);

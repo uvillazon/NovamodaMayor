@@ -12,3 +12,13 @@ marcas:
     type:     rest
     prefix:   /marcas
     resource: Novamoda\MayorBundle\Controller\MarcasController
+
+empleados:
+    type:     rest
+    prefix:   /empleados
+    resource: Novamoda\MayorBundle\Controller\EmpleadosController
+
+clientes:
+    type:     rest
+    prefix:   /clientes
+    resource: Novamoda\MayorBundle\Controller\ClientesController

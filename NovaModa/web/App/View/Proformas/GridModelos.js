@@ -11,8 +11,8 @@ Ext.define("App.View.Proformas.GridModelos", {
     noLimpiar: null,
     opcion: 'gridMoleca',
     width: 800,
-    height : 450,
-    tituloImpresion : 'MOLECA',
+    height: 450,
+    tituloImpresion: 'MOLECA',
     //parametros obligados para mostrar reporte de historico de estados por tabla
     initComponent: function () {
         var me = this;
@@ -38,13 +38,17 @@ Ext.define("App.View.Proformas.GridModelos", {
         this.callParent(arguments);
 
     },
-    cargarComponentes : function(){
+    cargarComponentes: function () {
         var me = this;
-        me.txt_busqueda = Ext.create("App.Config.Componente.TextFieldBase", { fieldLabel: "Buscar", width: 240, labelWidth:90 })
+        me.txt_busqueda = Ext.create("App.Config.Componente.TextFieldBase", {
+            fieldLabel: "Buscar",
+            width: 240,
+            labelWidth: 90
+        })
         me.button = Ext.create('Ext.Button', {
             pressed: true,
             text: 'Buscar',
-            itemId : 'btn_buscar_modelo',
+            itemId: 'btn_buscar_modelo',
             hidden: me.busqueda,
             iconCls: 'zoom',
             tooltip: 'Buscar por Nombre',
@@ -108,7 +112,7 @@ Ext.define("App.View.Proformas.GridModelos", {
         store2.on('beforeload', function (s, a, c) {
             me.getEl().mask();
         });
-        store2.load({ limit: me.store.getTotalCount(), start: 0, page: 1 });
+        store2.load({limit: me.store.getTotalCount(), start: 0, page: 1});
         var me = this;
         store2.on('load', function (store, records, options) {
             me.getEl().unmask();
@@ -125,42 +129,43 @@ Ext.define("App.View.Proformas.GridModelos", {
         me.columns = [
             {xtype: "rownumberer", width: 30, sortable: false},
             {
-                header: "Modelo", width: 90, sortable: true, dataIndex: "modelo", editor: {
+                header: "Modelo", width: 90, sortable: true, dataIndex: "MODELO", editor: {
                 xtype: 'textfield'
             }
             },
             {
-                header: "Material", width: 90, sortable: true, dataIndex: "material", editor: {
+                header: "Material", width: 90, sortable: true, dataIndex: "MATERIAL", editor: {
                 xtype: 'textfield'
             }
             },
             {
-                header: "Color", width: 90, sortable: true, dataIndex: "color", editor: {
+                header: "Color", width: 90, sortable: true, dataIndex: "COLOR", editor: {
                 xtype: 'textfield'
             }
             },
             {
-                header: "Item", width: 90, sortable: true, dataIndex: "item", editor: {
+                header: "Item", width: 90, sortable: true, dataIndex: "ITEM", editor: {
                 xtype: 'textfield'
             }
             },
             {
-                header: "Vendedor", width: 90, sortable: true, dataIndex: "vendedor", editor: {
-                xtype: 'textfield'
-            }
+                header: "Vendedor", width: 90, sortable: true, dataIndex: "VENDEDOR"
             },
             {
-                header: "Cjs", width: 90, sortable: true, dataIndex: "cajas", editor: {
+                header: "Cliente", width: 90, sortable: true, dataIndex: "CLIENTE"
+            },
+            {
+                header: "Cjs", width: 90, sortable: true, dataIndex: "CAJAS", editor: {
                 xtype: 'numberfield'
             }
             },
             {
-                header: "Precio Venta", width: 90, sortable: true, dataIndex: "precio_venta", editor: {
+                header: "Precio Venta", width: 90, sortable: true, dataIndex: "PRECIO_VENTA", editor: {
                 xtype: 'numberfield'
             }
             },
             {
-                header: "Precio Unitario", width: 90, sortable: true, dataIndex: "precio_unitario", editor: {
+                header: "Precio Unitario", width: 90, sortable: true, dataIndex: "PRECIO_UNITARIO", editor: {
                 xtype: 'numberfield'
             }
             },
@@ -215,16 +220,16 @@ Ext.define("App.View.Proformas.GridModelos", {
             }
             },
             {
-                header: "Pares", width: 50, sortable: false, dataIndex: "pares", editor: {
+                header: "Pares", width: 50, sortable: false, dataIndex: "PARES", editor: {
                 xtype: 'numberfield'
             }
             },
             {
-                header: "$us", width: 60, sortable: false, dataIndex: "total", editor: {
+                header: "$us", width: 60, sortable: false, dataIndex: "TOTAL", editor: {
                 xtype: 'numberfield'
             }
             },
-            {header: "Estado", width: 90, sortable: true, dataIndex: "estado"}
+            {header: "Estado", width: 90, sortable: true, dataIndex: "ESTADO"}
         ];
     }
 
