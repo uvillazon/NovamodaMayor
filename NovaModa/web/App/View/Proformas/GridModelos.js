@@ -29,6 +29,16 @@ Ext.define("App.View.Proformas.GridModelos", {
 
         });
         me.selModel = sm;
+        me.viewConfig = {
+            getRowClass: function (record, rowIndex, rowParams, store) {
+                if (record.get("ESTADO") == 1) {
+                    return "CVerde"
+                }
+                else {
+                    return null
+                }
+            }
+        };
         me.cargarComponentes();
         switch (me.opcion) {
             case "gridMoleca" :

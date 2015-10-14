@@ -27,7 +27,7 @@ Ext.define("App.View.Proformas.GridRegistroCodigoBarra", {
             {header: "Cant", width: 50, sortable: true, dataIndex: "cantidad"},
             {header: "Talla", width: 50, sortable: true, dataIndex: "talla"},
             {
-                header: "Codigo <br>Barra", width: 200, sortable: true, dataIndex: "codigo_barra", editor: {
+                header: "Codigo <br>Barra", width: 200, sortable: true, dataIndex: "codigobarra", editor: {
                 xtype: 'numberfield'
             }
             },

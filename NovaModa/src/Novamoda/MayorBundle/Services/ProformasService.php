@@ -188,4 +188,22 @@ class ProformasService
         return $result;
     }
 
+    public function guardarCodigosBarra($idProforma,$fila,$detalles){
+        $result = new \Novamoda\MayorBundle\Model\RespuestaSP();
+        $repoDet = $this->em->getRepository('NovamodaMayorBundle:ProformaCodbarras');
+        $res = $repoDet->guardarDetallesCodBarra($idProforma,$fila,$detalles);
+        if(is_numeric($res)){
+            $this->actualizarDetalle(array("columna" => "ESTADO", "fila" => $fila, "valor" => "1", "id_proforma" => $idProforma));
+            $result->success = true;
+            $result->msg = "Proceso Ejectuado Correctamente";
+        }
+        else{
+            $result->success = false;
+            $result->msg = $res;
+        }
+
+//        guardarDetallesCodBarra
+       return $result;
+    }
+
 }

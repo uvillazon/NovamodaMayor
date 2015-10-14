@@ -938,3 +938,9 @@ body .ux-notification-light {
     color:#FF8000;
      font-weight: bold;
 }
+
+.CVerde .x-grid-cell {
+    background-color: #C6EFCE !important;
+    color: #000000;
+    /*font-weight: bold;*/
+}

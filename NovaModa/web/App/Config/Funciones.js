@@ -631,6 +631,21 @@ Ext.define("App.Config.Funciones", {
         }
 
     },
+    convertirJsonGrid: function (grid) {
+        var modified = grid.getStore().getModifiedRecords(); //step 1
+        var recordsToSend = [];
+        if (!Ext.isEmpty(modified)) {
+            Ext.each(modified, function (record) { //step 2
+                recordsToSend.push(Ext.apply(record.data));
+            });
+            recordsToSend = Ext.JSON.encode(recordsToSend);
+            return recordsToSend;
+        }
+        else {
+            return false;
+        }
+
+    },
     convertirJsonRecord : function(records){
         var modified = records
         var recordsToSend = [];

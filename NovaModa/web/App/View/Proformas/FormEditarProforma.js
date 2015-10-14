@@ -44,7 +44,15 @@ Ext.define("App.View.Proformas.FormEditarProforma", {
                 });
             }
         });
-    },
+        me.grid.on('beforeedit', function (editor, e) {
+
+            console.dir(e);
+            if (e.record.get('ESTADO') === '1') {
+                return false;
+            }
+        });
+    }
+    ,
     cargarTotales: function (str) {
         var me = this;
         var total = 0;
@@ -60,7 +68,8 @@ Ext.define("App.View.Proformas.FormEditarProforma", {
         me.num_total.setValue(total);
         me.num_total_pares.setValue(totalpares);
 
-    },
+    }
+    ,
     cargarComponentes: function () {
         var me = this;
         me.hid_id = Ext.widget('hiddenfield', {
@@ -165,7 +174,8 @@ Ext.define("App.View.Proformas.FormEditarProforma", {
             me.num_total_cajas, me.num_total_pares, me.num_total,
             cmpButton
         ];
-    },
+    }
+    ,
     cargarDatos: function (id) {
         var me = this;
         me.idProforma = id;

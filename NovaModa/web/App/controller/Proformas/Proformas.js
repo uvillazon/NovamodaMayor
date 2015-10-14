@@ -3,7 +3,7 @@
  */
 Ext.define('App.controller.Proformas.Proformas', {
     extend: "Ext.app.Controller",
-    idProforma : 0,
+    idProforma: 0,
     refs: [{
         ref: 'gridModelo',
         selector: '#grid_modelos'
@@ -60,12 +60,29 @@ Ext.define('App.controller.Proformas.Proformas', {
     winRegistrarCodigoBarra: function (record) {
         var me = this;
         //console.dir(record);
-        var win = Ext.create("App.Config.Abstract.Window", {botones: true, destruirWin: true});
-        var grid = Ext.create("App.View.Proformas.GridRegistroCodigoBarra", {botones: false});
-        grid.getStore().setExtraParams({fila : record[0].get('fila') , id_proforma : me.idProforma});
-        grid.getStore().load();
-        win.add(grid);
-        win.show();
+        if (record[0].get('ESTADO') === '0') {
+            var win = Ext.create("App.Config.Abstract.Window", {botones: true, destruirWin: true});
+            var grid = Ext.create("App.View.Proformas.GridRegistroCodigoBarra", {botones: false});
+            grid.getStore().setExtraParams({fila: record[0].get('fila'), id_proforma: me.idProforma});
+            grid.getStore().load();
+            win.add(grid);
+            win.btn_guardar.on('click', function () {
+                var recordsToSend = [];
+                grid.getStore().each(function (record) {
+                    recordsToSend.push(Ext.apply(record.data));
+                });
+                recordsToSend = Ext.JSON.encode(recordsToSend);
+                Funciones.AjaxRequestGrid("proformas", "codigos", win, null, {
+                    fila: record[0].get('fila'),
+                    id_proforma: me.idProforma,
+                    detalles: recordsToSend
+                }, grid, win, true);
+            });
+            win.show();
+        }
+        else{
+            Ext.Msg.alert("Aviso","ya fue registrado los codigos de barra. Seleccione otro");
+        }
 
 
     },
@@ -88,8 +105,11 @@ Ext.define('App.controller.Proformas.Proformas', {
         var form = Ext.create("App.View.Proformas.FormAsignarCliente", {botones: false});
         win.add(form);
         win.show();
-        win.btn_guardar.on('click' ,function () {
-            Funciones.AjaxRequestWin("proformas", "asignars", win, form, me.getGridModelo(), null, {detalles : Funciones.convertirJsonRecord(records) , id_proforma : me.idProforma}, win)
+        win.btn_guardar.on('click', function () {
+            Funciones.AjaxRequestWin("proformas", "asignars", win, form, me.getGridModelo(), null, {
+                detalles: Funciones.convertirJsonRecord(records),
+                id_proforma: me.idProforma
+            }, win);
         });
     }
     ,
@@ -144,8 +164,7 @@ Ext.define('App.controller.Proformas.Proformas', {
 
         win.add(form);
         win.show();
-    }
-    ,
+    },
 
 //cargarEventos: function () {
 //    var me = this;
