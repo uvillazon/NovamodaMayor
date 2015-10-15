@@ -76,7 +76,7 @@ Ext.define('App.controller.Proformas.Proformas', {
                     fila: record[0].get('fila'),
                     id_proforma: me.idProforma,
                     detalles: recordsToSend
-                }, grid, win, true);
+                }, me.getGridModelo(), win, true);
             });
             win.show();
         }

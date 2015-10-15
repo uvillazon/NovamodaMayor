@@ -21,7 +21,7 @@ class DetallesProformaRepository extends BaseRepository
 {
     private $nombresModelos = array("CJS" => "CAJAS", "PRECIO VENTA" => "PRECIO_VENTA", "UNITARIO" => "PRECIO_UNITARIO");
     private $nombreKey = array("CAJAS" => "CJS", "PRECIO_VENTA" => "PRECIO VENTA", "PRECIO_UNITARIO" => "UNITARIO");
-    private $tallas = array("33","34","35","36","37","38","39","40","41","42","43");
+    private $tallas = array("33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43");
 
     public function guardarDetalle($data, $proforma)
     {
@@ -99,17 +99,16 @@ class DetallesProformaRepository extends BaseRepository
         }
         $row = $this->obtenerColumnaPorEncabezado($data["id_proforma"], $columna);
 
-        $detalle = $this->findOneBy(array("idProforma"=>$data["id_proforma"] , "columna"=> $row , "fila"=>$data["fila"]));
+        $detalle = $this->findOneBy(array("idProforma" => $data["id_proforma"], "columna" => $row, "fila" => $data["fila"]));
         /**
          * @var DetallesProforma $detalle
          */
-        if(!is_null($detalle)){
+        if (!is_null($detalle)) {
             $detalle->setValor($data["valor"]);
             $this->_em->persist($detalle);
             $this->_em->flush();
             return $detalle->getIdDetalle();
-        }
-        else{
+        } else {
             return "Ocurrio algun Problema";
         }
 
@@ -125,18 +124,46 @@ class DetallesProformaRepository extends BaseRepository
         return $columna;
     }
 
-    public function esTalla($columna,$idProforma){
+    public function obtenerValorPorEncabezado($idProforma, $fila, $cabecera)
+    {
+        $columna = $this->obtenerColumnaPorEncabezado($idProforma, $cabecera);
+        $result = "";
+        $valor = $this->findOneBy(array("fila" => $fila, "idProforma" => $idProforma, "columna" => $columna));
+        if (!is_null($valor)) {
+            $result = $valor->getValor();
+        }
+        return $result;
+    }
+
+    public function esTalla($columna, $idProforma)
+    {
         $result = array();
         $detalle = $this->findOneBy(array("fila" => 0, "idProforma" => $idProforma, "columna" => $columna));
         if (!is_null($detalle)) {
             $valor = $detalle->getValor();
-            if(in_array($valor,$this->tallas)){
+            if (in_array($valor, $this->tallas)) {
                 $result["talla"] = $valor;
                 $result["columna"] = $columna;
             }
         }
         return $result;
     }
+
+//    public function obtenerCliente($fila, $idProforma)
+//    {
+//        $result = "";
+//        $detalle = $this->findOneBy(array("fila" => 0, "idProforma" => $idProforma, "columna" => "CLIENTE"));
+//        if (!is_null($detalle)) {
+//
+//        }
+//
+//        return $result;
+//    }
+//
+//    public function obtenerVendedor($fila, $idProforma)
+//    {
+//
+//    }
 //    public function esValido($idProforma , $fila){
 //        $result = false;
 //        $detalle = $this->findOneBy(array("fila" => $fila, "idProforma" => $idProforma, "columna" => $columna));

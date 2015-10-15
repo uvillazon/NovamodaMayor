@@ -6,7 +6,9 @@
  * Time: 09:01
  */
 namespace Novamoda\MayorBundle\Entity\Repository;
+
 use Doctrine\ORM\EntityRepository;
+use Novamoda\MayorBundle\Entity\Modelo;
 use Novamoda\MayorBundle\Entity\Repository\BaseRepository;
 
 /**
@@ -17,6 +19,46 @@ use Novamoda\MayorBundle\Entity\Repository\BaseRepository;
  */
 class ModeloRepository extends BaseRepository
 {
+    public function guardarModelo($idProforma, $datos)
+    {
+        $result = new \Novamoda\MayorBundle\Model\RespuestaSP();
+        try {
+            $numero = $this->obtenerMaximo("numero") + 1;
+            $modelo = new Modelo();
+            $modelo->setIdmodelo("m-" . $numero);
+            $modelo->setNumero($numero);
+            $modelo->setIdmodelodetalle("mod-" . $numero);
+            $modelo->setIdingreso($idProforma);
+            $modelo->setBoleta("PROFORMA");
+            $modelo->setCliente($datos["cliente"]);
+            $modelo->setFechaingreso($datos["fechaIngreso"]);
+            $modelo->setIdmarca($datos["idmarca"]);
+            $modelo->setIdcliente($datos["idcliente"]);
+            $modelo->setIdvendedor($datos["idvendedor"]);
+            $modelo->setCodigo($datos["codigo"]);
+            $modelo->setIdcoleccion("col-37");
+            $modelo->setTalla(" ");
+            $modelo->setFecha(new \DateTime());
+            $modelo->setHora(new \DateTime());
+            $modelo->setColor($datos["color"]);
+            $modelo->setMaterial($datos["material"]);
+            $this->_em->persist($modelo);
+            $this->_em->flush();
+            $result->success = true;
+            $result->id = $modelo->getIdmodelo();
+
+        } catch (\Exception $e) {
+            $result->success = false;
+            $result->msg = $e->getMessage();
+
+        }
+        return $result;
+//        var_dump($datos);die();
+//
+//
+//        var_dump($numero);di/e();
+
+    }
 
 //    /**
 //     * @param $data

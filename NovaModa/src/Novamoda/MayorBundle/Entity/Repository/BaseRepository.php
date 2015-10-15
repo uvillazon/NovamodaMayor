@@ -88,6 +88,11 @@ class BaseRepository extends EntityRepository
 
     }
 
+    public function obtenerMaximo($valor){
+        $max = $this->createQueryBuilder("tab")->select('MAX(tab.'.$valor.')')->getQuery()->getSingleScalarResult();
+        return $max;
+    }
+
     /**
      * @param \Doctrine\ORM\Query|\Doctrine\ORM\QueryBuilder $query
      * @param \Novamoda\MayorBundle\Model\PaginacionModel $paginacion

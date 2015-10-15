@@ -3,6 +3,7 @@
 namespace Novamoda\MayorBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\Date;
 
 /**
  * Modelo
@@ -17,7 +18,6 @@ class Modelo
      *
      * @ORM\Column(name="idmodelo", type="string", length=20, nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $idmodelo = '';
 
@@ -96,7 +96,7 @@ class Modelo
      *
      * @ORM\Column(name="fecha", type="date", nullable=true)
      */
-    private $fecha;
+    private $fecha ;
 
     /**
      * @var \DateTime
@@ -145,7 +145,7 @@ class Modelo
      *
      * @ORM\Column(name="estado", type="string", length=8, nullable=false)
      */
-    private $estado = 'activo';
+    private $estado = 'Activo';
 
     /**
      * @var string
@@ -264,7 +264,7 @@ class Modelo
      *
      * @ORM\Column(name="tipocambio", type="decimal", precision=11, scale=2, nullable=false)
      */
-    private $tipocambio;
+    private $tipocambio = '0.00';
 
     /**
      * @var string
@@ -275,6 +275,19 @@ class Modelo
 
 
 
+    /**
+     * Set idmodelo
+     *
+     * @param string $idmodelo
+     *
+     * @return Modelo
+     */
+    public function setIdmodelo($idmodelo)
+    {
+        $this->idmodelo = $idmodelo;
+
+        return $this;
+    }
     /**
      * Get idmodelo
      *

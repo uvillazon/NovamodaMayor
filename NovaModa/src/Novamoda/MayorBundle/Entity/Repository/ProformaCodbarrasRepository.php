@@ -21,8 +21,6 @@ class ProformaCodbarrasRepository extends BaseRepository
 {
     public function guardarDetallesCodBarra($idProforma, $fila, $detalles)
     {
-
-        var_dump($detalles);
         try {
             foreach ($detalles as $detalle) {
                 $det = new ProformaCodbarras();

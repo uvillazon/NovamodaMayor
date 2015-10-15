@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManager;
 use Novamoda\MayorBundle\Entity;
 use Exception;
 use Novamoda\MayorBundle\Entity\DetallesProforma;
+use Proxies\__CG__\Novamoda\MayorBundle\Entity\Proformas;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Ddeboer\DataImport\Reader\CsvReader;
 
@@ -161,10 +162,10 @@ class ProformasService
 //            var_dump($detalle->getValor());
             $talla = $repoDet->esTalla($detalle->getColumna(), $idProforma);
             if (count($talla) > 0) {
-                if($detalle->getValor()> 0){
+                if ($detalle->getValor() > 0) {
                     $cnt = 0;
 //                    var_dump($talla);
-                    while($cnt<$detalle->getValor()) {
+                    while ($cnt < $detalle->getValor()) {
 
                         $row = array();
                         $row["cantidad"] = 1;
@@ -188,22 +189,82 @@ class ProformasService
         return $result;
     }
 
-    public function guardarCodigosBarra($idProforma,$fila,$detalles){
+    public function guardarCodigosBarra($idProforma, $fila, $detalles)
+    {
         $result = new \Novamoda\MayorBundle\Model\RespuestaSP();
         $repoDet = $this->em->getRepository('NovamodaMayorBundle:ProformaCodbarras');
-        $res = $repoDet->guardarDetallesCodBarra($idProforma,$fila,$detalles);
-        if(is_numeric($res)){
+        $repoModelo = $this->em->getRepository('NovamodaMayorBundle:Modelo');
+        $repoKardexCaja = $this->em->getRepository('NovamodaMayorBundle:Kardexcajas');
+        $repoKardex = $this->em->getRepository('NovamodaMayorBundle:Kardexdetallepar');
+
+        $res = $repoDet->guardarDetallesCodBarra($idProforma, $fila, $detalles);
+        if (is_numeric($res)) {
             $this->actualizarDetalle(array("columna" => "ESTADO", "fila" => $fila, "valor" => "1", "id_proforma" => $idProforma));
-            $result->success = true;
-            $result->msg = "Proceso Ejectuado Correctamente";
-        }
-        else{
+            $datosAdicionales = $this->obtenerDatosAdicionalesModelo($idProforma, $fila);
+            $resModelo = $repoModelo->guardarModelo($idProforma, $datosAdicionales);
+            if ($resModelo->success) {
+                $datosAdicionales["idmodelo"] = $resModelo->id;
+                $resKardexCaja = $repoKardexCaja->guardarKardexCaja($datosAdicionales);
+                if ($resKardexCaja->success) {
+                    $res = $repoKardex->guardarKardexPar($datosAdicionales , $detalles);
+                    var_dump($res);
+                    $result->success = true;
+                    $result->msg = "Proceso Ejectuado Correctamente";
+                } else {
+                    $result->success = false;
+                    $result->msg = $resModelo->msg;
+                }
+            } else {
+
+                $result->success = false;
+                $result->msg = $resModelo->msg;
+            }
+
+        } else {
             $result->success = false;
             $result->msg = $res;
         }
 
 //        guardarDetallesCodBarra
-       return $result;
+        return $result;
+    }
+
+    public function obtenerDatosAdicionalesModelo($idProforma, $fila)
+    {
+        $result = array();
+        $repoProforma = $this->em->getRepository('NovamodaMayorBundle:Proformas');
+        $repoCliente = $this->em->getRepository('NovamodaMayorBundle:Clientes');
+        $repoEmpleado = $this->em->getRepository('NovamodaMayorBundle:Empleados');
+        $repoDetalle = $this->em->getRepository('NovamodaMayorBundle:DetallesProforma');
+        $proforma = $repoProforma->find($idProforma);
+        if (!is_null($proforma)) {
+            /**
+             * @var Proformas $proforma
+             */
+            $columnaCliente = $repoDetalle->obtenerColumnaPorEncabezado($idProforma, "CLIENTE");
+            $columnaVendedor = $repoDetalle->obtenerColumnaPorEncabezado($idProforma, "VENDEDOR");
+            $codCliente = $repoDetalle->findOneBy(array("fila" => $fila, "idProforma" => $idProforma, "columna" => $columnaCliente))->getValor();
+            $codVendedor = $repoDetalle->findOneBy(array("fila" => $fila, "idProforma" => $idProforma, "columna" => $columnaVendedor))->getValor();
+            $cliente = $repoCliente->findOneBy(array("codigo" => $codCliente));
+            $vendedor = $repoEmpleado->findOneBy(array("codigo" => $codVendedor));
+
+            $result["id_proforma"] = $idProforma;
+            $result["almacen"] = $proforma->getAlmacen();
+            $result["idcliente"] = $cliente->getIdcliente();
+            $result["cliente"] = $codCliente;
+            $result["idvendedor"] = $vendedor->getIdempleado();
+            $result["vendedor"] = $codVendedor;
+            $result["idalmacen"] = $proforma->getIdAlmacen();
+            $result["idmarca"] = $proforma->getIdMarca();
+            $result["fechaIngreso"] = $proforma->getFecha()->format("m-Y");
+            $result["codigo"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "CODIGO");
+            $result["color"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "COLOR");
+            $result["material"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "MATERIAL");
+            $result["pares"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "PARES");
+
+
+        }
+        return $result;
     }
 
 }

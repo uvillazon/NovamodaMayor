@@ -6,7 +6,9 @@
  * Time: 09:01
  */
 namespace Novamoda\MayorBundle\Entity\Repository;
+
 use Doctrine\ORM\EntityRepository;
+use Novamoda\MayorBundle\Entity\Kardexdetallepar;
 use Novamoda\MayorBundle\Entity\Repository\BaseRepository;
 
 /**
@@ -17,6 +19,38 @@ use Novamoda\MayorBundle\Entity\Repository\BaseRepository;
  */
 class KardexdetalleparRepository extends BaseRepository
 {
+    public function guardarKardexPar($datos, $detalles)
+    {
+        $result = new \Novamoda\MayorBundle\Model\RespuestaSP();
+        try {
+            $numero = $this->obtenerMaximo("numero");
+            foreach ($detalles as $detalle) {
+                $kardex = new Kardexdetallepar();
+                $numero = $numero + 1;
+                $kardex->setIdmodelo($datos["idmodelo"]);
+                $kardex->setIdkardex("k-" . $numero);
+                $kardex->setNumero($numero);
+                $kardex->setIdingreso($datos["id_proforma"]);
+                $kardex->setAlmacen($datos["almacen"]);
+                $kardex->setIdalmacen($datos["idalmacen"]);
+                $kardex->setCodigobarra($detalle->codigobarra);
+                $kardex->setCodigobarraean13(substr($detalle->codigobarra, 0, strlen($detalle->codigobarra) - 1));
+                $kardex->setTalla($detalle->talla);
+                $kardex->setSaldocantidad($detalle->cantidad);
+                $kardex->setIdkardexdetalle(" ");
+                $kardex->setIdimpresion("13");
+                $this->_em->persist($kardex);
+
+            }
+            $this->_em->flush();
+            $result->success = true;
+            $result->msg = $kardex->getIdkardexunico();
+        } catch (\Exception $e) {
+            $result->success = false;
+            $result->msg = $e->getMessage();
+        }
+        return $result;
+    }
 
 //    /**
 //     * @param $data
