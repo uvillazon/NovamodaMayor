@@ -96,6 +96,8 @@ class ProformasService
                 $result->msg = "proceso Ejecutado Correctamente";
                 $result->success = true;
                 $result->id = $idProforma;
+                $result->data = $proforma;
+
 
 
             } else {
@@ -206,13 +208,15 @@ class ProformasService
                 $datosAdicionales["idmodelo"] = $resModelo->id;
                 $resKardexCaja = $repoKardexCaja->guardarKardexCaja($datosAdicionales);
                 if ($resKardexCaja->success) {
+                    $datosAdicionales["id_kardex"] = $resKardexCaja->id;
+//                    var_dump($datosAdicionales);
                     $res = $repoKardex->guardarKardexPar($datosAdicionales , $detalles);
-                    var_dump($res);
+//                    var_dump($res);
                     $result->success = true;
                     $result->msg = "Proceso Ejectuado Correctamente";
                 } else {
                     $result->success = false;
-                    $result->msg = $resModelo->msg;
+                    $result->msg = $resKardexCaja->msg;
                 }
             } else {
 

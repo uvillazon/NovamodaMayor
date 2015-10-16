@@ -21,7 +21,10 @@ Ext.define('App.controller.Proformas.Proformas', {
             }
             ,
             '#btn_editarProforma': {
-                click: me.cargarVentanaGrid
+                click: me.cargarVentanaGridBoton
+            },
+            '#btn_eliminarProforma' :{
+                click : me.winCrearProformaCabecera
             },
 
             '#btn_editarProformaCabecera': {
@@ -80,8 +83,8 @@ Ext.define('App.controller.Proformas.Proformas', {
             });
             win.show();
         }
-        else{
-            Ext.Msg.alert("Aviso","ya fue registrado los codigos de barra. Seleccione otro");
+        else {
+            Ext.Msg.alert("Aviso", "ya fue registrado los codigos de barra. Seleccione otro");
         }
 
 
@@ -135,7 +138,7 @@ Ext.define('App.controller.Proformas.Proformas', {
                 console.log(str.success);
                 if (str.success) {
                     Ext.MessageBox.alert('Exito', str.msg, function () {
-                        me.cargarVentanaGrid(null, null, null, str.id);
+                        me.cargarVentanaGrid(str.id);
                     });
                 }
                 else {
@@ -149,19 +152,21 @@ Ext.define('App.controller.Proformas.Proformas', {
         //App.View.Proformas.FormProformas
     }
     ,
-    cargarVentanaGrid: function (btn, e, ob, id) {
+    cargarVentanaGrid: function (id) {
         var me = this;
         var win = Ext.create("App.Config.Abstract.Window", {botones: false, destruirWin: true});
         var form = Ext.create("App.View.Proformas.FormEditarProforma", {botones: false});
-        if (btn != null) {
-            form.cargarDatos(me.getGrid().record.get('id_proforma'));
-            me.idProforma = me.getGrid().record.get('id_proforma');
-        }
-        else {
-            form.cargarDatos(id);
-            me.idProforma = id;
-        }
-
+        form.cargarDatos(id);
+        me.idProforma = id;
+        win.add(form);
+        win.show();
+    },
+    cargarVentanaGridBoton: function () {
+        var me = this;
+        var win = Ext.create("App.Config.Abstract.Window", {botones: false, destruirWin: true});
+        var form = Ext.create("App.View.Proformas.FormEditarProforma", {botones: false});
+        form.cargarDatos(me.getGrid().record.get('id_proforma'));
+        me.idProforma = me.getGrid().record.get('id_proforma');
         win.add(form);
         win.show();
     },

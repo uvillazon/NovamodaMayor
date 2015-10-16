@@ -9,7 +9,7 @@ Ext.define("App.View.Proformas.GridModelos", {
     opcion: '',
     paramsStore: null,
     noLimpiar: null,
-    opcion: 'gridMoleca',
+    opcion: 'gridModelo1',
     width: 800,
     height: 450,
     tituloImpresion: 'MOLECA',
@@ -41,8 +41,12 @@ Ext.define("App.View.Proformas.GridModelos", {
         };
         me.cargarComponentes();
         switch (me.opcion) {
-            case "gridMoleca" :
+            case "gridModelo1" :
                 me.cargarGridMoleca();
+                break;
+            case "gridModelo2":
+                me.cargarGridModelo2();
+                break;
 
         }
         this.callParent(arguments);
@@ -130,6 +134,117 @@ Ext.define("App.View.Proformas.GridModelos", {
             var data = App.Config.ux.Exporter.exportGrid(store2, me, 'excel', filename);
             window.open('data:application/vnd.ms-excel,' + encodeURIComponent(data));
         });
+    },
+    cargarGridModelo2 : function(){
+        var me = this;
+        me.store = Ext.create("App.Store.Proformas.Modelos");
+        //me.store.load();
+        //me.CargarComponentes();
+        me.columns = [
+            {xtype: "rownumberer", width: 30, sortable: false},
+            {
+                header: "Modelo", width: 90, sortable: true, dataIndex: "MODELO", editor: {
+                xtype: 'textfield'
+            }
+            },
+            {
+                header: "Material", width: 90, sortable: true, dataIndex: "MATERIAL", editor: {
+                xtype: 'textfield'
+            }
+            },
+            {
+                header: "Color", width: 90, sortable: true, dataIndex: "COLOR", editor: {
+                xtype: 'textfield'
+            }
+            },
+            {
+                header: "Item", width: 90, sortable: true, dataIndex: "ITEM", editor: {
+                xtype: 'textfield'
+            }
+            },
+            {
+                header: "Vendedor", width: 90, sortable: true, dataIndex: "VENDEDOR"
+            },
+            {
+                header: "Cliente", width: 90, sortable: true, dataIndex: "CLIENTE"
+            },
+            {
+                header: "Cjs", width: 90, sortable: true, dataIndex: "CAJAS", editor: {
+                xtype: 'numberfield'
+            }
+            },
+            {
+                header: "Precio Venta", width: 90, sortable: true, dataIndex: "PRECIO_VENTA", editor: {
+                xtype: 'numberfield'
+            }
+            },
+            {
+                header: "Precio Unitario", width: 90, sortable: true, dataIndex: "PRECIO_UNITARIO", editor: {
+                xtype: 'numberfield'
+            }
+            },
+            {
+                header: "14", width: 25, sortable: false, dataIndex: "14", editor: {
+                xtype: 'numberfield'
+            }
+            },
+            {
+                header: "15", width: 25, sortable: false, dataIndex: "15", editor: {
+                xtype: 'numberfield'
+            }
+            },
+            {
+                header: "16", width: 25, sortable: false, dataIndex: "16", editor: {
+                xtype: 'numberfield'
+            }
+            },
+            {
+                header: "17", width: 25, sortable: false, dataIndex: "17", editor: {
+                xtype: 'numberfield'
+            }
+            },
+            {
+                header: "18", width: 25, sortable: false, dataIndex: "18", editor: {
+                xtype: 'numberfield'
+            }
+            },
+            {
+                header: "19", width: 25, sortable: false, dataIndex: "19", editor: {
+                xtype: 'numberfield'
+            }
+            },
+            {
+                header: "20", width: 25, sortable: false, dataIndex: "20", editor: {
+                xtype: 'numberfield'
+            }
+            },
+            {
+                header: "21", width: 25, sortable: false, dataIndex: "21", editor: {
+                xtype: 'numberfield'
+            }
+            },
+            {
+                header: "22", width: 25, sortable: false, dataIndex: "22", editor: {
+                xtype: 'numberfield'
+            }
+            },
+            {
+                header: "23", width: 25, sortable: false, dataIndex: "23", editor: {
+                xtype: 'numberfield'
+            }
+            },
+            {
+                header: "Pares", width: 50, sortable: false, dataIndex: "PARES", editor: {
+                xtype: 'numberfield'
+            }
+            },
+            {
+                header: "$us", width: 60, sortable: false, dataIndex: "TOTAL", editor: {
+                xtype: 'numberfield'
+            }
+            },
+            {header: "Estado", width: 90, sortable: true, dataIndex: "ESTADO"}
+        ];
     },
     cargarGridMoleca: function () {
         var me = this;

@@ -36,6 +36,8 @@ Ext.define("App.Config.Constantes", {
     UND_EJEC_SUB: 4,
     path: 'sgauth/',
     rutaBackend : 'backend/',
+    //codigos de las marcas para cargar los grid configurados
+    configuracionGrid : {MC : 'gridModelo1' , MK : 'gridModelo2'},
     UnidadesRequeridas: function (unidad, requerido) {
         if (requerido) {
             return '<span style="color:red;font-weight:bold" data-qtip="Requerido">*</span><span style="color:blue" data-qtip="Requerido">[' + unidad + ']</span>';

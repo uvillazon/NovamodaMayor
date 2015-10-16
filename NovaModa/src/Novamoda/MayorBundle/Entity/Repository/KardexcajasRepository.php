@@ -33,7 +33,7 @@ class KardexcajasRepository extends BaseRepository
             $this->_em->persist($kardex);
             $this->_em->flush();
             $result->success = true;
-            $result->msg = $kardex->getIdkardexunico();
+            $result->id = $kardex->getIdkardex();
         }
         catch(\Exception $e){
             $result->success = false;

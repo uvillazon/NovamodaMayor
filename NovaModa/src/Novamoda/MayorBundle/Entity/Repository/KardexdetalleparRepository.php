@@ -23,13 +23,13 @@ class KardexdetalleparRepository extends BaseRepository
     {
         $result = new \Novamoda\MayorBundle\Model\RespuestaSP();
         try {
-            $numero = $this->obtenerMaximo("numero");
+//            $numero = $this->obtenerMaximo("numero");
             foreach ($detalles as $detalle) {
                 $kardex = new Kardexdetallepar();
-                $numero = $numero + 1;
+//                $numero = $numero + 1;
                 $kardex->setIdmodelo($datos["idmodelo"]);
-                $kardex->setIdkardex("k-" . $numero);
-                $kardex->setNumero($numero);
+                $kardex->setIdkardex($datos["id_kardex"]);
+//                $kardex->setNumero($numero);
                 $kardex->setIdingreso($datos["id_proforma"]);
                 $kardex->setAlmacen($datos["almacen"]);
                 $kardex->setIdalmacen($datos["idalmacen"]);
@@ -44,7 +44,7 @@ class KardexdetalleparRepository extends BaseRepository
             }
             $this->_em->flush();
             $result->success = true;
-            $result->msg = $kardex->getIdkardexunico();
+            $result->id = $kardex->getIdkardexunico();
         } catch (\Exception $e) {
             $result->success = false;
             $result->msg = $e->getMessage();
