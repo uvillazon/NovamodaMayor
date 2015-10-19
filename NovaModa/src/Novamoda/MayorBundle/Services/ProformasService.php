@@ -265,6 +265,9 @@ class ProformasService
             $result["color"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "COLOR");
             $result["material"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "MATERIAL");
             $result["pares"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "PARES");
+            $result["precio_venta"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "PRECIO_VENTA");
+            $result["precio_unitario"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "PRECIO_UNITARIO");
+            $result["total"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "TOTAL");
 
 
         }

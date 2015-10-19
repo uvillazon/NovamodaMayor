@@ -12,6 +12,12 @@ Ext.define("App.View.Proformas.FormAsignarCliente", {
         me.cargarComponentes();
         this.callParent(arguments);
     },
+    aplicarfiltrosAlmacen : function(idalmacen){
+        var me =this;
+        console.log(idalmacen);
+        me.store_clientes.setExtraParams({idalmacen : idalmacen});
+        me.store_vendedor.setExtraParams({idalmacen : idalmacen});
+    },
     cargarComponentes: function () {
         var me = this;
 

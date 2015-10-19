@@ -4,6 +4,7 @@
 Ext.define('App.controller.Proformas.Proformas', {
     extend: "Ext.app.Controller",
     idProforma: 0,
+    idalmacen : 0,
     refs: [{
         ref: 'gridModelo',
         selector: '#grid_modelos'
@@ -106,6 +107,7 @@ Ext.define('App.controller.Proformas.Proformas', {
 
         var win = Ext.create("App.Config.Abstract.Window", {botones: true, destruirWin: true});
         var form = Ext.create("App.View.Proformas.FormAsignarCliente", {botones: false});
+        form.aplicarfiltrosAlmacen(me.idalmacen);
         win.add(form);
         win.show();
         win.btn_guardar.on('click', function () {
@@ -139,6 +141,8 @@ Ext.define('App.controller.Proformas.Proformas', {
                 if (str.success) {
                     Ext.MessageBox.alert('Exito', str.msg, function () {
                         me.cargarVentanaGrid(str.id);
+                        me.idalmacen = str.data.id_almacen;
+                        //console.dir(str.data);
                     });
                 }
                 else {
@@ -166,6 +170,8 @@ Ext.define('App.controller.Proformas.Proformas', {
         var win = Ext.create("App.Config.Abstract.Window", {botones: false, destruirWin: true});
         var form = Ext.create("App.View.Proformas.FormEditarProforma", {botones: false});
         form.cargarDatos(me.getGrid().record.get('id_proforma'));
+        //console.dir(me.getGrid().record);
+        me.idalmacen = me.getGrid().record.get('id_almacen');
         me.idProforma = me.getGrid().record.get('id_proforma');
         win.add(form);
         win.show();

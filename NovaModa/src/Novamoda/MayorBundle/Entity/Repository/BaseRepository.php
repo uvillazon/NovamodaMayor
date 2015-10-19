@@ -52,21 +52,23 @@ class BaseRepository extends EntityRepository
      */
     public function consultaContiene($query, $array, $contiene)
     {
-        $fields = array_keys($this->getClassMetadata()->fieldNames);
-        $alias = $query->getRootAlias();
-        $count = 0;
-        foreach ($array as $field) {
-            $fieldMapping = $this->getClassMetadata()->getFieldForColumn($field);
-            $where = sprintf("UPPER(%s.%s) LIKE :condicion", $alias, $fieldMapping);
-            if ($count == 0) {
-                $query->andWhere($where);
-            } else {
-                $query->orWhere($where);
+        if ($contiene != "") {
+            $fields = array_keys($this->getClassMetadata()->fieldNames);
+            $alias = $query->getRootAlias();
+            $count = 0;
+            foreach ($array as $field) {
+                $fieldMapping = $this->getClassMetadata()->getFieldForColumn($field);
+                $where = sprintf("UPPER(%s.%s) LIKE :condicion", $alias, $fieldMapping);
+                if ($count == 0) {
+                    $query->andWhere($where);
+                } else {
+                    $query->orWhere($where);
+                }
+                $count++;
             }
-            $count++;
-        }
-        $query->setParameter("condicion", "%" . strtoupper($contiene) . "%");
+            $query->setParameter("condicion", "%" . strtoupper($contiene) . "%");
 
+        }
         return $query;
     }
 
@@ -88,8 +90,9 @@ class BaseRepository extends EntityRepository
 
     }
 
-    public function obtenerMaximo($valor){
-        $max = $this->createQueryBuilder("tab")->select('MAX(tab.'.$valor.')')->getQuery()->getSingleScalarResult();
+    public function obtenerMaximo($valor)
+    {
+        $max = $this->createQueryBuilder("tab")->select('MAX(tab.' . $valor . ')')->getQuery()->getSingleScalarResult();
         return $max;
     }
 

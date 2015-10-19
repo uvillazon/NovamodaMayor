@@ -182,5 +182,13 @@ Ext.define("App.View.Proformas.FormEditarProforma", {
         me.loadFormulario("proformas", "proformas/" + id, null, null);
         me.grid.getStore().setExtraParams({id_proforma: id});
         me.grid.getStore().load();
+    },
+    cargarRecordProforma: function (record) {
+
+        var me = this;
+        me.record = record;
+    },
+    cargarDataResponse: function (data) {
+
     }
 });
