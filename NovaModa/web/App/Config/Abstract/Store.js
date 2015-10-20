@@ -22,6 +22,7 @@ Ext.define("App.Config.Abstract.Store", {
     urlCreate: '',
     urlUpdate: '',
     urlDestroy : '',
+    simpleSortMode : true,
     //model : '',
     constructor: function (config) {
         var me = this;
@@ -56,7 +57,7 @@ Ext.define("App.Config.Abstract.Store", {
                     root: "data",
                     allowSingle: false
                 },
-                simpleSortMode: true
+                simpleSortMode: me.simpleSortMode
             }
         };
         this.callParent([Ext.Object.merge({}, defaults, config)]);

@@ -8,5 +8,6 @@ Ext.define('App.Store.Proformas.Modelos', {
     url: 'proformas/modelos',
     sortProperty: 'codigo',
     extend: 'App.Config.Abstract.Store',
-    remoteSort : false
+    remoteSort : false,
+    simpleSortMode : false
 });

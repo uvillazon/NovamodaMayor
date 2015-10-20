@@ -21,6 +21,8 @@ class ProformaCodbarrasRepository extends BaseRepository
 {
     public function guardarDetallesCodBarra($idProforma, $fila, $detalles)
     {
+        $cnt = 0;
+        $band = 0;
         try {
             foreach ($detalles as $detalle) {
                 $det = new ProformaCodbarras();
@@ -30,10 +32,26 @@ class ProformaCodbarrasRepository extends BaseRepository
                 $det->setFila($fila);
                 $det->setIdProforma($idProforma);
                 $this->_em->persist($det);
-
+                $cnt++;
+                if (strlen($detalle->codigobarra) > 0) {
+                    $band++;
+                }
             }
-            $this->_em->flush();
-            return $idProforma;
+            $repoDetalle = $this->_em->getRepository('NovamodaMayorBundle:DetallesProforma');
+            $cliente = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "CLIENTE");
+            $vendedor = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "VENDEDOR");
+            if (strlen($cliente) > 0 && strlen($vendedor) > 0) {
+                if ($cnt == $band) {
+                    $this->_em->flush();
+                    return $idProforma;
+                } else {
+
+                    return "Falta Asignar Codigos de Barrra a tallas";
+                }
+            } else {
+                return "No cuenta con Cliente ni Vendedor Asignado Por favor Intentar nuevamente";
+            }
+
         } catch (\Exception $e) {
             return $e->getMessage();
         }

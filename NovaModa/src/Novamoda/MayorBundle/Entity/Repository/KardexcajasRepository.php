@@ -28,7 +28,8 @@ class KardexcajasRepository extends BaseRepository
             $kardex->setNumero($numero);
             $kardex->setSaldocantidad($datos["pares"]);
             $kardex->setTotalparescaja($datos["pares"]);
-            $kardex->getNumerocajas("1.0");
+            $kardex->setNumeroparesfila($datos["pares"]);
+            $kardex->setIdtienda($datos["idalmacen"]);
             $kardex->setIdimpresion("13");
             $this->_em->persist($kardex);
             $this->_em->flush();

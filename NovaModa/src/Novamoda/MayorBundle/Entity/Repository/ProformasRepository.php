@@ -6,7 +6,9 @@
  * Time: 09:01
  */
 namespace Novamoda\MayorBundle\Entity\Repository;
+
 use Doctrine\ORM\EntityRepository;
+use Novamoda\MayorBundle\Entity\DetallesProforma;
 use Novamoda\MayorBundle\Entity\Proformas;
 use Novamoda\MayorBundle\Entity\Repository\BaseRepository;
 
@@ -23,9 +25,10 @@ class ProformasRepository extends BaseRepository
      * @param $data
      * @return int|string
      */
-    public function guardarProforma($data,$archivo){
+    public function guardarProforma($data, $archivo)
+    {
         $result = "0";
-        try{
+        try {
 //            var_dump($data);
             $date = date_create_from_format('d/m/Y', $data["fecha"]);
 //            var_dump($date);
@@ -45,12 +48,76 @@ class ProformasRepository extends BaseRepository
             $this->_em->persist($proforma);
             $this->_em->flush();
             $result = $proforma->getIdProforma();
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
 
 //            var_dump($e);
             $result = $e->getMessage();
         }
-       return $result;
+        return $result;
+    }
+
+    public function editarProforma($data){
+        $proforma = $this->findOneBy(array("idProforma" => $data["id_proforma"]));
+        /**
+         * @var Proformas $proforma
+         */
+        if (!is_null($proforma)) {
+            $proforma->setEstado("EN PROCESO");
+            $this->_em->persist($proforma);
+            $this->_em->flush();
+            return $proforma->getIdProforma();
+        } else {
+            return "No Existe la Proforma";
+        }
+    }
+
+    public function cambiarEstado($data)
+    {
+        $proforma = $this->findOneBy(array("idProforma" => $data["id_proforma"]));
+        /**
+         * @var Proformas $proforma
+         */
+        if (!is_null($proforma)) {
+            $proforma->setEstado("EN PROCESO");
+            $this->_em->persist($proforma);
+            $this->_em->flush();
+            return $proforma->getIdProforma();
+        } else {
+            return "Ocurrio algun Problema";
+        }
+//        return $result;
+    }
+
+    public function eliminarProforma($id)
+    {
+        $result = "";
+        try {
+            $proforma = $this->findOneBy(array("idProforma" => $id));
+            /**
+             * @var Proformas $proforma
+             */
+            if($proforma->getEstado()== "NUEVO"){
+
+                $repoDeta = $this->_em->getRepository('NovamodaMayorBundle:DetallesProforma');
+                $detalles = $repoDeta->findBy(array("idProforma"=>$id));
+                foreach ( $detalles as $detalle ) {
+                    /**
+                     * @var DetallesProforma $detalle
+                     */
+                    $this->_em->remove($detalle);
+                }
+
+                $this->_em->remove($proforma);
+                $this->_em->flush();
+                $result = $id;
+            }
+            else{
+                $result = "La proforma esta en estado inadecuado para que pueda ser Eliminado";
+            }
+        } catch (\Exception $e) {
+            $result = $e->getMessage();
+        }
+
+        return $result;
     }
 }

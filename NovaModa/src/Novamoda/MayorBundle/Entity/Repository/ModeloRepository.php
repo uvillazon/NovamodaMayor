@@ -29,7 +29,7 @@ class ModeloRepository extends BaseRepository
             $modelo->setNumero($numero);
             $modelo->setIdmodelodetalle("mod-" . $numero);
             $modelo->setIdingreso($idProforma);
-            $modelo->setBoleta("PROFORMA");
+            $modelo->setBoleta($datos["id_proforma"]);
             $modelo->setCliente($datos["cliente"]);
             $modelo->setFechaingreso($datos["fechaIngreso"]);
             $modelo->setIdmarca($datos["idmarca"]);
@@ -42,6 +42,11 @@ class ModeloRepository extends BaseRepository
             $modelo->setHora(new \DateTime());
             $modelo->setColor($datos["color"]);
             $modelo->setMaterial($datos["material"]);
+            $modelo->setNumeroparesfila($datos["total"]);
+            $modelo->setTotalparescaja($datos["total"]);
+            $modelo->setPrecioventa($datos["precio_venta"]);
+            $modelo->setPreciounitario($datos["precio_unitario"]);
+
             $this->_em->persist($modelo);
             $this->_em->flush();
             $result->success = true;

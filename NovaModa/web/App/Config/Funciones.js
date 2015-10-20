@@ -15,6 +15,7 @@ Ext.define("App.Config.Funciones", {
     paramsReport: '',
     //token: "",
     token: {'Authorization': "Bearer " + window.localStorage.token},
+    configuracionGrid : {'mar-34' : 'gridModelo1' , 'mar-46' : 'gridModelo1','mar-2' : 'gridModelo3' , 'mar-32' : 'gridModelo5','mar-33':'gridModelo4', 'mar-35': 'gridModelo2'},
     Fecha: function (value, record) {
         if (value == null) {
             return null;
@@ -1172,6 +1173,20 @@ Ext.define("App.Config.Funciones", {
             cnt++;
         });
         return cnt;
-    }
+    },
+    //configuracionGrid : {MC : 'gridModelo1' , MK : 'gridModelo2'},
+    //Carga el Resultar de un Ajax Request a un un Componente Array
+    obtenerTipoGridNovamoda: function (codigo) {
+        var result ="";
+        //luego Actualizamos todos los componentes si tiene respusta
+        Ext.Object.each(this.configuracionGrid, function (key, value, myself) {
+                if(key === codigo){
+                    result = value;
+                    return false;
+                }
+        });
+
+        return result;
+    },
 });
 //Rep.VerReporteObjeto("POSTE-L24A41");

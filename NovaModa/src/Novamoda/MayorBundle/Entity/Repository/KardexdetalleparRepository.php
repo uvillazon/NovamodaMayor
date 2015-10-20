@@ -39,6 +39,7 @@ class KardexdetalleparRepository extends BaseRepository
                 $kardex->setSaldocantidad($detalle->cantidad);
                 $kardex->setIdkardexdetalle(" ");
                 $kardex->setIdimpresion("13");
+                $kardex->setPreciounitario($datos["precio_unitario"]);
                 $this->_em->persist($kardex);
 
             }

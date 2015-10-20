@@ -6,7 +6,7 @@ Ext.define('App.Model.Proformas.CodigosBarra', {
     fields: [
         {type: "float", name: "cantidad"},
         {type: "string", name: "talla"},
-        {type: "float", name: "codigobarra"}
+        {type: "float", name: "codigobarra" , useNull : true}
 
     ]
 });

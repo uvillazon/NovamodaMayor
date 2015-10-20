@@ -99,7 +99,6 @@ class ProformasService
                 $result->data = $proforma;
 
 
-
             } else {
                 $result->msg = $idProforma;
                 $result->success = false;
@@ -198,6 +197,7 @@ class ProformasService
         $repoModelo = $this->em->getRepository('NovamodaMayorBundle:Modelo');
         $repoKardexCaja = $this->em->getRepository('NovamodaMayorBundle:Kardexcajas');
         $repoKardex = $this->em->getRepository('NovamodaMayorBundle:Kardexdetallepar');
+        $repoPro = $this->em->getRepository('NovamodaMayorBundle:Proformas');
 
         $res = $repoDet->guardarDetallesCodBarra($idProforma, $fila, $detalles);
         if (is_numeric($res)) {
@@ -210,7 +210,8 @@ class ProformasService
                 if ($resKardexCaja->success) {
                     $datosAdicionales["id_kardex"] = $resKardexCaja->id;
 //                    var_dump($datosAdicionales);
-                    $res = $repoKardex->guardarKardexPar($datosAdicionales , $detalles);
+                    $res = $repoKardex->guardarKardexPar($datosAdicionales, $detalles);
+                    $repoPro->cambiarEstado($datosAdicionales);
 //                    var_dump($res);
                     $result->success = true;
                     $result->msg = "Proceso Ejectuado Correctamente";
@@ -265,11 +266,28 @@ class ProformasService
             $result["color"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "COLOR");
             $result["material"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "MATERIAL");
             $result["pares"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "PARES");
-            $result["precio_venta"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "PRECIO_VENTA");
-            $result["precio_unitario"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "PRECIO_UNITARIO");
+            $result["precio_venta"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "PRECIO VENTA");
+            $result["precio_unitario"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "UNITARIO");
             $result["total"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "TOTAL");
+            $result["talla"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "TALLA");
 
 
+        }
+        return $result;
+    }
+
+    public function eliminarProforma($id)
+    {
+        $result = new \Novamoda\MayorBundle\Model\RespuestaSP();
+
+        $repoPro = $this->em->getRepository('NovamodaMayorBundle:Proformas');
+        $res = $repoPro->eliminarProforma($id);
+        if (is_numeric($res)) {
+            $result->success = true;
+            $result->msg = "Proceso Ejecutado Correctamente";
+        } else {
+            $result->success = false;
+            $result->msg = $res;
         }
         return $result;
     }

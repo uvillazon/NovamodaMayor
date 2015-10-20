@@ -194,3 +194,71 @@ Ext.override(Ext.form.field.File, {
         return fileInput;
     }
 });
+
+Ext.override(Ext.grid.plugin.CellEditing,{
+    onSpecialKey: function(ed, field, e) {
+        var grid = this.grid,sm;
+        if (e.getKey() === e.TAB) {
+            e.stopEvent();
+            sm = grid.getSelectionModel();
+            if (sm.onEditorTab)sm.onEditorTab(this, e);
+        }else if(e.getKey() === e.ENTER){
+            e.stopEvent();
+            sm = grid.getSelectionModel();
+            if (sm.onEditorEnter)sm.onEditorEnter(this, e);
+        }
+    }
+});
+
+Ext.override(Ext.selection.RowModel, {
+    lastId:null,
+    onEditorTab: function(ep, e) {
+        var me = this,
+            view = me.view,
+            record = ep.getActiveRecord(),
+            header = ep.getActiveColumn(),
+            position = view.getPosition(record, header),
+            direction = e.shiftKey ? 'left' : 'right',
+            newPosition = view.walkCells(position, direction, e, false),
+            newId=newPosition.row,
+            grid=view.up('gridpanel');
+
+        if (me.lastId!=newId && me.lastId!=null){
+            deltaX = me.lastId<newId? -Infinity : Infinity;
+            header=grid.headerCt.getHeaderAtIndex(newPosition.column);
+            if(header){
+                while(!header.getEditor()){
+                    newPosition= view.walkCells(newPosition,direction, e, false);
+                    header=grid.headerCt.getHeaderAtIndex(newPosition.column);
+                }
+            }
+        }else{
+            deltaX = ep.context.column.width * (direction== 'right' ? 1 : -1);
+        }
+        grid.scrollByDeltaX(deltaX);
+        me.lastId=newPosition.row;
+        Ext.defer(function(){
+            if (newPosition)ep.startEditByPosition(newPosition);
+            else ep.completeEdit();
+        }, 100);
+    },
+    onEditorEnter:function(ep,e){
+        var me = this,
+            view = me.view,
+            record = ep.getActiveRecord(),
+            header = ep.getActiveColumn(),
+            position = view.getPosition(record, header),
+            direction = e.shiftKey ? 'up' : 'down',
+            newPosition = view.walkCells(position, direction, e, false),
+            newId=newPosition.row,
+            grid=view.up('gridpanel');
+
+        deltaY=20 * (direction== 'down' ? 1 : -1);
+        grid.scrollByDeltaY(deltaY);
+        me.lastId=newPosition.row;
+        Ext.defer(function(){
+            if (newPosition)ep.startEditByPosition(newPosition);
+            else ep.completeEdit();
+        }, 100);
+    }
+});

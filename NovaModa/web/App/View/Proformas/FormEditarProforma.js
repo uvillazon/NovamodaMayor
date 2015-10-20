@@ -6,6 +6,7 @@ Ext.define("App.View.Proformas.FormEditarProforma", {
     title: "Datos de Proforma",
     columns: 3,
     idProforma: 0,
+    codigoGrid : '',
     initComponent: function () {
         var me = this;
         me.cargarComponentes();
@@ -114,7 +115,8 @@ Ext.define("App.View.Proformas.FormEditarProforma", {
 
         me.grid = Ext.create("App.View.Proformas.GridModelos", {
             colspan: 3,
-            itemId: 'grid_modelos'
+            itemId: 'grid_modelos',
+            opcion : me.codigoGrid
         });
         me.num_total_cajas = Ext.create("App.Config.Componente.NumberFieldBase", {
             fieldLabel: "Total Cajas",

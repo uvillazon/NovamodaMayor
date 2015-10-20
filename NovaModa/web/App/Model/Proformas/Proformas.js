@@ -11,6 +11,7 @@ Ext.define('App.Model.Proformas.Proformas', {
         { type: "string", name: "responsable" },
         { type: "string", name: "almacen" },
         { type: "string", name: "id_almacen" },
+        { type: "string", name: "id_marca" },
         { type: "string", name: "marca" },
         { type: "string", name: "nombre_archivo" },
         { type: "string", name: "tipo_archivo" },

@@ -19,9 +19,9 @@ use Novamoda\MayorBundle\Entity\Repository\BaseRepository;
  */
 class DetallesProformaRepository extends BaseRepository
 {
-    private $nombresModelos = array("CJS" => "CAJAS", "PRECIOVENTA" => "PRECIO_VENTA", "UNITARIO" => "PRECIO_UNITARIO");
-    private $nombreKey = array("CAJAS" => "CJS", "PRECIO_VENTA" => "PRECIOVENTA", "PRECIO_UNITARIO" => "UNITARIO");
-    private $tallas = array("33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43");
+    private $nombresModelos = array("CJS" => "CAJAS", "PRECIO VENTA" => "PRECIO_VENTA", "UNITARIO" => "PRECIO_UNITARIO");
+    private $nombreKey = array("CAJAS" => "CJS", "PRECIO_VENTA" => "PRECIO VENTA", "PRECIO_UNITARIO" => "UNITARIO");
+    private $tallas = array("1", "1m", "2", "2m", "3", "3m", "4", "4m", "5", "5m", "6", "6m", "7", "7m", "8", "8m", "9", "9m", "10", "10m", "11", "12", "12m", "13", "13m", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45");
 
     public function guardarDetalle($data, $proforma)
     {

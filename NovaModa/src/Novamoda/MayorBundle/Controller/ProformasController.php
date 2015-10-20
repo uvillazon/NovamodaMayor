@@ -270,4 +270,32 @@ class ProformasController extends BaseController
         return $result;
     }
 
+    /**
+     * Este Metodo Guarda Codigos de Barra
+     * como resultado devuelve los sig. datos{ success= true cuando esta correcto o false si ocurrio algun problema}
+     * msg = "mensaje de la accion" , id = "Id del objeto guardado" , data = datos del objeto guardado}
+     * Se debe enviar los nombres de las propiedades de las tablas de la BD
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Guardar DEtalle",
+     *   output = "Array",
+     *   authentication = true,
+     *   statusCodes = {
+     *     200 = "Returned when successful",
+     *     404 = "Returned when the page is not found",
+     *     403 = "Returned when permission denied"
+     *   }
+     * )
+     *
+     */
+    public function postEliminarAction(Request $request)
+    {
+        $data = $request->request->all();
+        $servicio = $this->get('mayorbundle.proformas_service');
+        $result = $servicio->eliminarProforma($data["id_proforma"]);
+        return $result;
+    }
+
+//eliminarProforma
+
 }

@@ -82,15 +82,18 @@ Ext.define("App.Config.ux.Printer", {
 
                     Ext.each(columns, function (column, col) {
 
-                        if (column && column.dataIndex == key) {
 
+                        if (column && column.dataIndex == key) {
+                            //console.log(key);
                             /*
                             * TODO: add the meta to template
                             */
                             var meta = { item: '', tdAttr: '', style: '' };
                             value = column.renderer ? column.renderer.call(grid, value, meta, item, row, col, grid.store, grid.view) : value;
+                            //console.log(value);
                             var varName = Ext.String.createVarName(column.dataIndex);
-                            convertedData[varName] = value;
+                            //console.log(varName);
+                            convertedData[column.dataIndex] = value;
 
                         } else if (column && column.xtype === 'rownumberer') {
 
@@ -107,10 +110,9 @@ Ext.define("App.Config.ux.Printer", {
                         }
                     }, this);
                 }
-
+                //console.dir(convertedData);
                 data.push(convertedData);
             });
-
             //remove columns that do not contains dataIndex or dataIndex is empty. for example: columns filter or columns button
             var clearColumns = [];
             Ext.each(columns, function (column) {
@@ -227,6 +229,10 @@ Ext.define("App.Config.ux.Printer", {
             });
 
         },
+        printNotLoad: function(grid){
+            var me = this;
+            me.printLoad(grid, grid.getStore());
+        },
 
         /**
         * @property stylesheetPath
@@ -295,7 +301,7 @@ Ext.define("App.Config.ux.Printer", {
         bodyTpl: [
             '<tpl for=".">',
 				'<tpl if="values.dataIndex">',
-                	'<td>\{{[Ext.String.createVarName(values.dataIndex)]}\}</td>',
+                	'<td>\{{[values.dataIndex]}\}</td>',
 				'<tpl else>',
 					'<td>\{{[Ext.String.createVarName(values.id)]}\}</td>',
 				'</tpl>',
