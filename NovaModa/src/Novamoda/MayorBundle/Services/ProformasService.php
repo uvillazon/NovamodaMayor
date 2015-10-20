@@ -256,6 +256,7 @@ class ProformasService
             $result["id_proforma"] = $idProforma;
             $result["almacen"] = $proforma->getAlmacen();
             $result["idcliente"] = $cliente->getIdcliente();
+//            $result["idalmacen"] = $proforma->getIdAlmacen();
             $result["cliente"] = $codCliente;
             $result["idvendedor"] = $vendedor->getIdempleado();
             $result["vendedor"] = $codVendedor;

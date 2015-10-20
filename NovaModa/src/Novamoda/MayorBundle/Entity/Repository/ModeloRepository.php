@@ -46,7 +46,7 @@ class ModeloRepository extends BaseRepository
             $modelo->setTotalparescaja($datos["total"]);
             $modelo->setPrecioventa($datos["precio_venta"]);
             $modelo->setPreciounitario($datos["precio_unitario"]);
-
+            $modelo->setIdalmacen($datos["idalmacen"]);
             $this->_em->persist($modelo);
             $this->_em->flush();
             $result->success = true;
