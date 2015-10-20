@@ -47,15 +47,20 @@ class CsvModel
         return $this->archivos;
     }
 
+    /**
+     * @return RespuestaSP
+     */
     public function isValid()
     {
-        $result = false;
+        $result = new \Novamoda\MayorBundle\Model\RespuestaSP();
+        $result->success = false;
         foreach ($this->archivos as $file) {
             if ($file["tipo_archivo"] === "application/vnd.ms-excel") {
-                $result = true;
+                $result->success = true;
             } else {
-                $result = false;
+                $result->success = false;
                 $this->eliminarArchivos();
+                $result->msg = "Archivo No valido ".$file["tipo_archivo"];
                 break;
             }
         }

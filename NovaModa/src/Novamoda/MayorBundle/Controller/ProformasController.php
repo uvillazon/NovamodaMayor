@@ -108,10 +108,11 @@ class ProformasController extends BaseController
         $data = $request->request->all();
         $csv = new CsvModel($request->files);
         $servicio = $this->get('mayorbundle.proformas_service');
-        if ($csv->isValid()) {
+        $valid = $csv->isValid();
+        if ($valid->success) {
             $result = $servicio->guardarProforma($csv->getArchivos(), $data);
         } else {
-            $result = array("success" => false, "msg" => "Archivos no validos");
+            $result = $valid;
         }
         return $result;
     }
