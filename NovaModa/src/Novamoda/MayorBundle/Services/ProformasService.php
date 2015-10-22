@@ -83,10 +83,12 @@ class ProformasService
                 $file = new \SplFileObject($archivo[0]["url_archivo"]);
                 $reader = new CsvReader($file, ";");
                 $proforma = $repo->find($idProforma);
+//                var_dump($reader);
 
                 foreach ($reader as $key => $value) {
+//                    var_dump($key);
                     foreach ($value as $key1 => $value1) {
-                        $repoDet->guardarDetalle(array("columna" => $key1, "fila" => $key, "valor" => $value1, "id_proforma" => $idProforma), $proforma);
+                        $res = $repoDet->guardarDetalle(array("columna" => $key1, "fila" => $key, "valor" => $value1, "id_proforma" => $idProforma), $proforma);
 //                        var_dump($res);
                     }
                     $repoDet->guardarDetalle(array("columna" => $key1 + 1, "fila" => $key, "valor" => $key == 0 ? "CLIENTE" : "", "id_proforma" => $idProforma), $proforma);
@@ -192,42 +194,60 @@ class ProformasService
 
     public function guardarCodigosBarra($idProforma, $fila, $detalles)
     {
-        $result = new \Novamoda\MayorBundle\Model\RespuestaSP();
-        $repoDet = $this->em->getRepository('NovamodaMayorBundle:ProformaCodbarras');
-        $repoModelo = $this->em->getRepository('NovamodaMayorBundle:Modelo');
-        $repoKardexCaja = $this->em->getRepository('NovamodaMayorBundle:Kardexcajas');
-        $repoKardex = $this->em->getRepository('NovamodaMayorBundle:Kardexdetallepar');
-        $repoPro = $this->em->getRepository('NovamodaMayorBundle:Proformas');
+        $this->em->beginTransaction();
+        try {
+            $result = new \Novamoda\MayorBundle\Model\RespuestaSP();
+            $repoDet = $this->em->getRepository('NovamodaMayorBundle:ProformaCodbarras');
+            $repoModelo = $this->em->getRepository('NovamodaMayorBundle:Modelo');
+            $repoKardexCaja = $this->em->getRepository('NovamodaMayorBundle:Kardexcajas');
+            $repoKardex = $this->em->getRepository('NovamodaMayorBundle:Kardexdetallepar');
+            $repoPro = $this->em->getRepository('NovamodaMayorBundle:Proformas');
 
-        $res = $repoDet->guardarDetallesCodBarra($idProforma, $fila, $detalles);
-        if (is_numeric($res)) {
-            $this->actualizarDetalle(array("columna" => "ESTADO", "fila" => $fila, "valor" => "1", "id_proforma" => $idProforma));
-            $datosAdicionales = $this->obtenerDatosAdicionalesModelo($idProforma, $fila);
-            $resModelo = $repoModelo->guardarModelo($idProforma, $datosAdicionales);
-            if ($resModelo->success) {
-                $datosAdicionales["idmodelo"] = $resModelo->id;
-                $resKardexCaja = $repoKardexCaja->guardarKardexCaja($datosAdicionales);
-                if ($resKardexCaja->success) {
-                    $datosAdicionales["id_kardex"] = $resKardexCaja->id;
-//                    var_dump($datosAdicionales);
-                    $res = $repoKardex->guardarKardexPar($datosAdicionales, $detalles);
-                    $repoPro->cambiarEstado($datosAdicionales);
-//                    var_dump($res);
-                    $result->success = true;
-                    $result->msg = "Proceso Ejectuado Correctamente";
+            $res = $repoDet->guardarDetallesCodBarra($idProforma, $fila, $detalles);
+            if (is_numeric($res)) {
+                $this->actualizarDetalle(array("columna" => "ESTADO", "fila" => $fila, "valor" => "1", "id_proforma" => $idProforma));
+                $datosAdicionales = $this->obtenerDatosAdicionalesModelo($idProforma, $fila);
+                $resModelo = $repoModelo->guardarModelo($idProforma, $datosAdicionales);
+                if ($resModelo->success) {
+                    $datosAdicionales["idmodelo"] = $resModelo->id;
+                    $resKardexCaja = $repoKardexCaja->guardarKardexCaja($datosAdicionales);
+                    if ($resKardexCaja->success) {
+                        $datosAdicionales["id_kardex"] = $resKardexCaja->id;
+                        $res = $repoKardex->guardarKardexPar($datosAdicionales, $detalles);
+                        if($res->success){
+                            $repoPro->cambiarEstado($datosAdicionales);
+                            $result->success = true;
+                            $result->msg = "Proceso Ejectuado Correctamente";
+                        }
+                        else{
+                            $result->success = false;
+                            $result->msg = $res->msg;
+                        }
+                    } else {
+                        $result->success = false;
+                        $result->msg = $resKardexCaja->msg;
+                    }
                 } else {
+
                     $result->success = false;
-                    $result->msg = $resKardexCaja->msg;
+                    $result->msg = $resModelo->msg;
                 }
+
             } else {
-
                 $result->success = false;
-                $result->msg = $resModelo->msg;
+                $result->msg = $res;
             }
-
-        } else {
+            if($result->success){
+                $this->em->commit();
+            }
+            else{
+                $this->em->rollback();
+            }
+        }
+        catch(\Exception $e){
             $result->success = false;
-            $result->msg = $res;
+            $result->msg = $e->getMessage();
+            $this->em->rollback();
         }
 
 //        guardarDetallesCodBarra

@@ -50,7 +50,7 @@ class DetallesProformaRepository extends BaseRepository
         $max = $this->createQueryBuilder("det")->select("MAX(det.fila)")->andWhere("det.idProforma=:idProforma")->setParameter("idProforma", $idProforma)->getQuery()->getSingleScalarResult();
         $cnt = 1;
         $rows = array();
-        while ($cnt < $max) {
+        while ($cnt <= $max) {
 
             $query = $this->createQueryBuilder("det")->andWhere("det.idProforma=:idProforma")
                 ->andWhere("det.fila = :fila")
