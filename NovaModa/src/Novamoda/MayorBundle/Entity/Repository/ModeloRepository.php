@@ -37,6 +37,7 @@ class ModeloRepository extends BaseRepository
             $modelo->setIdvendedor($datos["idvendedor"]);
             $modelo->setCodigo($datos["codigo"]);
             $modelo->setIdcoleccion("col-37");
+            $modelo->setCliente($datos["item"]);
             $modelo->setTalla(" ");
             $modelo->setFecha(new \DateTime());
             $modelo->setHora(new \DateTime());

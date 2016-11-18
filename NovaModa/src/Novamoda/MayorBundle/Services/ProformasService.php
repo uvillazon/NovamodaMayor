@@ -291,6 +291,7 @@ class ProformasService
             $result["precio_unitario"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "UNITARIO");
             $result["total"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "TOTAL");
             $result["talla"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "TALLA");
+            $result["item"] = $repoDetalle->obtenerValorPorEncabezado($idProforma, $fila, "ITEM");
 
 
         }
