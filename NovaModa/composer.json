@@ -9,7 +9,7 @@
     },
     "require": {
         "php": ">=5.3.9",
-        "symfony/symfony": "2.7.*",
+        "symfony/symfony": "2.8.*",
         "doctrine/orm": "^2.4.8",
         "doctrine/doctrine-bundle": "~1.4",
         "symfony/assetic-bundle": "~2.3",
@@ -18,9 +18,9 @@
         "sensio/distribution-bundle": "~4.0",
         "sensio/framework-extra-bundle": "^3.0.2",
         "incenteev/composer-parameter-handler": "~2.0",
-        "friendsofsymfony/rest-bundle": "@dev",
-        "jms/serializer-bundle": "@dev",
-        "nelmio/api-doc-bundle": "@dev",
+        "friendsofsymfony/rest-bundle": "^1.7",
+        "jms/serializer-bundle": "^1.1",
+        "nelmio/api-doc-bundle": "^2.12",
         "jaspersoft/rest-client": "v2.0.0",
         "ddeboer/data-import": "@stable"
     },

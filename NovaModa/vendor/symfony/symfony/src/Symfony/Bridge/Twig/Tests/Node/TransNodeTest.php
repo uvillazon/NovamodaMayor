@@ -29,13 +29,14 @@ class TransNodeTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             sprintf(
-                'echo $this->env->getExtension(\'translator\')->getTranslator()->trans("trans %%var%%", array_merge(array("%%var%%" => %s), %s), "messages");',
+                'echo $this->env->getExtension(\'Symfony\Bridge\Twig\Extension\TranslationExtension\')->getTranslator()->trans("trans %%var%%", array_merge(array("%%var%%" => %s), %s), "messages");',
                 $this->getVariableGetterWithoutStrictCheck('var'),
                 $this->getVariableGetterWithStrictCheck('foo')
              ),
              trim($compiler->compile($node)->getSource())
         );
     }
+
     protected function getVariableGetterWithoutStrictCheck($name)
     {
         if (PHP_VERSION_ID >= 50400) {

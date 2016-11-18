@@ -1870,7 +1870,7 @@ class UnitOfWork implements PropertyChangedListener
                 }
             }
 
-            if ($class->isVersioned) {
+            if ($class->isVersioned && $this->isLoaded($managedCopy) && $this->isLoaded($entity)) {
                 $reflField          = $class->reflFields[$class->versionField];
                 $managedCopyVersion = $reflField->getValue($managedCopy);
                 $entityVersion      = $reflField->getValue($entity);
@@ -1883,7 +1883,7 @@ class UnitOfWork implements PropertyChangedListener
 
             $visited[$oid] = $managedCopy; // mark visited
 
-            if (!($entity instanceof Proxy && ! $entity->__isInitialized())) {
+            if ($this->isLoaded($entity)) {
                 if ($managedCopy instanceof Proxy && ! $managedCopy->__isInitialized()) {
                     $managedCopy->__load();
                 }
@@ -1906,6 +1906,18 @@ class UnitOfWork implements PropertyChangedListener
         $this->cascadeMerge($entity, $managedCopy, $visited);
 
         return $managedCopy;
+    }
+
+    /**
+     * Tests if an entity is loaded - must either be a loaded proxy or not a proxy
+     *
+     * @param object $entity
+     *
+     * @return bool
+     */
+    private function isLoaded($entity)
+    {
+        return !($entity instanceof Proxy) || $entity->__isInitialized();
     }
 
     /**
@@ -2395,17 +2407,8 @@ class UnitOfWork implements PropertyChangedListener
                 $this->commitOrderCalculator->clear();
             }
         } else {
-            $visited = array();
-
-            foreach ($this->identityMap as $className => $entities) {
-                if ($className !== $entityName) {
-                    continue;
-                }
-
-                foreach ($entities as $entity) {
-                    $this->doDetach($entity, $visited, false);
-                }
-            }
+            $this->clearIdentityMapForEntityName($entityName);
+            $this->clearEntityInsertionsForEntityName($entityName);
         }
 
         if ($this->evm->hasListeners(Events::onClear)) {
@@ -3419,8 +3422,6 @@ class UnitOfWork implements PropertyChangedListener
                         );
                         $managedCol->setOwner($managedCopy, $assoc2);
                         $prop->setValue($managedCopy, $managedCol);
-
-                        $this->originalEntityData[spl_object_hash($entity)][$name] = $managedCol;
                     }
 
                     if ($assoc2['isCascadeMerge']) {
@@ -3458,5 +3459,33 @@ class UnitOfWork implements PropertyChangedListener
     public function hydrationComplete()
     {
         $this->hydrationCompleteHandler->hydrationComplete();
+    }
+
+    /**
+     * @param string $entityName
+     */
+    private function clearIdentityMapForEntityName($entityName)
+    {
+        if (! isset($this->identityMap[$entityName])) {
+            return;
+        }
+
+        $visited = [];
+
+        foreach ($this->identityMap[$entityName] as $entity) {
+            $this->doDetach($entity, $visited, false);
+        }
+    }
+
+    /**
+     * @param string $entityName
+     */
+    private function clearEntityInsertionsForEntityName($entityName)
+    {
+        foreach ($this->entityInsertions as $hash => $entity) {
+            if (get_class($entity) === $entityName) {
+                unset($this->entityInsertions[$hash]);
+            }
+        }
     }
 }

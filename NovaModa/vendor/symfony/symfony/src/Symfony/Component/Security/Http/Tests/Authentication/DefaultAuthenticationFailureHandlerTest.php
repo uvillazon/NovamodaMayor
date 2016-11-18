@@ -13,21 +13,17 @@ namespace Symfony\Component\Security\Http\Tests\Authentication;
 
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationFailureHandler;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class DefaultAuthenticationFailureHandlerTest extends \PHPUnit_Framework_TestCase
 {
-    private $httpKernel = null;
-
-    private $httpUtils = null;
-
-    private $logger = null;
-
-    private $request = null;
-
-    private $session = null;
-
-    private $exception = null;
+    private $httpKernel;
+    private $httpUtils;
+    private $logger;
+    private $request;
+    private $session;
+    private $exception;
 
     protected function setUp()
     {
@@ -52,7 +48,7 @@ class DefaultAuthenticationFailureHandlerTest extends \PHPUnit_Framework_TestCas
             ->method('createRequest')->with($this->request, '/login')
             ->will($this->returnValue($subRequest));
 
-        $response = $this->getMock('Symfony\Component\HttpFoundation\Response');
+        $response = new Response();
         $this->httpKernel->expects($this->once())
             ->method('handle')->with($subRequest, HttpKernelInterface::SUB_REQUEST)
             ->will($this->returnValue($response));
@@ -65,7 +61,7 @@ class DefaultAuthenticationFailureHandlerTest extends \PHPUnit_Framework_TestCas
 
     public function testRedirect()
     {
-        $response = $this->getMock('Symfony\Component\HttpFoundation\Response');
+        $response = new Response();
         $this->httpUtils->expects($this->once())
             ->method('createRedirectResponse')->with($this->request, '/login')
             ->will($this->returnValue($response));
@@ -145,7 +141,7 @@ class DefaultAuthenticationFailureHandlerTest extends \PHPUnit_Framework_TestCas
     public function testFailurePathCanBeOverwrittenWithRequest()
     {
         $this->request->expects($this->once())
-            ->method('get')->with('_failure_path', null, true)
+            ->method('get')->with('_failure_path')
             ->will($this->returnValue('/auth/login'));
 
         $this->httpUtils->expects($this->once())
@@ -155,12 +151,25 @@ class DefaultAuthenticationFailureHandlerTest extends \PHPUnit_Framework_TestCas
         $handler->onAuthenticationFailure($this->request, $this->exception);
     }
 
+    public function testFailurePathCanBeOverwrittenWithNestedAttributeInRequest()
+    {
+        $this->request->expects($this->once())
+            ->method('get')->with('_failure_path')
+            ->will($this->returnValue(array('value' => '/auth/login')));
+
+        $this->httpUtils->expects($this->once())
+            ->method('createRedirectResponse')->with($this->request, '/auth/login');
+
+        $handler = new DefaultAuthenticationFailureHandler($this->httpKernel, $this->httpUtils, array('failure_path_parameter' => '_failure_path[value]'), $this->logger);
+        $handler->onAuthenticationFailure($this->request, $this->exception);
+    }
+
     public function testFailurePathParameterCanBeOverwritten()
     {
         $options = array('failure_path_parameter' => '_my_failure_path');
 
         $this->request->expects($this->once())
-            ->method('get')->with('_my_failure_path', null, true)
+            ->method('get')->with('_my_failure_path')
             ->will($this->returnValue('/auth/login'));
 
         $this->httpUtils->expects($this->once())

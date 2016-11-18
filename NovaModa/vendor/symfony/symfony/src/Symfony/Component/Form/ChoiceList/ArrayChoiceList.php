@@ -74,6 +74,12 @@ class ArrayChoiceList implements ChoiceListInterface
             $choices = iterator_to_array($choices);
         }
 
+        if (null === $value && $this->castableToString($choices)) {
+            $value = function ($choice) {
+                return false === $choice ? '0' : (string) $choice;
+            };
+        }
+
         if (null !== $value) {
             // If a deterministic value generator was passed, use it later
             $this->valueCallback = $value;
@@ -135,7 +141,7 @@ class ArrayChoiceList implements ChoiceListInterface
         $choices = array();
 
         foreach ($values as $i => $givenValue) {
-            if (isset($this->choices[$givenValue])) {
+            if (array_key_exists($givenValue, $this->choices)) {
                 $choices[$i] = $this->choices[$givenValue];
             }
         }
@@ -177,12 +183,13 @@ class ArrayChoiceList implements ChoiceListInterface
     /**
      * Flattens an array into the given output variables.
      *
-     * @param array    $choices         The array to flatten
-     * @param callable $value           The callable for generating choice values
-     * @param array    $choicesByValues The flattened choices indexed by the
-     *                                  corresponding values
-     * @param array    $keysByValues    The original keys indexed by the
-     *                                  corresponding values
+     * @param array    $choices          The array to flatten
+     * @param callable $value            The callable for generating choice values
+     * @param array    $choicesByValues  The flattened choices indexed by the
+     *                                   corresponding values
+     * @param array    $keysByValues     The original keys indexed by the
+     *                                   corresponding values
+     * @param array    $structuredValues The values indexed by the original keys
      *
      * @internal Must not be used by user-land code
      */
@@ -206,5 +213,36 @@ class ArrayChoiceList implements ChoiceListInterface
             $keysByValues[$choiceValue] = $key;
             $structuredValues[$key] = $choiceValue;
         }
+    }
+
+    /**
+     * Checks whether the given choices can be cast to strings without
+     * generating duplicates.
+     *
+     * @param array      $choices The choices
+     * @param array|null $cache   The cache for previously checked entries. Internal
+     *
+     * @return bool Returns true if the choices can be cast to strings and
+     *              false otherwise.
+     */
+    private function castableToString(array $choices, array &$cache = array())
+    {
+        foreach ($choices as $choice) {
+            if (is_array($choice)) {
+                if (!$this->castableToString($choice, $cache)) {
+                    return false;
+                }
+
+                continue;
+            } elseif (!is_scalar($choice)) {
+                return false;
+            } elseif (isset($cache[$choice])) {
+                return false;
+            }
+
+            $cache[$choice] = true;
+        }
+
+        return true;
     }
 }

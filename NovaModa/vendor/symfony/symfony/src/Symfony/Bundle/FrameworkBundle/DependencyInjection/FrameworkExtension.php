@@ -23,7 +23,6 @@ use Symfony\Component\Config\Resource\DirectoryResource;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Validator\Validation;
 
 /**
  * FrameworkExtension.
@@ -37,6 +36,11 @@ class FrameworkExtension extends Extension
     private $formConfigEnabled = false;
     private $translationConfigEnabled = false;
     private $sessionConfigEnabled = false;
+
+    /**
+     * @var string|null
+     */
+    private $kernelRootHash;
 
     /**
      * Responds to the app.config configuration parameter.
@@ -131,6 +135,10 @@ class FrameworkExtension extends Extension
             $this->registerSerializerConfiguration($config['serializer'], $container, $loader);
         }
 
+        if (isset($config['property_info'])) {
+            $this->registerPropertyInfoConfiguration($config['property_info'], $container, $loader);
+        }
+
         $loader->load('debug_prod.xml');
         $definition = $container->findDefinition('debug.debug_handlers_listener');
 
@@ -139,6 +147,8 @@ class FrameworkExtension extends Extension
         }
 
         if ($container->getParameter('kernel.debug')) {
+            $definition->replaceArgument(2, -1 & ~(E_COMPILE_ERROR | E_PARSE | E_ERROR | E_CORE_ERROR | E_RECOVERABLE_ERROR));
+
             $loader->load('debug.xml');
 
             $definition = $container->findDefinition('http_kernel');
@@ -150,7 +160,7 @@ class FrameworkExtension extends Extension
             $container->setDefinition('debug.event_dispatcher.parent', $definition);
             $container->setAlias('event_dispatcher', 'debug.event_dispatcher');
         } else {
-            $definition->replaceArgument(2, E_COMPILE_ERROR | E_PARSE | E_ERROR | E_CORE_ERROR);
+            $definition->replaceArgument(1, null);
         }
 
         $this->addClassesToCompile(array(
@@ -361,7 +371,7 @@ class FrameworkExtension extends Extension
         $loader->load('routing.xml');
 
         $container->setParameter('router.resource', $config['resource']);
-        $container->setParameter('router.cache_class_prefix', $container->getParameter('kernel.name').ucfirst($container->getParameter('kernel.environment')));
+        $container->setParameter('router.cache_class_prefix', $container->getParameter('kernel.container_class'));
         $router = $container->findDefinition('router.default');
         $argument = $router->getArgument(2);
         $argument['strict_requirements'] = $config['strict_requirements'];
@@ -396,7 +406,7 @@ class FrameworkExtension extends Extension
         // session storage
         $container->setAlias('session.storage', $config['storage_id']);
         $options = array();
-        foreach (array('name', 'cookie_lifetime', 'cookie_path', 'cookie_domain', 'cookie_secure', 'cookie_httponly', 'gc_maxlifetime', 'gc_probability', 'gc_divisor') as $key) {
+        foreach (array('name', 'cookie_lifetime', 'cookie_path', 'cookie_domain', 'cookie_secure', 'cookie_httponly', 'use_cookies', 'gc_maxlifetime', 'gc_probability', 'gc_divisor') as $key) {
             if (isset($config[$key])) {
                 $options[$key] = $config[$key];
             }
@@ -587,7 +597,7 @@ class FrameworkExtension extends Extension
 
         $namedPackages = array();
         foreach ($config['packages'] as $name => $package) {
-            if (null === $package['version']) {
+            if (!array_key_exists('version', $package)) {
                 $version = $defaultVersion;
             } else {
                 $format = $package['version_format'] ?: $config['version_format'];
@@ -685,17 +695,26 @@ class FrameworkExtension extends Extension
 
             $dirs[] = dirname($r->getFileName()).'/../Resources/translations';
         }
-        $overridePath = $container->getParameter('kernel.root_dir').'/Resources/%s/translations';
+        $rootDir = $container->getParameter('kernel.root_dir');
         foreach ($container->getParameter('kernel.bundles') as $bundle => $class) {
             $reflection = new \ReflectionClass($class);
             if (is_dir($dir = dirname($reflection->getFileName()).'/Resources/translations')) {
                 $dirs[] = $dir;
             }
-            if (is_dir($dir = sprintf($overridePath, $bundle))) {
+            if (is_dir($dir = $rootDir.sprintf('/Resources/%s/translations', $bundle))) {
                 $dirs[] = $dir;
             }
         }
-        if (is_dir($dir = $container->getParameter('kernel.root_dir').'/Resources/translations')) {
+
+        foreach ($config['paths'] as $dir) {
+            if (is_dir($dir)) {
+                $dirs[] = $dir;
+            } else {
+                throw new \UnexpectedValueException(sprintf('%s defined in translator.paths does not exist or is not a directory', $dir));
+            }
+        }
+
+        if (is_dir($dir = $rootDir.'/Resources/translations')) {
             $dirs[] = $dir;
         }
 
@@ -714,9 +733,8 @@ class FrameworkExtension extends Extension
                 ->in($dirs)
             ;
 
-            $locales = array();
             foreach ($finder as $file) {
-                list($domain, $locale, $format) = explode('.', $file->getBasename(), 3);
+                list(, $locale) = explode('.', $file->getBasename(), 3);
                 if (!isset($files[$locale])) {
                     $files[$locale] = array();
                 }
@@ -777,7 +795,7 @@ class FrameworkExtension extends Extension
         if (isset($config['cache'])) {
             $container->setParameter(
                 'validator.mapping.cache.prefix',
-                'validator_'.hash('sha256', $container->getParameter('kernel.root_dir'))
+                'validator_'.$this->getKernelRootHash($container)
             );
 
             $validatorBuilder->addMethodCall('setMetadataCache', array(new Reference($config['cache'])));
@@ -817,10 +835,10 @@ class FrameworkExtension extends Extension
 
             if (is_dir($dir = $dirname.'/Resources/config/validation')) {
                 foreach (Finder::create()->files()->in($dir)->name('*.xml') as $file) {
-                    $files[0][] = $file->getRealpath();
+                    $files[0][] = $file->getRealPath();
                 }
                 foreach (Finder::create()->files()->in($dir)->name('*.yml') as $file) {
-                    $files[1][] = $file->getRealpath();
+                    $files[1][] = $file->getRealPath();
                 }
 
                 $container->addResource(new DirectoryResource($dir));
@@ -834,22 +852,29 @@ class FrameworkExtension extends Extension
     {
         $loader->load('annotations.xml');
 
-        if ('file' === $config['cache']) {
-            $cacheDir = $container->getParameterBag()->resolveValue($config['file_cache_dir']);
-            if (!is_dir($cacheDir) && false === @mkdir($cacheDir, 0777, true) && !is_dir($cacheDir)) {
-                throw new \RuntimeException(sprintf('Could not create cache directory "%s".', $cacheDir));
+        if ('none' !== $config['cache']) {
+            if ('file' === $config['cache']) {
+                $cacheDir = $container->getParameterBag()->resolveValue($config['file_cache_dir']);
+                if (!is_dir($cacheDir) && false === @mkdir($cacheDir, 0777, true) && !is_dir($cacheDir)) {
+                    throw new \RuntimeException(sprintf('Could not create cache directory "%s".', $cacheDir));
+                }
+
+                $container
+                    ->getDefinition('annotations.filesystem_cache')
+                    ->replaceArgument(0, $cacheDir)
+                ;
+
+                // The annotations.file_cache_reader service is deprecated
+                $container
+                    ->getDefinition('annotations.file_cache_reader')
+                    ->replaceArgument(1, $cacheDir)
+                    ->replaceArgument(2, $config['debug'])
+                ;
             }
 
             $container
-                ->getDefinition('annotations.file_cache_reader')
-                ->replaceArgument(1, $cacheDir)
-                ->replaceArgument(2, $config['debug'])
-            ;
-            $container->setAlias('annotation_reader', 'annotations.file_cache_reader');
-        } elseif ('none' !== $config['cache']) {
-            $container
                 ->getDefinition('annotations.cached_reader')
-                ->replaceArgument(1, new Reference($config['cache']))
+                ->replaceArgument(1, new Reference('file' !== $config['cache'] ? $config['cache'] : 'annotations.filesystem_cache'))
                 ->replaceArgument(2, $config['debug'])
             ;
             $container->setAlias('annotation_reader', 'annotations.cached_reader');
@@ -938,13 +963,13 @@ class FrameworkExtension extends Extension
 
             if (is_dir($dir = $dirname.'/Resources/config/serialization')) {
                 foreach (Finder::create()->files()->in($dir)->name('*.xml') as $file) {
-                    $definition = new Definition('Symfony\Component\Serializer\Mapping\Loader\XmlFileLoader', array($file->getRealpath()));
+                    $definition = new Definition('Symfony\Component\Serializer\Mapping\Loader\XmlFileLoader', array($file->getRealPath()));
                     $definition->setPublic(false);
 
                     $serializerLoaders[] = $definition;
                 }
                 foreach (Finder::create()->files()->in($dir)->name('*.yml') as $file) {
-                    $definition = new Definition('Symfony\Component\Serializer\Mapping\Loader\YamlFileLoader', array($file->getRealpath()));
+                    $definition = new Definition('Symfony\Component\Serializer\Mapping\Loader\YamlFileLoader', array($file->getRealPath()));
                     $definition->setPublic(false);
 
                     $serializerLoaders[] = $definition;
@@ -959,13 +984,55 @@ class FrameworkExtension extends Extension
         if (isset($config['cache']) && $config['cache']) {
             $container->setParameter(
                 'serializer.mapping.cache.prefix',
-                'serializer_'.hash('sha256', $container->getParameter('kernel.root_dir'))
+                'serializer_'.$this->getKernelRootHash($container)
             );
 
             $container->getDefinition('serializer.mapping.class_metadata_factory')->replaceArgument(
                 1, new Reference($config['cache'])
             );
         }
+
+        if (isset($config['name_converter']) && $config['name_converter']) {
+            $container->getDefinition('serializer.normalizer.object')->replaceArgument(1, new Reference($config['name_converter']));
+        }
+    }
+
+    /**
+     * Loads property info configuration.
+     *
+     * @param array            $config
+     * @param ContainerBuilder $container
+     * @param XmlFileLoader    $loader
+     */
+    private function registerPropertyInfoConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
+    {
+        if (!$config['enabled']) {
+            return;
+        }
+
+        $loader->load('property_info.xml');
+
+        if (class_exists('phpDocumentor\Reflection\ClassReflector')) {
+            $definition = $container->register('property_info.php_doc_extractor', 'Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor');
+            $definition->addTag('property_info.description_extractor', array('priority' => -1000));
+            $definition->addTag('property_info.type_extractor', array('priority' => -1001));
+        }
+    }
+
+    /**
+     * Gets a hash of the kernel root directory.
+     *
+     * @param ContainerBuilder $container
+     *
+     * @return string
+     */
+    private function getKernelRootHash(ContainerBuilder $container)
+    {
+        if (!$this->kernelRootHash) {
+            $this->kernelRootHash = hash('sha256', $container->getParameter('kernel.root_dir'));
+        }
+
+        return $this->kernelRootHash;
     }
 
     /**
