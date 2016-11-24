@@ -1,0 +1,5 @@
+[02-Dec-2015 01:58:59 America/Denver] PHP Fatal error:  Interface 'Metadata\AdvancedMetadataFactoryInterface' not found in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/metadata/src/Metadata/MetadataFactory.php on line 26
+[02-Dec-2015 02:13:59 America/Denver] PHP Fatal error:  Class 'Metadata\ClassMetadata' not found in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/metadata/src/Metadata/NullMetadata.php on line 11
+[02-Dec-2015 08:56:28 America/Denver] PHP Fatal error:  Interface 'Metadata\AdvancedMetadataFactoryInterface' not found in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/metadata/src/Metadata/MetadataFactory.php on line 26
+[02-Dec-2015 09:31:55 America/Denver] PHP Fatal error:  Class 'Metadata\ClassMetadata' not found in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/metadata/src/Metadata/NullMetadata.php on line 11
+[07-Dec-2015 05:08:55 America/Denver] PHP Fatal error:  Interface 'Metadata\AdvancedMetadataFactoryInterface' not found in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/metadata/src/Metadata/MetadataFactory.php on line 26

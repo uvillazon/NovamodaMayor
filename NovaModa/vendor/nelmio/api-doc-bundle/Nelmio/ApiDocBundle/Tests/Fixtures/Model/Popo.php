@@ -19,15 +19,10 @@ class Popo
     /**
      * @var int
      */
-    private $id;
+    public $id;
 
     /**
      * @var string
      */
     public $foo;
-
-    public function getId()
-    {
-        return $this->id;
-    }
 }

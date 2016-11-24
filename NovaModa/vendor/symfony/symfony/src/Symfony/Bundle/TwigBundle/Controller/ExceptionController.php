@@ -11,10 +11,12 @@
 
 namespace Symfony\Bundle\TwigBundle\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
 use Symfony\Component\HttpKernel\Exception\FlattenException;
 use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Templating\TemplateReferenceInterface;
 
 /**
  * ExceptionController renders error or exception pages for a given
@@ -28,7 +30,7 @@ class ExceptionController
     protected $twig;
 
     /**
-     * @var bool Show error (false) or exception (true) pages by default
+     * @var bool Show error (false) or exception (true) pages by default.
      */
     protected $debug;
 
@@ -94,7 +96,7 @@ class ExceptionController
      * @param int     $code          An HTTP response status code
      * @param bool    $showException
      *
-     * @return string
+     * @return TemplateReferenceInterface
      */
     protected function findTemplate(Request $request, $format, $code, $showException)
     {
@@ -105,14 +107,14 @@ class ExceptionController
 
         // For error pages, try to find a template for the specific HTTP status code and format
         if (!$showException) {
-            $template = sprintf('@Twig/Exception/%s%s.%s.twig', $name, $code, $format);
+            $template = new TemplateReference('TwigBundle', 'Exception', $name.$code, $format, 'twig');
             if ($this->templateExists($template)) {
                 return $template;
             }
         }
 
         // try to find a template for the given format
-        $template = sprintf('@Twig/Exception/%s.%s.twig', $name, $format);
+        $template = new TemplateReference('TwigBundle', 'Exception', $name, $format, 'twig');
         if ($this->templateExists($template)) {
             return $template;
         }
@@ -120,7 +122,7 @@ class ExceptionController
         // default to a generic HTML exception
         $request->setRequestFormat('html');
 
-        return sprintf('@Twig/Exception/%s.html.twig', $showException ? 'exception_full' : $name);
+        return new TemplateReference('TwigBundle', 'Exception', $showException ? 'exception_full' : $name, 'html', 'twig');
     }
 
     // to be removed when the minimum required version of Twig is >= 3.0

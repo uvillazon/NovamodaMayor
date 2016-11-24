@@ -14,6 +14,8 @@ namespace Symfony\Component\Asset\Tests;
 use Symfony\Component\Asset\Package;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Asset\VersionStrategy\StaticVersionStrategy;
+use Symfony\Component\Asset\Exception\InvalidArgumentException;
+use Symfony\Component\Asset\Exception\LogicException;
 
 class PackagesTest extends \PHPUnit_Framework_TestCase
 {
@@ -55,7 +57,7 @@ class PackagesTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Asset\Exception\LogicException
+     * @expectedException LogicException
      */
     public function testNoDefaultPackage()
     {
@@ -64,7 +66,7 @@ class PackagesTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Asset\Exception\InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testUndefinedPackage()
     {

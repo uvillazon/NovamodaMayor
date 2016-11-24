@@ -166,35 +166,32 @@ abstract class PropertyAccessorCollectionTest extends PropertyAccessorArrayAcces
     public function testIsWritableReturnsTrueIfAdderAndRemoverExists()
     {
         $car = $this->getMock(__CLASS__.'_Car');
-        $this->assertTrue($this->propertyAccessor->isWritable($car, 'axes'));
+        $axes = $this->getContainer(array(1 => 'first', 2 => 'second', 3 => 'third'));
+
+        $this->assertTrue($this->propertyAccessor->isWritable($car, 'axes', $axes));
     }
 
     public function testIsWritableReturnsFalseIfOnlyAdderExists()
     {
         $car = $this->getMock(__CLASS__.'_CarOnlyAdder');
-        $this->assertFalse($this->propertyAccessor->isWritable($car, 'axes'));
+        $axes = $this->getContainer(array(1 => 'first', 2 => 'second', 3 => 'third'));
+
+        $this->assertFalse($this->propertyAccessor->isWritable($car, 'axes', $axes));
     }
 
     public function testIsWritableReturnsFalseIfOnlyRemoverExists()
     {
         $car = $this->getMock(__CLASS__.'_CarOnlyRemover');
-        $this->assertFalse($this->propertyAccessor->isWritable($car, 'axes'));
+        $axes = $this->getContainer(array(1 => 'first', 2 => 'second', 3 => 'third'));
+
+        $this->assertFalse($this->propertyAccessor->isWritable($car, 'axes', $axes));
     }
 
     public function testIsWritableReturnsFalseIfNoAdderNorRemoverExists()
     {
         $car = $this->getMock(__CLASS__.'_CarNoAdderAndRemover');
-        $this->assertFalse($this->propertyAccessor->isWritable($car, 'axes'));
-    }
+        $axes = $this->getContainer(array(1 => 'first', 2 => 'second', 3 => 'third'));
 
-    /**
-     * @expectedException \Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException
-     * expectedExceptionMessageRegExp /The property "axes" in class "Mock_PropertyAccessorCollectionTest_Car[^"]*" can be defined with the methods "addAxis()", "removeAxis()" but the new value must be an array or an instance of \Traversable, "string" given./
-     */
-    public function testSetValueFailsIfAdderAndRemoverExistButValueIsNotTraversable()
-    {
-        $car = $this->getMock(__CLASS__.'_Car');
-
-        $this->propertyAccessor->setValue($car, 'axes', 'Not an array or Traversable');
+        $this->assertFalse($this->propertyAccessor->isWritable($car, 'axes', $axes));
     }
 }

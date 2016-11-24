@@ -35,11 +35,6 @@ class EqualToValidatorTest extends AbstractComparisonValidatorTestCase
         return new EqualTo($options);
     }
 
-    protected function getErrorCode()
-    {
-        return EqualTo::NOT_EQUAL_ERROR;
-    }
-
     /**
      * {@inheritdoc}
      */

@@ -15,7 +15,6 @@ use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\DistributionBundle\Configurator\Step\StepInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 /**
  * ConfiguratorController.
@@ -93,7 +92,7 @@ class ConfiguratorController extends ContainerAware
 
         try {
             $welcomeUrl = $this->container->get('router')->generate('_welcome');
-        } catch (RouteNotFoundException $e) {
+        } catch (\Exception $e) {
             $welcomeUrl = null;
         }
 

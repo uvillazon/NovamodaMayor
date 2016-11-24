@@ -15,10 +15,13 @@ class AlternatingRowType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($formFactory) {
             $form = $event->getForm();
-            $type = $form->getName() % 2 === 0
-                ? 'Symfony\Component\Form\Extension\Core\Type\TextType'
-                : 'Symfony\Component\Form\Extension\Core\Type\TextareaType';
+            $type = $form->getName() % 2 === 0 ? 'text' : 'textarea';
             $form->add('title', $type);
         });
+    }
+
+    public function getName()
+    {
+        return 'alternating_row';
     }
 }

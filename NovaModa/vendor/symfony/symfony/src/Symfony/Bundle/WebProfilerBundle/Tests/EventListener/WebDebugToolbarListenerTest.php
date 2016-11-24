@@ -16,7 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class WebDebugToolbarListenerTest extends \PHPUnit_Framework_TestCase
 {
@@ -80,21 +79,6 @@ class WebDebugToolbarListenerTest extends \PHPUnit_Framework_TestCase
         $listener->onKernelResponse($event);
 
         $this->assertEquals("<html><head></head><body>\nWDT\n</body></html>", $response->getContent());
-    }
-
-    /**
-     * @depends testToolbarIsInjected
-     */
-    public function testToolbarIsNotInjectedOnContentDispositionAttachment()
-    {
-        $response = new Response('<html><head></head><body></body></html>');
-        $response->headers->set('Content-Disposition', 'attachment; filename=test.html');
-        $event = new FilterResponseEvent($this->getKernelMock(), $this->getRequestMock(false, 'html'), HttpKernelInterface::MASTER_REQUEST, $response);
-
-        $listener = new WebDebugToolbarListener($this->getTwigMock());
-        $listener->onKernelResponse($event);
-
-        $this->assertEquals('<html><head></head><body></body></html>', $response->getContent());
     }
 
     /**
@@ -211,8 +195,8 @@ class WebDebugToolbarListenerTest extends \PHPUnit_Framework_TestCase
         $urlGenerator
             ->expects($this->once())
             ->method('generate')
-            ->with('_profiler', array('token' => 'xxxxxxxx'), UrlGeneratorInterface::ABSOLUTE_URL)
-            ->will($this->returnValue('http://mydomain.com/_profiler/xxxxxxxx'))
+            ->with('_profiler', array('token' => 'xxxxxxxx'))
+            ->will($this->returnValue('/_profiler/xxxxxxxx'))
         ;
 
         $event = new FilterResponseEvent($this->getKernelMock(), $this->getRequestMock(), HttpKernelInterface::MASTER_REQUEST, $response);
@@ -220,7 +204,7 @@ class WebDebugToolbarListenerTest extends \PHPUnit_Framework_TestCase
         $listener = new WebDebugToolbarListener($this->getTwigMock(), false, WebDebugToolbarListener::ENABLED, 'bottom', $urlGenerator);
         $listener->onKernelResponse($event);
 
-        $this->assertEquals('http://mydomain.com/_profiler/xxxxxxxx', $response->headers->get('X-Debug-Token-Link'));
+        $this->assertEquals('/_profiler/xxxxxxxx', $response->headers->get('X-Debug-Token-Link'));
     }
 
     public function testThrowingUrlGenerator()

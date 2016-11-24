@@ -32,8 +32,7 @@ $container->loadFromExtension('framework', array(
         'cookie_path' => '/',
         'cookie_domain' => 'example.com',
         'cookie_secure' => true,
-        'cookie_httponly' => false,
-        'use_cookies' => true,
+        'cookie_httponly' => true,
         'gc_maxlifetime' => 90000,
         'gc_divisor' => 108,
         'gc_probability' => 1,
@@ -51,23 +50,17 @@ $container->loadFromExtension('framework', array(
     'translator' => array(
         'enabled' => true,
         'fallback' => 'fr',
-        'paths' => array('%kernel.root_dir%/Fixtures/translations'),
     ),
     'validation' => array(
         'enabled' => true,
-        'cache' => 'validator.mapping.cache.doctrine.apc',
+        'cache' => 'apc',
     ),
     'annotations' => array(
         'cache' => 'file',
         'debug' => true,
         'file_cache_dir' => '%kernel.cache_dir%/annotations',
     ),
-    'serializer' => array(
-        'enabled' => true,
-        'enable_annotations' => true,
-        'cache' => 'serializer.mapping.cache.apc',
-        'name_converter' => 'serializer.name_converter.camel_case_to_snake_case',
-    ),
+    'serializer' => array('enabled' => true),
     'ide' => 'file%%link%%format',
     'request' => array(
         'formats' => array(

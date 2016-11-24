@@ -14,7 +14,6 @@ namespace Symfony\Bundle\SecurityBundle\DependencyInjection;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\SecurityFactoryInterface;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\UserProvider\UserProviderFactoryInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -66,7 +65,6 @@ class SecurityExtension extends Extension
         $loader->load('templating_php.xml');
         $loader->load('templating_twig.xml');
         $loader->load('collectors.xml');
-        $loader->load('guard.xml');
 
         if (!class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
             $container->removeDefinition('security.expression_language');
@@ -101,16 +99,16 @@ class SecurityExtension extends Extension
 
         // add some required classes for compilation
         $this->addClassesToCompile(array(
-            'Symfony\Component\Security\Http\Firewall',
-            'Symfony\Component\Security\Core\User\UserProviderInterface',
-            'Symfony\Component\Security\Core\Authentication\AuthenticationProviderManager',
-            'Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage',
-            'Symfony\Component\Security\Core\Authorization\AccessDecisionManager',
-            'Symfony\Component\Security\Core\Authorization\AuthorizationChecker',
-            'Symfony\Component\Security\Core\Authorization\Voter\VoterInterface',
-            'Symfony\Bundle\SecurityBundle\Security\FirewallMap',
-            'Symfony\Bundle\SecurityBundle\Security\FirewallContext',
-            'Symfony\Component\HttpFoundation\RequestMatcher',
+            'Symfony\\Component\\Security\\Http\\Firewall',
+            'Symfony\\Component\\Security\\Core\\User\\UserProviderInterface',
+            'Symfony\\Component\\Security\\Core\\Authentication\\AuthenticationProviderManager',
+            'Symfony\\Component\\Security\\Core\\Authentication\\Token\\Storage\\TokenStorage',
+            'Symfony\\Component\\Security\\Core\\Authorization\\AccessDecisionManager',
+            'Symfony\\Component\\Security\\Core\\Authorization\\AuthorizationChecker',
+            'Symfony\\Component\\Security\\Core\\Authorization\\Voter\\VoterInterface',
+            'Symfony\\Bundle\\SecurityBundle\\Security\\FirewallMap',
+            'Symfony\\Bundle\\SecurityBundle\\Security\\FirewallContext',
+            'Symfony\\Component\\HttpFoundation\\RequestMatcher',
         ));
     }
 
@@ -168,7 +166,7 @@ class SecurityExtension extends Extension
      */
     private function createRoleHierarchy($config, ContainerBuilder $container)
     {
-        if (!isset($config['role_hierarchy']) || 0 === count($config['role_hierarchy'])) {
+        if (!isset($config['role_hierarchy'])) {
             $container->removeDefinition('security.access.role_hierarchy_voter');
 
             return;
@@ -299,7 +297,7 @@ class SecurityExtension extends Extension
             $listener = $container->setDefinition($listenerId, new DefinitionDecorator('security.logout_listener'));
             $listener->replaceArgument(3, array(
                 'csrf_parameter' => $firewall['logout']['csrf_parameter'],
-                'csrf_token_id' => $firewall['logout']['csrf_token_id'],
+                'intention' => $firewall['logout']['csrf_token_id'],
                 'logout_path' => $firewall['logout']['path'],
             ));
             $listeners[] = new Reference($listenerId);
@@ -370,8 +368,6 @@ class SecurityExtension extends Extension
         // Exception listener
         $exceptionListener = new Reference($this->createExceptionListener($container, $firewall, $id, $configuredEntryPoint ?: $defaultEntryPoint, $firewall['stateless']));
 
-        $container->setAlias(new Alias('security.user_checker.'.$id, false), $firewall['user_checker']);
-
         return array($matcher, $listeners, $exceptionListener);
     }
 
@@ -414,7 +410,7 @@ class SecurityExtension extends Extension
             $listenerId = 'security.authentication.listener.anonymous.'.$id;
             $container
                 ->setDefinition($listenerId, new DefinitionDecorator('security.authentication.listener.anonymous'))
-                ->replaceArgument(1, $firewall['anonymous']['secret'])
+                ->replaceArgument(1, $firewall['anonymous']['key'])
             ;
 
             $listeners[] = new Reference($listenerId);
@@ -422,7 +418,7 @@ class SecurityExtension extends Extension
             $providerId = 'security.authentication.provider.anonymous.'.$id;
             $container
                 ->setDefinition($providerId, new DefinitionDecorator('security.authentication.provider.anonymous'))
-                ->replaceArgument(0, $firewall['anonymous']['secret'])
+                ->replaceArgument(0, $firewall['anonymous']['key'])
             ;
 
             $authenticationProviders[] = $providerId;
@@ -580,7 +576,6 @@ class SecurityExtension extends Extension
         $switchUserListenerId = 'security.authentication.switchuser_listener.'.$id;
         $listener = $container->setDefinition($switchUserListenerId, new DefinitionDecorator('security.authentication.switchuser_listener'));
         $listener->replaceArgument(1, new Reference($userProvider));
-        $listener->replaceArgument(2, new Reference('security.user_checker.'.$id));
         $listener->replaceArgument(3, $id);
         $listener->replaceArgument(6, $config['parameter']);
         $listener->replaceArgument(7, $config['role']);

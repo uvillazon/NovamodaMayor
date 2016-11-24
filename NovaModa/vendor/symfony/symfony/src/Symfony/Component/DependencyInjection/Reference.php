@@ -15,6 +15,8 @@ namespace Symfony\Component\DependencyInjection;
  * Reference represents a service reference.
  *
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @api
  */
 class Reference
 {
@@ -23,7 +25,7 @@ class Reference
     private $strict;
 
     /**
-     * Note: The $strict parameter is deprecated since version 2.8 and will be removed in 3.0.
+     * Constructor.
      *
      * @param string $id              The service identifier
      * @param int    $invalidBehavior The behavior when the service does not exist
@@ -39,6 +41,8 @@ class Reference
     }
 
     /**
+     * __toString.
+     *
      * @return string The service identifier
      */
     public function __toString()
@@ -60,15 +64,9 @@ class Reference
      * Returns true when this Reference is strict.
      *
      * @return bool
-     *
-     * @deprecated since version 2.8, to be removed in 3.0.
      */
-    public function isStrict($triggerDeprecationError = true)
+    public function isStrict()
     {
-        if ($triggerDeprecationError) {
-            @trigger_error('The '.__METHOD__.' method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
-        }
-
         return $this->strict;
     }
 }

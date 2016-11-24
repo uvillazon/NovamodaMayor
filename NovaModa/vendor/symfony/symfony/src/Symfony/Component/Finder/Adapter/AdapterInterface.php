@@ -13,8 +13,6 @@ namespace Symfony\Component\Finder\Adapter;
 
 /**
  * @author Jean-François Simon <contact@jfsimon.fr>
- *
- * @deprecated since 2.8, to be removed in 3.0.
  */
 interface AdapterInterface
 {

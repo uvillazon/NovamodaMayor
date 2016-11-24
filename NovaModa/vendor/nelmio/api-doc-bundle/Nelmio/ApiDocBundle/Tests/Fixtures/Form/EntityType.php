@@ -11,7 +11,6 @@
 
 namespace Nelmio\ApiDocBundle\Tests\Fixtures\Form;
 
-use Nelmio\ApiDocBundle\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\ChoiceList\SimpleChoiceList;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -44,22 +43,10 @@ class EntityType extends AbstractType
 
     public function getParent()
     {
-        return LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\ChoiceType');
+        return 'choice';
     }
 
-    /**
-     * BC SF < 2.8
-     * {@inheritdoc}
-     */
     public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
     {
         return 'entity';
     }

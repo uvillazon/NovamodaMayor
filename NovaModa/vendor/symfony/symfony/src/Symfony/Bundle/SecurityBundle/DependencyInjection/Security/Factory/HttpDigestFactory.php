@@ -29,7 +29,6 @@ class HttpDigestFactory implements SecurityFactoryInterface
         $container
             ->setDefinition($provider, new DefinitionDecorator('security.authentication.provider.dao'))
             ->replaceArgument(0, new Reference($userProvider))
-            ->replaceArgument(1, new Reference('security.user_checker.'.$id))
             ->replaceArgument(2, $id)
         ;
 
@@ -59,26 +58,10 @@ class HttpDigestFactory implements SecurityFactoryInterface
     public function addConfiguration(NodeDefinition $node)
     {
         $node
-            ->beforeNormalization()
-                ->ifTrue(function ($v) { return isset($v['key']); })
-                ->then(function ($v) {
-                    if (isset($v['secret'])) {
-                        throw new \LogicException('Cannot set both key and secret options for http_digest, use only secret instead.');
-                    }
-
-                    @trigger_error('http_digest.key is deprecated since version 2.8 and will be removed in 3.0. Use http_digest.secret instead.', E_USER_DEPRECATED);
-
-                    $v['secret'] = $v['key'];
-
-                    unset($v['key']);
-
-                    return $v;
-                })
-            ->end()
             ->children()
                 ->scalarNode('provider')->end()
                 ->scalarNode('realm')->defaultValue('Secured Area')->end()
-                ->scalarNode('secret')->isRequired()->cannotBeEmpty()->end()
+                ->scalarNode('key')->isRequired()->cannotBeEmpty()->end()
             ->end()
         ;
     }
@@ -93,7 +76,7 @@ class HttpDigestFactory implements SecurityFactoryInterface
         $container
             ->setDefinition($entryPointId, new DefinitionDecorator('security.authentication.digest_entry_point'))
             ->addArgument($config['realm'])
-            ->addArgument($config['secret'])
+            ->addArgument($config['key'])
         ;
 
         return $entryPointId;

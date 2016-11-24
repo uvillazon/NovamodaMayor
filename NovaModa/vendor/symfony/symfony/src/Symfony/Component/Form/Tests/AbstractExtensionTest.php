@@ -19,14 +19,14 @@ class AbstractExtensionTest extends \PHPUnit_Framework_TestCase
     public function testHasType()
     {
         $loader = new ConcreteExtension();
-        $this->assertTrue($loader->hasType('Symfony\Component\Form\Tests\Fixtures\FooType'));
-        $this->assertFalse($loader->hasType('foo'));
+        $this->assertTrue($loader->hasType('foo'));
+        $this->assertFalse($loader->hasType('bar'));
     }
 
     public function testGetType()
     {
         $loader = new ConcreteExtension();
-        $this->assertInstanceOf('Symfony\Component\Form\Tests\Fixtures\FooType', $loader->getType('Symfony\Component\Form\Tests\Fixtures\FooType'));
+        $this->assertInstanceOf('Symfony\Component\Form\Tests\Fixtures\FooType', $loader->getType('foo'));
     }
 
     /**
@@ -35,7 +35,7 @@ class AbstractExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function testCustomOptionsResolver()
     {
-        $extension = new Fixtures\LegacyFooTypeBarExtension();
+        $extension = new Fixtures\FooTypeBarExtension();
         $resolver = new Fixtures\CustomOptionsResolver();
         $extension->setDefaultOptions($resolver);
     }

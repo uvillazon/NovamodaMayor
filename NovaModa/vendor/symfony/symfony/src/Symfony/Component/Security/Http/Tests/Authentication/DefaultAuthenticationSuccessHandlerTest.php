@@ -11,7 +11,6 @@
 
 namespace Symfony\Component\Security\Http\Tests\Authentication;
 
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
 
 class DefaultAuthenticationSuccessHandlerTest extends \PHPUnit_Framework_TestCase
@@ -64,20 +63,6 @@ class DefaultAuthenticationSuccessHandlerTest extends \PHPUnit_Framework_TestCas
         $response = $this->expectRedirectResponse('/dashboard');
 
         $handler = new DefaultAuthenticationSuccessHandler($this->httpUtils, array());
-        $result = $handler->onAuthenticationSuccess($this->request, $this->token);
-
-        $this->assertSame($response, $result);
-    }
-
-    public function testTargetPathIsPassedAsNestedParameterWithRequest()
-    {
-        $this->request->expects($this->once())
-            ->method('get')->with('_target_path')
-            ->will($this->returnValue(array('value' => '/dashboard')));
-
-        $response = $this->expectRedirectResponse('/dashboard');
-
-        $handler = new DefaultAuthenticationSuccessHandler($this->httpUtils, array('target_path_parameter' => '_target_path[value]'));
         $result = $handler->onAuthenticationSuccess($this->request, $this->token);
 
         $this->assertSame($response, $result);
@@ -172,7 +157,8 @@ class DefaultAuthenticationSuccessHandlerTest extends \PHPUnit_Framework_TestCas
 
     private function expectRedirectResponse($path)
     {
-        $response = new Response();
+        $response = $this->getMock('Symfony\Component\HttpFoundation\Response');
+
         $this->httpUtils->expects($this->once())
             ->method('createRedirectResponse')
             ->with($this->request, $path)

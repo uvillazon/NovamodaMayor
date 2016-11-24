@@ -13,8 +13,7 @@ namespace Nelmio\ApiDocBundle\Parser;
 
 use Nelmio\ApiDocBundle\DataTypes;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
-use Symfony\Component\Validator\Mapping\Factory\MetadataFactoryInterface;
-use Symfony\Component\Validator\MetadataFactoryInterface as LegacyMetadataFactoryInterface;
+use Symfony\Component\Validator\MetadataFactoryInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\Type;
 
@@ -46,13 +45,10 @@ class ValidationParser implements ParserInterface, PostParserInterface
     /**
      * Requires a validation MetadataFactory.
      *
-     * @param MetadataFactoryInterface|LegacyMetadataFactoryInterface $factory
+     * @param MetadataFactoryInterface $factory
      */
-    public function __construct($factory)
+    public function __construct(MetadataFactoryInterface $factory)
     {
-        if (!($factory instanceof MetadataFactoryInterface) && !($factory instanceof LegacyMetadataFactoryInterface)) {
-            throw new \InvalidArgumentException('Argument 1 of %s constructor must be either an instance of Symfony\Component\Validator\Mapping\Factory\MetadataFactoryInterface or Symfony\Component\Validator\MetadataFactoryInterface.');
-        }
         $this->factory = $factory;
     }
 
@@ -87,7 +83,6 @@ class ValidationParser implements ParserInterface, PostParserInterface
                 'readonly' => null,
                 'children' => $parsed
             );
-
             return $output;
         }
 

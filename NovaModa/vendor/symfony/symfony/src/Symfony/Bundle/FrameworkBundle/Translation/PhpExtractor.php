@@ -60,11 +60,6 @@ class PhpExtractor extends AbstractFileExtractor implements ExtractorInterface
         $files = $this->extractFiles($resource);
         foreach ($files as $file) {
             $this->parseTokens(token_get_all(file_get_contents($file)), $catalog);
-
-            if (PHP_VERSION_ID >= 70000) {
-                // PHP 7 memory manager will not release after token_get_all(), see https://bugs.php.net/70098
-                gc_mem_caches();
-            }
         }
     }
 
@@ -85,7 +80,7 @@ class PhpExtractor extends AbstractFileExtractor implements ExtractorInterface
      */
     protected function normalizeToken($token)
     {
-        if (isset($token[1]) && 'b"' !== $token) {
+        if (is_array($token)) {
             return $token[1];
         }
 
@@ -95,11 +90,11 @@ class PhpExtractor extends AbstractFileExtractor implements ExtractorInterface
     /**
      * Seeks to a non-whitespace token.
      */
-    private function seekToNextRelevantToken(\Iterator $tokenIterator)
+    private function seekToNextReleventToken(\Iterator $tokenIterator)
     {
         for (; $tokenIterator->valid(); $tokenIterator->next()) {
             $t = $tokenIterator->current();
-            if (T_WHITESPACE !== $t[0]) {
+            if (!is_array($t) || ($t[0] !== T_WHITESPACE)) {
                 break;
             }
         }
@@ -116,7 +111,7 @@ class PhpExtractor extends AbstractFileExtractor implements ExtractorInterface
 
         for (; $tokenIterator->valid(); $tokenIterator->next()) {
             $t = $tokenIterator->current();
-            if (!isset($t[1])) {
+            if (!is_array($t)) {
                 break;
             }
 
@@ -158,7 +153,7 @@ class PhpExtractor extends AbstractFileExtractor implements ExtractorInterface
                 $tokenIterator->seek($key);
 
                 foreach ($sequence as $item) {
-                    $this->seekToNextRelevantToken($tokenIterator);
+                    $this->seekToNextReleventToken($tokenIterator);
 
                     if ($this->normalizeToken($tokenIterator->current()) == $item) {
                         $tokenIterator->next();
@@ -182,9 +177,9 @@ class PhpExtractor extends AbstractFileExtractor implements ExtractorInterface
     /**
      * @param string $file
      *
-     * @return bool
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return bool
      */
     protected function canBeExtracted($file)
     {

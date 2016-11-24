@@ -18,6 +18,8 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
+ * @api
  */
 class IsNullValidator extends ConstraintValidator
 {
@@ -34,12 +36,10 @@ class IsNullValidator extends ConstraintValidator
             if ($this->context instanceof ExecutionContextInterface) {
                 $this->context->buildViolation($constraint->message)
                     ->setParameter('{{ value }}', $this->formatValue($value))
-                    ->setCode(IsNull::NOT_NULL_ERROR)
                     ->addViolation();
             } else {
                 $this->buildViolation($constraint->message)
                     ->setParameter('{{ value }}', $this->formatValue($value))
-                    ->setCode(IsNull::NOT_NULL_ERROR)
                     ->addViolation();
             }
         }

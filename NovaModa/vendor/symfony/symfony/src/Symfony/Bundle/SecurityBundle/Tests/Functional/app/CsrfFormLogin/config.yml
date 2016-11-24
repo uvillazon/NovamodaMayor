@@ -3,11 +3,12 @@ imports:
 
 services:
     csrf_form_login.form.type:
-        class: Symfony\Bundle\SecurityBundle\Tests\Functional\Bundle\CsrfFormLoginBundle\Form\UserLoginType
+        class: Symfony\Bundle\SecurityBundle\Tests\Functional\Bundle\CsrfFormLoginBundle\Form\UserLoginFormType
+        scope: request
         arguments:
-            - '@request_stack'
+            - @request
         tags:
-            - { name: form.type }
+            - { name: form.type, alias: user_login }
 
 security:
     encoders:
@@ -36,12 +37,12 @@ security:
                 username_parameter: "user_login[username]"
                 password_parameter: "user_login[password]"
                 csrf_parameter: "user_login[_token]"
-                csrf_token_generator: security.csrf.token_manager
+                csrf_provider: security.csrf.token_manager
             anonymous: ~
             logout:
                 path: /logout_path
                 target: /
-                csrf_token_generator: security.csrf.token_manager
+                csrf_provider: security.csrf.token_manager
 
     access_control:
         - { path: .*, roles: IS_AUTHENTICATED_FULLY }

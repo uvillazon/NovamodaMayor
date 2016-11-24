@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,18 +48,12 @@ class SerializationContext extends Context
 
     public function startVisiting($object)
     {
-        if ( ! is_object($object)) {
-            return;
-        }
         $this->visitingSet->attach($object);
         $this->visitingStack->push($object);
     }
 
     public function stopVisiting($object)
     {
-        if ( ! is_object($object)) {
-            return;
-        }
         $this->visitingSet->detach($object);
         $poppedObject = $this->visitingStack->pop();
 
@@ -71,7 +65,7 @@ class SerializationContext extends Context
     public function isVisiting($object)
     {
         if ( ! is_object($object)) {
-            return false;
+            throw new LogicException('Expected object but got '.gettype($object).'. Do you have the wrong @Type mapping or could this be a Doctrine many-to-many relation?');
         }
 
         return $this->visitingSet->contains($object);

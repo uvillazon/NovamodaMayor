@@ -19,15 +19,17 @@ use Symfony\Component\Validator\Exception\MissingOptionsException;
 /**
  * Contains the properties of a constraint definition.
  *
- * A constraint can be defined on a class, a property or a getter method.
+ * A constraint can be defined on a class, an option or a getter method.
  * The Constraint class encapsulates all the configuration required for
- * validating this class, property or getter result successfully.
+ * validating this class, option or getter result successfully.
  *
  * Constraint instances are immutable and serializable.
  *
  * @property array $groups The groups that the constraint belongs to
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
+ * @api
  */
 abstract class Constraint
 {
@@ -69,7 +71,7 @@ abstract class Constraint
     /**
      * Returns the name of the given error code.
      *
-     * @param string $errorCode The error code
+     * @param int $errorCode The error code
      *
      * @return string The name of the error code
      *
@@ -114,6 +116,8 @@ abstract class Constraint
      * @throws ConstraintDefinitionException When you don't pass an associative
      *                                       array, but getDefaultOption() returns
      *                                       null
+     *
+     * @api
      */
     public function __construct($options = null)
     {
@@ -129,9 +133,6 @@ abstract class Constraint
             unset($options['value']);
         }
 
-        if (is_array($options)) {
-            reset($options);
-        }
         if (is_array($options) && count($options) > 0 && is_string(key($options))) {
             foreach ($options as $option => $value) {
                 if (array_key_exists($option, $knownOptions)) {
@@ -210,6 +211,8 @@ abstract class Constraint
      * @throws InvalidOptionsException If an invalid option name is given
      *
      * @internal This method should not be used or overwritten in userland code.
+     *
+     * @since 2.6
      */
     public function __get($option)
     {
@@ -226,6 +229,8 @@ abstract class Constraint
      * Adds the given group if this constraint is in the Default group.
      *
      * @param string $group
+     *
+     * @api
      */
     public function addImplicitGroupName($group)
     {
@@ -242,6 +247,8 @@ abstract class Constraint
      * @return string
      *
      * @see __construct()
+     *
+     * @api
      */
     public function getDefaultOption()
     {
@@ -255,6 +262,8 @@ abstract class Constraint
      * @return array
      *
      * @see __construct()
+     *
+     * @api
      */
     public function getRequiredOptions()
     {
@@ -269,6 +278,8 @@ abstract class Constraint
      * behaviour.
      *
      * @return string
+     *
+     * @api
      */
     public function validatedBy()
     {
@@ -283,6 +294,8 @@ abstract class Constraint
      * Constraint::CLASS_CONSTRAINT and Constraint::PROPERTY_CONSTRAINT.
      *
      * @return string|array One or more constant values
+     *
+     * @api
      */
     public function getTargets()
     {
@@ -297,6 +310,8 @@ abstract class Constraint
      * @internal This method may be replaced by an implementation of
      *           {@link \Serializable} in the future. Please don't use or
      *           overwrite it.
+     *
+     * @since 2.6
      */
     public function __sleep()
     {

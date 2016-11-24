@@ -15,7 +15,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Routing\Matcher\Dumper\ApacheMatcherDumper;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -58,7 +57,7 @@ class RouterApacheDumperCommand extends ContainerAwareCommand
                 new InputOption('base-uri', null, InputOption::VALUE_REQUIRED, 'The base URI'),
             ))
             ->setDescription('[DEPRECATED] Dumps all routes as Apache rewrite rules')
-            ->setHelp(<<<'EOF'
+            ->setHelp(<<<EOF
 The <info>%command.name%</info> dumps all routes as Apache rewrite rules.
 These can then be used with the ApacheUrlMatcher to use Apache for route
 matching.
@@ -75,10 +74,9 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new SymfonyStyle($input, $output);
+        $formatter = $this->getHelper('formatter');
 
-        $io->title('Router Apache Dumper');
-        $io->caution('The router:dump-apache command is deprecated since version 2.5 and will be removed in 3.0.');
+        $output->writeln($formatter->formatSection('warning', 'The router:dump-apache command is deprecated since version 2.5 and will be removed in 3.0', 'comment'));
 
         $router = $this->getContainer()->get('router');
 
@@ -92,6 +90,6 @@ EOF
 
         $dumper = new ApacheMatcherDumper($router->getRouteCollection());
 
-        $io->writeln($dumper->dump($dumpOptions), OutputInterface::OUTPUT_RAW);
+        $output->writeln($dumper->dump($dumpOptions), OutputInterface::OUTPUT_RAW);
     }
 }

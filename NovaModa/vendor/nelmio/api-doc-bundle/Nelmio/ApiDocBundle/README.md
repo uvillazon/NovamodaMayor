@@ -17,7 +17,7 @@ For documentation, see:
 
     Resources/doc/
 
-[Read the documentation](https://github.com/nelmio/NelmioApiDocBundle/blob/master/Resources/doc/index.rst)
+[Read the documentation](https://github.com/nelmio/NelmioApiDocBundle/blob/master/Resources/doc/index.md)
 
 
 Contributing

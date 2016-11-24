@@ -18,6 +18,8 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
+ * @api
  */
 class TypeValidator extends ConstraintValidator
 {
@@ -51,13 +53,11 @@ class TypeValidator extends ConstraintValidator
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $this->formatValue($value))
                 ->setParameter('{{ type }}', $constraint->type)
-                ->setCode(Type::INVALID_TYPE_ERROR)
                 ->addViolation();
         } else {
             $this->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $this->formatValue($value))
                 ->setParameter('{{ type }}', $constraint->type)
-                ->setCode(Type::INVALID_TYPE_ERROR)
                 ->addViolation();
         }
     }

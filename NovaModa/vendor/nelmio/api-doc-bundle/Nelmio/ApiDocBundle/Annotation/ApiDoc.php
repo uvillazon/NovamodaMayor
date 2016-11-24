@@ -47,12 +47,6 @@ class ApiDoc
      * @var array
      */
     private $parameters = array();
-    /**
-     * Headers that client can send.
-     *
-     * @var array
-     */
-    private $headers = array();
 
     /**
      * @var string
@@ -180,9 +174,7 @@ class ApiDoc
 
         if (isset($data['input'])) {
             $this->input = $data['input'];
-        }
-
-        if (isset($data['filters'])) {
+        } elseif (isset($data['filters'])) {
             foreach ($data['filters'] as $filter) {
                 if (!isset($filter['name'])) {
                     throw new \InvalidArgumentException('A "filter" element has to contain a "name" attribute');
@@ -235,19 +227,6 @@ class ApiDoc
                 unset($parameter['name']);
 
                 $this->addParameter($name, $parameter);
-            }
-        }
-
-        if (isset($data['headers'])) {
-            foreach ($data['headers'] as $header) {
-                if (!isset($header['name'])) {
-                    throw new \InvalidArgumentException('A "header" element has to contain a "name" attribute');
-                }
-
-                $name = $header['name'];
-                unset($header['name']);
-
-                $this->addHeader($name, $header);
             }
         }
 
@@ -479,15 +458,6 @@ class ApiDoc
     }
 
     /**
-     * @param $name
-     * @param array $header
-     */
-    public function addHeader($name, array $header)
-    {
-        $this->headers[$name] = $header;
-    }
-
-    /**
      * Sets the response data as processed by the parsers - same format as parameters
      *
      * @param array $response
@@ -506,19 +476,12 @@ class ApiDoc
 
         if (method_exists($route, 'getHost')) {
             $this->host = $route->getHost() ? : null;
-
-            //replace route placeholders
-            foreach ($route->getDefaults() as $key => $value) {
-                if (is_string($value)) {
-                    $this->host = str_replace('{' . $key . '}', $value, $this->host);
-                }
-            }
         } else {
             $this->host = null;
         }
 
-        $this->uri    = $route->getPath();
-        $this->method = $route->getMethods() ? implode('|', $route->getMethods()) : 'ANY';
+        $this->uri    = $route->getPattern();
+        $this->method = $route->getRequirement('_method') ?: 'ANY';
     }
 
     /**
@@ -642,16 +605,7 @@ class ApiDoc
     }
 
     /**
-     * @return array
-     */
-    public function getHeaders()
-    {
-        return $this->headers;
-    }
-
-    /**
      * @param boolean $deprecated
-     * @return $this
      */
     public function setDeprecated($deprecated)
     {
@@ -702,10 +656,6 @@ class ApiDoc
             $data['parameters'] = $parameters;
         }
 
-        if ($headers = $this->headers) {
-            $data['headers'] = $headers;
-        }
-
         if ($requirements = $this->requirements) {
             $data['requirements'] = $requirements;
         }
@@ -716,10 +666,6 @@ class ApiDoc
 
         if ($response = $this->response) {
             $data['response'] = $response;
-        }
-
-        if ($parsedResponseMap = $this->parsedResponseMap) {
-            $data['parsedResponseMap'] = $parsedResponseMap;
         }
 
         if ($statusCodes = $this->statusCodes) {

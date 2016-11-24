@@ -32,6 +32,8 @@ class ConcreteComposite extends Composite
 }
 
 /**
+ * @since  2.6
+ *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
 class CompositeTest extends \PHPUnit_Framework_TestCase

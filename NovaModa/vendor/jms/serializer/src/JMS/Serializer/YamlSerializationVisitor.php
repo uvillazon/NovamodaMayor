@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,11 +81,10 @@ class YamlSerializationVisitor extends AbstractVisitor
     public function visitArray($data, array $type, Context $context)
     {
         $count = $this->writer->changeCount;
-        $isList = (isset($type['params'][0]) && ! isset($type['params'][1]))
-            || array_keys($data) === range(0, count($data) - 1);
+        $isList = array_keys($data) === range(0, count($data) - 1);
 
         foreach ($data as $k => $v) {
-            if (null === $v && $context->shouldSerializeNull() !== true) {
+            if (null === $v && ( ! is_string($k) || ! $context->shouldSerializeNull())) {
                 continue;
             }
 
@@ -111,11 +110,6 @@ class YamlSerializationVisitor extends AbstractVisitor
             $this->writer
                 ->rtrim(false)
                 ->writeln(' {}')
-            ;
-        } elseif (empty($data)) {
-            $this->writer
-                ->rtrim(false)
-                ->writeln(' []')
             ;
         }
     }
@@ -161,7 +155,7 @@ class YamlSerializationVisitor extends AbstractVisitor
     {
         $v = $metadata->getValue($data);
 
-        if (null === $v && $context->shouldSerializeNull() !== true) {
+        if (null === $v && ! $context->shouldSerializeNull()) {
             return;
         }
 

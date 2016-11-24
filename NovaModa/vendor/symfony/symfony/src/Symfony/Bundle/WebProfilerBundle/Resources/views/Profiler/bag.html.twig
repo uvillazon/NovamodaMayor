@@ -1,19 +1,15 @@
-<table class="{{ class|default('') }}">
+<table {% if class is defined %}class='{{ class }}'{% endif %} >
     <thead>
         <tr>
-            <th scope="col" class="key">{{ labels is defined ? labels[0] : 'Key' }}</th>
-            <th scope="col">{{ labels is defined ? labels[1] : 'Value' }}</th>
+            <th scope="col" style="width: 25%">Key</th>
+            <th scope="col" style="width: 75%">Value</th>
         </tr>
     </thead>
     <tbody>
         {% for key in bag.keys|sort %}
             <tr>
                 <th>{{ key }}</th>
-                <td>{{ profiler_dump(bag.get(key)) }}</td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="2">(no data)</td>
+                <td><pre>{{ profiler_dump(bag.get(key)) }}</pre></td>
             </tr>
         {% endfor %}
     </tbody>

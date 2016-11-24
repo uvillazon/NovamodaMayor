@@ -1,0 +1,6 @@
+[02-Dec-2015 00:46:29 America/Denver] PHP Fatal error:  Class 'Doctrine\ORM\ORMException' not found in /home3/novamod2/public_html/sistema/NovaModa/vendor/doctrine/orm/lib/Doctrine/ORM/EntityNotFoundException.php on line 29
+[02-Dec-2015 08:00:58 America/Denver] PHP Fatal error:  Class 'Doctrine\ORM\ORMException' not found in /home3/novamod2/public_html/sistema/NovaModa/vendor/doctrine/orm/lib/Doctrine/ORM/EntityNotFoundException.php on line 29
+[02-Dec-2015 14:44:42 America/Denver] PHP Fatal error:  Class 'Doctrine\ORM\ORMException' not found in /home3/novamod2/public_html/sistema/NovaModa/vendor/doctrine/orm/lib/Doctrine/ORM/EntityNotFoundException.php on line 29
+[03-Dec-2015 15:58:35 America/Denver] PHP Fatal error:  Class 'Doctrine\ORM\AbstractQuery' not found in /home3/novamod2/public_html/sistema/NovaModa/vendor/doctrine/orm/lib/Doctrine/ORM/Query.php on line 39
+[04-Dec-2015 14:47:42 America/Denver] PHP Fatal error:  Class 'Doctrine\ORM\ORMException' not found in /home3/novamod2/public_html/sistema/NovaModa/vendor/doctrine/orm/lib/Doctrine/ORM/EntityNotFoundException.php on line 29
+[19-Dec-2015 20:22:08 America/Denver] PHP Fatal error:  Class 'Doctrine\ORM\AbstractQuery' not found in /home3/novamod2/public_html/sistema/NovaModa/vendor/doctrine/orm/lib/Doctrine/ORM/Query.php on line 39

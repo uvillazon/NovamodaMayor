@@ -19,13 +19,6 @@ use Symfony\Bundle\TwigBundle\Tests\TestCase;
  */
 class LegacyAssetsExtensionTest extends TestCase
 {
-    protected function setUp()
-    {
-        if (!class_exists('Symfony\Component\Templating\Helper\CoreAssetsHelper')) {
-            $this->markTestSkipped('The CoreAssetsHelper class does only exist with symfony/templating < 3.0 installed.');
-        }
-    }
-
     /**
      * @dataProvider provideGetAssetUrlArguments
      */

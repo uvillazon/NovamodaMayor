@@ -66,7 +66,7 @@ class XmlReferenceDumperTest extends \PHPUnit_Framework_TestCase
         child3=""
     />
 
-    <!-- prototype: Parameter name -->
+    <!-- prototype -->
     <parameter name="parameter name">scalar value</parameter>
 
     <!-- prototype -->

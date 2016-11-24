@@ -2,19 +2,16 @@
     "event1": [
         {
             "type": "function",
-            "name": "global_function",
-            "priority": 255
+            "name": "global_function"
         },
         {
-            "type": "closure",
-            "priority": -1
+            "type": "closure"
         }
     ],
     "event2": [
         {
             "type": "object",
-            "name": "Symfony\\Bundle\\FrameworkBundle\\Tests\\Console\\Descriptor\\CallableClass",
-            "priority": 0
+            "name": "Symfony\\Bundle\\FrameworkBundle\\Tests\\Console\\Descriptor\\CallableClass"
         }
     ]
 }

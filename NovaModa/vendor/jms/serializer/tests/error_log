@@ -1,0 +1,42 @@
+[12-Nov-2015 11:21:35 America/Denver] PHP Fatal error:  Uncaught exception 'RuntimeException' with message 'Did not find vendor/autoload.php. Did you run "composer install --dev"?' in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php:23
+Stack trace:
+#0 [internal function]: {closure}()
+#1 /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php(31): call_user_func(Object(Closure))
+#2 {main}
+  thrown in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php on line 23
+[15-Nov-2015 05:04:24 America/Denver] PHP Fatal error:  Uncaught exception 'RuntimeException' with message 'Did not find vendor/autoload.php. Did you run "composer install --dev"?' in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php:23
+Stack trace:
+#0 [internal function]: {closure}()
+#1 /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php(31): call_user_func(Object(Closure))
+#2 {main}
+  thrown in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php on line 23
+[15-Nov-2015 12:11:41 America/Denver] PHP Fatal error:  Uncaught exception 'RuntimeException' with message 'Did not find vendor/autoload.php. Did you run "composer install --dev"?' in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php:23
+Stack trace:
+#0 [internal function]: {closure}()
+#1 /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php(31): call_user_func(Object(Closure))
+#2 {main}
+  thrown in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php on line 23
+[15-Nov-2015 18:22:31 America/Denver] PHP Fatal error:  Uncaught exception 'RuntimeException' with message 'Did not find vendor/autoload.php. Did you run "composer install --dev"?' in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php:23
+Stack trace:
+#0 [internal function]: {closure}()
+#1 /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php(31): call_user_func(Object(Closure))
+#2 {main}
+  thrown in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php on line 23
+[16-Nov-2015 00:27:35 America/Denver] PHP Fatal error:  Uncaught exception 'RuntimeException' with message 'Did not find vendor/autoload.php. Did you run "composer install --dev"?' in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php:23
+Stack trace:
+#0 [internal function]: {closure}()
+#1 /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php(31): call_user_func(Object(Closure))
+#2 {main}
+  thrown in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php on line 23
+[16-Nov-2015 21:00:38 America/Denver] PHP Fatal error:  Uncaught exception 'RuntimeException' with message 'Did not find vendor/autoload.php. Did you run "composer install --dev"?' in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php:23
+Stack trace:
+#0 [internal function]: {closure}()
+#1 /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php(31): call_user_func(Object(Closure))
+#2 {main}
+  thrown in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php on line 23
+[26-Nov-2015 19:56:06 America/Denver] PHP Fatal error:  Uncaught exception 'RuntimeException' with message 'Did not find vendor/autoload.php. Did you run "composer install --dev"?' in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php:23
+Stack trace:
+#0 [internal function]: {closure}()
+#1 /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php(31): call_user_func(Object(Closure))
+#2 {main}
+  thrown in /home3/novamod2/public_html/sistema/NovaModa/vendor/jms/serializer/tests/bootstrap.php on line 23

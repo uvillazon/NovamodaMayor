@@ -1,10 +1,13 @@
 {
-    "Version": "2.1.21.97",
+    "Version": "2.1.8.19",
     "Names": {
+        "arn": "mapuche",
+        "az": "azerbaiyano",
+        "ba": "baskir",
         "eu": "vasco",
+        "gsw": "alemán (Suiza)",
         "luo": "luo",
-        "sw": "swahili",
-        "sw_CD": "swahili del Congo",
+        "mr": "maratí",
         "vai": "vai"
     }
 }

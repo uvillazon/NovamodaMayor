@@ -99,7 +99,7 @@ class Configuration implements ConfigurationInterface
 
                         foreach ($v['templating']['packages'] as $name => $config) {
                             $v['assets']['packages'][$name] = array(
-                                'version' => null === $config['version'] ? null : (string) $config['version'],
+                                'version' => (string) $config['version'],
                                 'version_format' => $config['version_format'],
                                 'base_path' => '',
                                 'base_urls' => array_values(array_unique(array_merge($config['base_urls']['http'], $config['base_urls']['ssl']))),
@@ -139,10 +139,6 @@ class Configuration implements ConfigurationInterface
                                 }
 
                                 if (false !== strpos($v, '/')) {
-                                    if ('0.0.0.0/0' === $v) {
-                                        return false;
-                                    }
-
                                     list($v, $mask) = explode('/', $v, 2);
 
                                     if (strcmp($mask, (int) $mask) || $mask < 1 || $mask > (false !== strpos($v, ':') ? 128 : 32)) {
@@ -182,7 +178,6 @@ class Configuration implements ConfigurationInterface
         $this->addAnnotationsSection($rootNode);
         $this->addSerializerSection($rootNode);
         $this->addPropertyAccessSection($rootNode);
-        $this->addPropertyInfoSection($rootNode);
 
         return $treeBuilder;
     }
@@ -277,50 +272,10 @@ class Configuration implements ConfigurationInterface
                         ->booleanNode('collect')->defaultTrue()->end()
                         ->booleanNode('only_exceptions')->defaultFalse()->end()
                         ->booleanNode('only_master_requests')->defaultFalse()->end()
-                        ->scalarNode('dsn')
-                            ->defaultValue('file:%kernel.cache_dir%/profiler')
-                            ->beforeNormalization()
-                                ->ifTrue(function ($v) { return 'file:' !== substr($v, 0, 5); })
-                                ->then(function ($v) {
-                                    @trigger_error('The profiler.dsn configuration key must start with "file:" because all the storages except the filesystem are deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
-
-                                    return $v;
-                                })
-                            ->end()
-                        ->end()
-                        ->scalarNode('username')
-                            ->defaultValue('')
-                            ->beforeNormalization()
-                                ->always()
-                                ->then(function ($v) {
-                                    @trigger_error('The profiler.username configuration key is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
-
-                                    return $v;
-                                })
-                            ->end()
-                        ->end()
-                        ->scalarNode('password')
-                            ->defaultValue('')
-                            ->beforeNormalization()
-                                ->always()
-                                ->then(function ($v) {
-                                    @trigger_error('The profiler.password configuration key is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
-
-                                    return $v;
-                                })
-                            ->end()
-                        ->end()
-                        ->scalarNode('lifetime')
-                            ->defaultValue(86400)
-                            ->beforeNormalization()
-                                ->always()
-                                ->then(function ($v) {
-                                    @trigger_error('The profiler.lifetime configuration key is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
-
-                                    return $v;
-                                })
-                            ->end()
-                        ->end()
+                        ->scalarNode('dsn')->defaultValue('file:%kernel.cache_dir%/profiler')->end()
+                        ->scalarNode('username')->defaultValue('')->end()
+                        ->scalarNode('password')->defaultValue('')->end()
+                        ->scalarNode('lifetime')->defaultValue(86400)->end()
                         ->arrayNode('matcher')
                             ->canBeUnset()
                             ->performNoDeepMerging()
@@ -385,8 +340,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('cookie_path')->end()
                         ->scalarNode('cookie_domain')->end()
                         ->booleanNode('cookie_secure')->end()
-                        ->booleanNode('cookie_httponly')->defaultTrue()->end()
-                        ->booleanNode('use_cookies')->end()
+                        ->booleanNode('cookie_httponly')->end()
                         ->scalarNode('gc_divisor')->end()
                         ->scalarNode('gc_probability')->defaultValue(1)->end()
                         ->scalarNode('gc_maxlifetime')->end()
@@ -534,13 +488,7 @@ class Configuration implements ConfigurationInterface
                             ->prototype('array')
                                 ->fixXmlConfig('base_url')
                                 ->children()
-                                    ->scalarNode('version')
-                                        ->defaultNull()
-                                        ->beforeNormalization()
-                                        ->ifTrue(function ($v) { return '' === $v; })
-                                        ->then(function ($v) { return; })
-                                        ->end()
-                                    ->end()
+                                    ->scalarNode('version')->defaultNull()->end()
                                     ->scalarNode('version_format')->defaultValue('%%s?%%s')->end()
                                     ->arrayNode('base_urls')
                                         ->performNoDeepMerging()
@@ -599,12 +547,7 @@ class Configuration implements ConfigurationInterface
                             ->prototype('array')
                                 ->fixXmlConfig('base_url')
                                 ->children()
-                                    ->scalarNode('version')
-                                        ->beforeNormalization()
-                                        ->ifTrue(function ($v) { return '' === $v; })
-                                        ->then(function ($v) { return; })
-                                        ->end()
-                                    ->end()
+                                    ->scalarNode('version')->defaultNull()->end()
                                     ->scalarNode('version_format')->defaultNull()->end()
                                     ->scalarNode('base_path')->defaultValue('')->end()
                                     ->arrayNode('base_urls')
@@ -632,7 +575,6 @@ class Configuration implements ConfigurationInterface
                     ->info('translator configuration')
                     ->canBeEnabled()
                     ->fixXmlConfig('fallback')
-                    ->fixXmlConfig('path')
                     ->children()
                         ->arrayNode('fallbacks')
                             ->beforeNormalization()->ifString()->then(function ($v) { return array($v); })->end()
@@ -640,9 +582,6 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue(array('en'))
                         ->end()
                         ->booleanNode('logging')->defaultValue($this->debug)->end()
-                        ->arrayNode('paths')
-                            ->prototype('scalar')->end()
-                        ->end()
                     ->end()
                 ->end()
             ->end()
@@ -660,15 +599,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('cache')
                             ->beforeNormalization()
                                 // Can be removed in 3.0, once ApcCache support is dropped
-                                ->ifString()->then(function ($v) {
-                                    if ('apc' === $v) {
-                                        @trigger_error('The ability to pass "apc" as the framework.validation.cache configuration key value is deprecated since version 2.8 and will be removed in 3.0. Use the "validator.mapping.cache.doctrine.apc" service id instead.', E_USER_DEPRECATED);
-
-                                        return 'validator.mapping.cache.apc';
-                                    }
-
-                                    return $v;
-                                })
+                                ->ifString()->then(function ($v) { return 'apc' === $v ? 'validator.mapping.cache.apc' : $v; })
                             ->end()
                         ->end()
                         ->booleanNode('enable_annotations')->defaultFalse()->end()
@@ -708,7 +639,7 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->scalarNode('cache')->defaultValue('file')->end()
                         ->scalarNode('file_cache_dir')->defaultValue('%kernel.cache_dir%/annotations')->end()
-                        ->booleanNode('debug')->defaultValue($this->debug)->end()
+                        ->booleanNode('debug')->defaultValue('%kernel.debug%')->end()
                     ->end()
                 ->end()
             ->end()
@@ -725,7 +656,6 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->booleanNode('enable_annotations')->defaultFalse()->end()
                         ->scalarNode('cache')->end()
-                        ->scalarNode('name_converter')->end()
                     ->end()
                 ->end()
             ->end()
@@ -743,18 +673,6 @@ class Configuration implements ConfigurationInterface
                         ->booleanNode('magic_call')->defaultFalse()->end()
                         ->booleanNode('throw_exception_on_invalid_index')->defaultFalse()->end()
                     ->end()
-                ->end()
-            ->end()
-        ;
-    }
-
-    private function addPropertyInfoSection(ArrayNodeDefinition $rootNode)
-    {
-        $rootNode
-            ->children()
-                ->arrayNode('property_info')
-                    ->info('Property info configuration')
-                    ->canBeEnabled()
                 ->end()
             ->end()
         ;

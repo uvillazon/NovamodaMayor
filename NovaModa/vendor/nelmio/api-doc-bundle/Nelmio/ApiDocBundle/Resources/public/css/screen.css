@@ -145,10 +145,6 @@ table tbody tr td {
   line-height: 1.3em;
 }
 
-table tbody tr td.format {
-  word-break: break-word;
-}
-
 #header {
   background-color: #89BF04;
   padding: 1%;
@@ -598,7 +594,7 @@ form .parameters {
   width: 50%;
 }
 
-form .parameters .tuple input, form .parameters .tuple textarea {
+form .parameters .tuple input {
 	width: 40%;
 }
 

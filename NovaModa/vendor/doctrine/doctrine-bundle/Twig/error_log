@@ -1,0 +1,2 @@
+[20-Nov-2015 01:22:50 America/Denver] PHP Fatal error:  Class 'Twig_Extension' not found in /home3/novamod2/public_html/sistema/NovaModa/vendor/doctrine/doctrine-bundle/Twig/DoctrineExtension.php on line 24
+[21-Nov-2015 02:21:42 America/Denver] PHP Fatal error:  Class 'Twig_Extension' not found in /home3/novamod2/public_html/sistema/NovaModa/vendor/doctrine/doctrine-bundle/Twig/DoctrineExtension.php on line 24

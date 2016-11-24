@@ -6,7 +6,7 @@ use Michelf\MarkdownExtra;
 
 class MarkdownExtension extends \Twig_Extension
 {
-    protected $markdownParser;
+    private $markdownParser;
 
     public function __construct()
     {
@@ -19,7 +19,7 @@ class MarkdownExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            new \Twig_SimpleFilter('extra_markdown', array($this, 'markdown'), array('is_safe' => array('html'))),
+            'extra_markdown' => new \Twig_Filter_Method($this, 'markdown', array('is_safe' => array('html'))),
         );
     }
 

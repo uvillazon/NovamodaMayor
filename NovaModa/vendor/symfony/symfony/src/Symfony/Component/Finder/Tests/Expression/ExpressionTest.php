@@ -13,9 +13,6 @@ namespace Symfony\Component\Finder\Tests\Expression;
 
 use Symfony\Component\Finder\Expression\Expression;
 
-/**
- * @group legacy
- */
 class ExpressionTest extends \PHPUnit_Framework_TestCase
 {
     /**

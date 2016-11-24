@@ -117,7 +117,7 @@ class PhpExporter extends AbstractExporter
                 $oneToOneMappingArray = array(
                     'mappedBy'      => $associationMapping['mappedBy'],
                     'inversedBy'    => $associationMapping['inversedBy'],
-                    'joinColumns'   => $associationMapping['isOwningSide'] ? $associationMapping['joinColumns'] : [],
+                    'joinColumns'   => $associationMapping['joinColumns'],
                     'orphanRemoval' => $associationMapping['orphanRemoval'],
                 );
 

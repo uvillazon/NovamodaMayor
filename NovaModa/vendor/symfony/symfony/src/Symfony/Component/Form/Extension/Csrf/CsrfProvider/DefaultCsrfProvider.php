@@ -61,9 +61,7 @@ class DefaultCsrfProvider implements CsrfProviderInterface
      */
     public function isCsrfTokenValid($intention, $token)
     {
-        $expectedToken = $this->generateCsrfToken($intention);
-
-        return hash_equals($expectedToken, $token);
+        return $token === $this->generateCsrfToken($intention);
     }
 
     /**

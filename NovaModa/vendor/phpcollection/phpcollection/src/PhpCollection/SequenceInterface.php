@@ -51,13 +51,6 @@ interface SequenceInterface extends CollectionInterface
     public function all();
 
     /**
-     * Returns a new Sequence with all elements in reverse order.
-     *
-     * @return SequenceInterface
-     */
-    public function reverse();
-
-    /**
      * Adds the elements of another sequence to this sequence.
      *
      * @param SequenceInterface $seq

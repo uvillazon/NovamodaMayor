@@ -11,10 +11,6 @@
 
 namespace Symfony\Bridge\Doctrine\Tests\Form\ChoiceList;
 
-if (!class_exists('Symfony\Component\Form\Tests\Extension\Core\ChoiceList\AbstractChoiceListTest')) {
-    return;
-}
-
 /**
  * @author Premi Giorgio <giosh94mhz@gmail.com>
  * @author Bernhard Schussek <bschussek@gmail.com>

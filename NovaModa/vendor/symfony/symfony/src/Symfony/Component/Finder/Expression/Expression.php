@@ -11,8 +11,6 @@
 
 namespace Symfony\Component\Finder\Expression;
 
-@trigger_error('The '.__NAMESPACE__.'\Expression class is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
-
 /**
  * @author Jean-François Simon <contact@jfsimon.fr>
  */
@@ -125,9 +123,9 @@ class Expression implements ValueInterface
     }
 
     /**
-     * @return Glob
-     *
      * @throws \LogicException
+     *
+     * @return Glob
      */
     public function getGlob()
     {

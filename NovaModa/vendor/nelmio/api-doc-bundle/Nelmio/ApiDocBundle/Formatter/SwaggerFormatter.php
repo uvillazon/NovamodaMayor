@@ -567,17 +567,17 @@ class SwaggerFormatter implements FormatterInterface
     /**
      * Strips the base path from a URL path.
      *
-     * @param $basePath
+     * @param $path
      * @return mixed
      */
-    protected function stripBasePath($basePath)
+    protected function stripBasePath($path)
     {
         if ('/' === $this->basePath) {
-            return $basePath;
+            return $path;
         }
 
-        $path = sprintf('#^%s#', preg_quote($this->basePath));
-        $subPath = preg_replace($path, '', $basePath);
+        $pattern = sprintf('#^%s#', preg_quote($this->basePath));
+        $subPath = preg_replace($pattern, '', $path);
 
         return $subPath;
     }

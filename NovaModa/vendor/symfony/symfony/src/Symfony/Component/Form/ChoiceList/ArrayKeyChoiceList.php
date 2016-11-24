@@ -11,8 +11,6 @@
 
 namespace Symfony\Component\Form\ChoiceList;
 
-@trigger_error('The '.__NAMESPACE__.'\ArrayKeyChoiceList class is deprecated since version 2.8 and will be removed in 3.0. Use '.__NAMESPACE__.'\ArrayChoiceList instead.', E_USER_DEPRECATED);
-
 use Symfony\Component\Form\Exception\InvalidArgumentException;
 
 /**
@@ -41,8 +39,6 @@ use Symfony\Component\Form\Exception\InvalidArgumentException;
  * ```
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
- *
- * @deprecated since version 2.8, to be removed in 3.0. Use ArrayChoiceList instead.
  */
 class ArrayKeyChoiceList extends ArrayChoiceList
 {
@@ -157,13 +153,12 @@ class ArrayKeyChoiceList extends ArrayChoiceList
     /**
      * Flattens and flips an array into the given output variable.
      *
-     * @param array    $choices          The array to flatten
-     * @param callable $value            The callable for generating choice values
-     * @param array    $choicesByValues  The flattened choices indexed by the
-     *                                   corresponding values
-     * @param array    $keysByValues     The original keys indexed by the
-     *                                   corresponding values
-     * @param array    $structuredValues The values indexed by the original keys
+     * @param array    $choices         The array to flatten
+     * @param callable $value           The callable for generating choice values
+     * @param array    $choicesByValues The flattened choices indexed by the
+     *                                  corresponding values
+     * @param array    $keysByValues    The original keys indexed by the
+     *                                  corresponding values
      *
      * @internal Must not be used by user-land code
      */

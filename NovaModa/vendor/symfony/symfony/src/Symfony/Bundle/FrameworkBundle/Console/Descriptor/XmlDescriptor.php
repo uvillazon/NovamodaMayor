@@ -362,22 +362,14 @@ class XmlDescriptor extends Descriptor
             }
         }
 
-        $serviceXML->setAttribute('scope', $definition->getScope(false));
+        $serviceXML->setAttribute('scope', $definition->getScope());
         $serviceXML->setAttribute('public', $definition->isPublic() ? 'true' : 'false');
         $serviceXML->setAttribute('synthetic', $definition->isSynthetic() ? 'true' : 'false');
         $serviceXML->setAttribute('lazy', $definition->isLazy() ? 'true' : 'false');
-        if (method_exists($definition, 'isShared')) {
-            $serviceXML->setAttribute('shared', $definition->isShared() ? 'true' : 'false');
-        }
         if (method_exists($definition, 'isSynchronized')) {
             $serviceXML->setAttribute('synchronized', $definition->isSynchronized(false) ? 'true' : 'false');
         }
         $serviceXML->setAttribute('abstract', $definition->isAbstract() ? 'true' : 'false');
-
-        if (method_exists($definition, 'isAutowired')) {
-            $serviceXML->setAttribute('autowired', $definition->isAutowired() ? 'true' : 'false');
-        }
-
         $serviceXML->setAttribute('file', $definition->getFile());
 
         if (!$omitTags) {
@@ -456,7 +448,11 @@ class XmlDescriptor extends Descriptor
 
         $registeredListeners = $eventDispatcher->getListeners($event);
         if (null !== $event) {
-            $this->appendEventListenerDocument($eventDispatcher, $event, $eventDispatcherXML, $registeredListeners);
+            foreach ($registeredListeners as $listener) {
+                $callableXML = $this->getCallableDocument($listener);
+
+                $eventDispatcherXML->appendChild($eventDispatcherXML->ownerDocument->importNode($callableXML->childNodes->item(0), true));
+            }
         } else {
             ksort($registeredListeners);
 
@@ -464,25 +460,15 @@ class XmlDescriptor extends Descriptor
                 $eventDispatcherXML->appendChild($eventXML = $dom->createElement('event'));
                 $eventXML->setAttribute('name', $eventListened);
 
-                $this->appendEventListenerDocument($eventDispatcher, $eventListened, $eventXML, $eventListeners);
+                foreach ($eventListeners as $eventListener) {
+                    $callableXML = $this->getCallableDocument($eventListener);
+
+                    $eventXML->appendChild($eventXML->ownerDocument->importNode($callableXML->childNodes->item(0), true));
+                }
             }
         }
 
         return $dom;
-    }
-
-    /**
-     * @param \DOMElement $element
-     * @param array       $eventListeners
-     */
-    private function appendEventListenerDocument(EventDispatcherInterface $eventDispatcher, $event, \DOMElement $element, array $eventListeners)
-    {
-        foreach ($eventListeners as $listener) {
-            $callableXML = $this->getCallableDocument($listener);
-            $callableXML->childNodes->item(0)->setAttribute('priority', $eventDispatcher->getListenerPriority($event, $listener));
-
-            $element->appendChild($element->ownerDocument->importNode($callableXML->childNodes->item(0), true));
-        }
     }
 
     /**

@@ -20,21 +20,13 @@ class EmailType extends AbstractType
      */
     public function getParent()
     {
-        return __NAMESPACE__.'\TextType';
+        return 'text';
     }
 
     /**
      * {@inheritdoc}
      */
     public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
     {
         return 'email';
     }

@@ -72,7 +72,6 @@ class TemplateManager
     public function getTemplates(Profile $profile)
     {
         $templates = $this->getNames($profile);
-
         foreach ($templates as $name => $template) {
             $templates[$name] = $this->twig->loadTemplate($template);
         }
@@ -127,11 +126,7 @@ class TemplateManager
         }
 
         try {
-            if ($loader instanceof \Twig_SourceContextLoaderInterface) {
-                $loader->getSourceContext($template);
-            } else {
-                $loader->getSource($template);
-            }
+            $loader->getSource($template);
 
             return true;
         } catch (\Twig_Error_Loader $e) {

@@ -19,6 +19,8 @@ namespace Symfony\Component\Validator\Violation;
  * Finally, call {@link addViolation()} to add the violation to the current
  * execution context.
  *
+ * @since  2.5
+ *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
 interface ConstraintViolationBuilderInterface
@@ -92,7 +94,7 @@ interface ConstraintViolationBuilderInterface
     /**
      * Sets the violation code.
      *
-     * @param string|null $code The violation code
+     * @param int $code The violation code
      *
      * @return ConstraintViolationBuilderInterface This builder
      */

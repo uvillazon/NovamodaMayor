@@ -1,0 +1,1 @@
+[26-Nov-2015 19:21:56 America/Denver] PHP Fatal error:  Class 'Symfony\Bridge\Doctrine\ManagerRegistry' not found in /home3/novamod2/public_html/sistema/NovaModa/vendor/doctrine/doctrine-bundle/Registry.php on line 28

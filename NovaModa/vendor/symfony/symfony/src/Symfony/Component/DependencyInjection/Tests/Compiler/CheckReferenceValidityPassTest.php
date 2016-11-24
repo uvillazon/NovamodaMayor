@@ -19,9 +19,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class CheckReferenceValidityPassTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @group legacy
-     */
     public function testProcessIgnoresScopeWideningIfNonStrictReference()
     {
         $container = new ContainerBuilder();
@@ -33,7 +30,6 @@ class CheckReferenceValidityPassTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \RuntimeException
-     * @group legacy
      */
     public function testProcessDetectsScopeWidening()
     {
@@ -44,9 +40,6 @@ class CheckReferenceValidityPassTest extends \PHPUnit_Framework_TestCase
         $this->process($container);
     }
 
-    /**
-     * @group legacy
-     */
     public function testProcessIgnoresCrossScopeHierarchyReferenceIfNotStrict()
     {
         $container = new ContainerBuilder();
@@ -61,7 +54,6 @@ class CheckReferenceValidityPassTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \RuntimeException
-     * @group legacy
      */
     public function testProcessDetectsCrossScopeHierarchyReference()
     {

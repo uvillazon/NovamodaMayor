@@ -162,7 +162,7 @@ class Form implements \IteratorAggregate, FormInterface
     /**
      * Creates a new form based on the given configuration.
      *
-     * @param FormConfigInterface $config The form configuration
+     * @param FormConfigInterface $config The form configuration.
      *
      * @throws LogicException if a data mapper is not provided for a compound form
      */
@@ -356,11 +356,21 @@ class Form implements \IteratorAggregate, FormInterface
         if (!FormUtil::isEmpty($viewData)) {
             $dataClass = $this->config->getDataClass();
 
-            if (null !== $dataClass && !$viewData instanceof $dataClass) {
-                $actualType = is_object($viewData)
-                    ? 'an instance of class '.get_class($viewData)
-                    : 'a(n) '.gettype($viewData);
+            $actualType = is_object($viewData) ? 'an instance of class '.get_class($viewData) : 'a(n) '.gettype($viewData);
 
+            if (null === $dataClass && is_object($viewData) && !$viewData instanceof \ArrayAccess) {
+                $expectedType = 'scalar, array or an instance of \ArrayAccess';
+
+                throw new LogicException(
+                    'The form\'s view data is expected to be of type '.$expectedType.', '.
+                    'but is '.$actualType.'. You '.
+                    'can avoid this error by setting the "data_class" option to '.
+                    '"'.get_class($viewData).'" or by adding a view transformer '.
+                    'that transforms '.$actualType.' to '.$expectedType.'.'
+                );
+            }
+
+            if (null !== $dataClass && !$viewData instanceof $dataClass) {
                 throw new LogicException(
                     'The form\'s view data is expected to be an instance of class '.
                     $dataClass.', but is '.$actualType.'. You can avoid this error '.
@@ -766,7 +776,11 @@ class Form implements \IteratorAggregate, FormInterface
             return true;
         }
 
-        return 0 === count($this->getErrors(true));
+        if (count($this->getErrors(true)) > 0) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -896,7 +910,7 @@ class Form implements \IteratorAggregate, FormInterface
             $options['auto_initialize'] = false;
 
             if (null === $type && null === $this->config->getDataClass()) {
-                $type = 'Symfony\Component\Form\Extension\Core\Type\TextType';
+                $type = 'text';
             }
 
             if (null === $type) {
@@ -994,8 +1008,8 @@ class Form implements \IteratorAggregate, FormInterface
     /**
      * Adds a child to the form (implements the \ArrayAccess interface).
      *
-     * @param string        $name  Ignored. The name of the child is used
-     * @param FormInterface $child The child to be added
+     * @param string        $name  Ignored. The name of the child is used.
+     * @param FormInterface $child The child to be added.
      *
      * @throws AlreadySubmittedException If the form has already been submitted.
      * @throws LogicException            When trying to add a child to a non-compound form.
@@ -1022,7 +1036,7 @@ class Form implements \IteratorAggregate, FormInterface
     /**
      * Returns the iterator for this group.
      *
-     * @return \Traversable|FormInterface[]
+     * @return \Traversable
      */
     public function getIterator()
     {
@@ -1072,9 +1086,9 @@ class Form implements \IteratorAggregate, FormInterface
      *
      * @param mixed $value The value to transform
      *
-     * @return mixed
-     *
      * @throws TransformationFailedException If the value cannot be transformed to "normalized" format
+     *
+     * @return mixed
      */
     private function modelToNorm($value)
     {
@@ -1098,9 +1112,9 @@ class Form implements \IteratorAggregate, FormInterface
      *
      * @param string $value The value to reverse transform
      *
-     * @return mixed
-     *
      * @throws TransformationFailedException If the value cannot be transformed to "model" format
+     *
+     * @return mixed
      */
     private function normToModel($value)
     {
@@ -1126,9 +1140,9 @@ class Form implements \IteratorAggregate, FormInterface
      *
      * @param mixed $value The value to transform
      *
-     * @return mixed
-     *
      * @throws TransformationFailedException If the value cannot be transformed to "view" format
+     *
+     * @return mixed
      */
     private function normToView($value)
     {
@@ -1161,9 +1175,9 @@ class Form implements \IteratorAggregate, FormInterface
      *
      * @param string $value The value to reverse transform
      *
-     * @return mixed
-     *
      * @throws TransformationFailedException If the value cannot be transformed to "normalized" format
+     *
+     * @return mixed
      */
     private function viewToNorm($value)
     {

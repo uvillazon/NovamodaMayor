@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the NelmioApiDocBundle.
- *
- * (c) Nelmio <hello@nelm.io>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Nelmio\ApiDocBundle\Tests\Extractor;
 
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -25,7 +16,6 @@ class CachingApiDocExtractorTest extends WebTestCase
         $data = ApiDocExtractorTest::dataProviderForViews();
         // remove default view data from provider
         array_shift($data);
-
         return $data;
     }
 
@@ -75,6 +65,8 @@ class CachingApiDocExtractorTest extends WebTestCase
         $cacheFile = $container->getParameter('kernel.cache_dir').'/api-doc.cache';
 
         $expectedViewCacheFile = $cacheFile.'.'.$view;
+
+        $this->assertFileNotExists($expectedViewCacheFile);
 
         set_error_handler(array($this, 'handleDeprecation'));
         $data = $extractor->all($view);

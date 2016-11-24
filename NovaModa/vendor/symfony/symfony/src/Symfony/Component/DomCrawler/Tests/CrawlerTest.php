@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\DomCrawler\Tests;
 
+use Symfony\Component\CssSelector\CssSelector;
 use Symfony\Component\DomCrawler\Crawler;
 
 class CrawlerTest extends \PHPUnit_Framework_TestCase
@@ -20,13 +21,13 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
         $crawler = new Crawler();
         $this->assertCount(0, $crawler, '__construct() returns an empty crawler');
 
-        $doc = new \DOMDocument();
-        $node = $doc->createElement('test');
-
-        $crawler = new Crawler($node);
+        $crawler = new Crawler(new \DOMNode());
         $this->assertCount(1, $crawler, '__construct() takes a node as a first argument');
     }
 
+    /**
+     * @covers Symfony\Component\DomCrawler\Crawler::add
+     */
     public function testAdd()
     {
         $crawler = new Crawler();
@@ -37,7 +38,6 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
         $crawler->add($this->createNodeList());
         $this->assertEquals('foo', $crawler->filterXPath('//div')->attr('class'), '->add() adds nodes from a \DOMNodeList');
 
-        $list = array();
         foreach ($this->createNodeList() as $node) {
             $list[] = $node;
         }
@@ -47,7 +47,7 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
 
         $crawler = new Crawler();
         $crawler->add($this->createNodeList()->item(0));
-        $this->assertEquals('foo', $crawler->filterXPath('//div')->attr('class'), '->add() adds nodes from a \DOMNode');
+        $this->assertEquals('foo', $crawler->filterXPath('//div')->attr('class'), '->add() adds nodes from a \DOMElement');
 
         $crawler = new Crawler();
         $crawler->add('<html><body>Foo</body></html>');
@@ -57,23 +57,21 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testAddInvalidType()
+    public function testAddInvalidNode()
     {
         $crawler = new Crawler();
         $crawler->add(1);
     }
 
+    /**
+     * @covers Symfony\Component\DomCrawler\Crawler::addHtmlContent
+     */
     public function testAddHtmlContent()
     {
         $crawler = new Crawler();
         $crawler->addHtmlContent('<html><div class="foo"></html>', 'UTF-8');
 
         $this->assertEquals('foo', $crawler->filterXPath('//div')->attr('class'), '->addHtmlContent() adds nodes from an HTML string');
-    }
-
-    public function testAddHtmlContentWithBaseTag()
-    {
-        $crawler = new Crawler();
 
         $crawler->addHtmlContent('<html><head><base href="http://symfony.com"></head><a href="/contact"></a></html>', 'UTF-8');
 
@@ -82,6 +80,7 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers Symfony\Component\DomCrawler\Crawler::addHtmlContent
      * @requires extension mbstring
      */
     public function testAddHtmlContentCharset()
@@ -92,6 +91,9 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Tiếng Việt', $crawler->filterXPath('//div')->text());
     }
 
+    /**
+     * @covers Symfony\Component\DomCrawler\Crawler::addHtmlContent
+     */
     public function testAddHtmlContentInvalidBaseTag()
     {
         $crawler = new Crawler(null, 'http://symfony.com');
@@ -101,6 +103,9 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('http://symfony.com/contact', current($crawler->filterXPath('//a')->links())->getUri(), '->addHtmlContent() correctly handles a non-existent base tag href attribute');
     }
 
+    /**
+     * @covers Symfony\Component\DomCrawler\Crawler::addHtmlContent
+     */
     public function testAddHtmlContentUnsupportedCharset()
     {
         $crawler = new Crawler();
@@ -110,6 +115,7 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers Symfony\Component\DomCrawler\Crawler::addHtmlContent
      * @requires extension mbstring
      */
     public function testAddHtmlContentCharsetGbk()
@@ -121,12 +127,15 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('中文', $crawler->filterXPath('//p')->text());
     }
 
+    /**
+     * @covers Symfony\Component\DomCrawler\Crawler::addHtmlContent
+     */
     public function testAddHtmlContentWithErrors()
     {
         $internalErrors = libxml_use_internal_errors(true);
 
         $crawler = new Crawler();
-        $crawler->addHtmlContent(<<<'EOF'
+        $crawler->addHtmlContent(<<<EOF
 <!DOCTYPE html>
 <html>
     <head>
@@ -146,6 +155,9 @@ EOF
         libxml_use_internal_errors($internalErrors);
     }
 
+    /**
+     * @covers Symfony\Component\DomCrawler\Crawler::addXmlContent
+     */
     public function testAddXmlContent()
     {
         $crawler = new Crawler();
@@ -154,6 +166,9 @@ EOF
         $this->assertEquals('foo', $crawler->filterXPath('//div')->attr('class'), '->addXmlContent() adds nodes from an XML string');
     }
 
+    /**
+     * @covers Symfony\Component\DomCrawler\Crawler::addXmlContent
+     */
     public function testAddXmlContentCharset()
     {
         $crawler = new Crawler();
@@ -162,12 +177,15 @@ EOF
         $this->assertEquals('Tiếng Việt', $crawler->filterXPath('//div')->text());
     }
 
+    /**
+     * @covers Symfony\Component\DomCrawler\Crawler::addXmlContent
+     */
     public function testAddXmlContentWithErrors()
     {
         $internalErrors = libxml_use_internal_errors(true);
 
         $crawler = new Crawler();
-        $crawler->addXmlContent(<<<'EOF'
+        $crawler->addXmlContent(<<<EOF
 <!DOCTYPE html>
 <html>
     <head>
@@ -185,6 +203,9 @@ EOF
         libxml_use_internal_errors($internalErrors);
     }
 
+    /**
+     * @covers Symfony\Component\DomCrawler\Crawler::addContent
+     */
     public function testAddContent()
     {
         $crawler = new Crawler();
@@ -220,6 +241,9 @@ EOF
         $this->assertEquals('日本語', $crawler->filterXPath('//body')->text(), '->addContent() can recognize "Shift_JIS" in html5 meta charset tag');
     }
 
+    /**
+     * @covers Symfony\Component\DomCrawler\Crawler::addDocument
+     */
     public function testAddDocument()
     {
         $crawler = new Crawler();
@@ -228,6 +252,9 @@ EOF
         $this->assertEquals('foo', $crawler->filterXPath('//div')->attr('class'), '->addDocument() adds nodes from a \DOMDocument');
     }
 
+    /**
+     * @covers Symfony\Component\DomCrawler\Crawler::addNodeList
+     */
     public function testAddNodeList()
     {
         $crawler = new Crawler();
@@ -236,9 +263,11 @@ EOF
         $this->assertEquals('foo', $crawler->filterXPath('//div')->attr('class'), '->addNodeList() adds nodes from a \DOMNodeList');
     }
 
+    /**
+     * @covers Symfony\Component\DomCrawler\Crawler::addNodes
+     */
     public function testAddNodes()
     {
-        $list = array();
         foreach ($this->createNodeList() as $node) {
             $list[] = $node;
         }
@@ -249,20 +278,20 @@ EOF
         $this->assertEquals('foo', $crawler->filterXPath('//div')->attr('class'), '->addNodes() adds nodes from an array of nodes');
     }
 
+    /**
+     * @covers Symfony\Component\DomCrawler\Crawler::addNode
+     */
     public function testAddNode()
     {
         $crawler = new Crawler();
         $crawler->addNode($this->createNodeList()->item(0));
 
-        $this->assertEquals('foo', $crawler->filterXPath('//div')->attr('class'), '->addNode() adds nodes from a \DOMNode');
+        $this->assertEquals('foo', $crawler->filterXPath('//div')->attr('class'), '->addNode() adds nodes from a \DOMElement');
     }
 
     public function testClear()
     {
-        $doc = new \DOMDocument();
-        $node = $doc->createElement('test');
-
-        $crawler = new Crawler($node);
+        $crawler = new Crawler(new \DOMNode());
         $crawler->clear();
         $this->assertCount(0, $crawler, '->clear() removes all the nodes from the crawler');
     }
@@ -284,14 +313,6 @@ EOF
         });
 
         $this->assertEquals(array('0-One', '1-Two', '2-Three'), $data, '->each() executes an anonymous function on each node of the list');
-    }
-
-    public function testIteration()
-    {
-        $crawler = $this->createTestCrawler()->filterXPath('//li');
-
-        $this->assertInstanceOf('Traversable', $crawler);
-        $this->assertContainsOnlyInstancesOf('DOMElement', iterator_to_array($crawler), 'Iterating a Crawler gives DOMElement instances');
     }
 
     public function testSlice()
@@ -392,6 +413,7 @@ EOF
 
         $this->assertCount(0, $crawler->filterXPath('/input'));
         $this->assertCount(0, $crawler->filterXPath('/body'));
+        $this->assertCount(1, $crawler->filterXPath('/_root/body'));
         $this->assertCount(1, $crawler->filterXPath('./body'));
         $this->assertCount(1, $crawler->filterXPath('.//body'));
         $this->assertCount(5, $crawler->filterXPath('.//input'));
@@ -406,9 +428,11 @@ EOF
         $this->assertCount(5, $crawler->filterXPath('(//a | //div)//img'));
         $this->assertCount(7, $crawler->filterXPath('((//a | //div)//img | //ul)'));
         $this->assertCount(7, $crawler->filterXPath('( ( //a | //div )//img | //ul )'));
-        $this->assertCount(1, $crawler->filterXPath("//a[./@href][((./@id = 'Klausi|Claudiu' or normalize-space(string(.)) = 'Klausi|Claudiu' or ./@title = 'Klausi|Claudiu' or ./@rel = 'Klausi|Claudiu') or .//img[./@alt = 'Klausi|Claudiu'])]"));
     }
 
+    /**
+     * @covers Symfony\Component\DomCrawler\Crawler::filterXPath
+     */
     public function testFilterXPath()
     {
         $crawler = $this->createTestCrawler();
@@ -420,12 +444,6 @@ EOF
 
         $crawler = $this->createTestCrawler();
         $this->assertCount(3, $crawler->filterXPath('//body')->filterXPath('//button')->parents(), '->filterXpath() preserves parents when chained');
-    }
-
-    public function testFilterRemovesDuplicates()
-    {
-        $crawler = $this->createTestCrawler()->filter('html, body')->filter('li');
-        $this->assertCount(6, $crawler, 'The crawler removes duplicates when filtering.');
     }
 
     public function testFilterXPathWithDefaultNamespace()
@@ -481,18 +499,9 @@ EOF
     {
         $crawler = $this->createTestCrawler();
         $this->assertCount(0, $crawler->filterXPath('.'), '->filterXPath() returns an empty result if the XPath references the fake root node');
+        $this->assertCount(0, $crawler->filterXPath('/_root'), '->filterXPath() returns an empty result if the XPath references the fake root node');
         $this->assertCount(0, $crawler->filterXPath('self::*'), '->filterXPath() returns an empty result if the XPath references the fake root node');
         $this->assertCount(0, $crawler->filterXPath('self::_root'), '->filterXPath() returns an empty result if the XPath references the fake root node');
-    }
-
-    /** @group legacy */
-    public function testLegacyFilterXPathWithFakeRoot()
-    {
-        $crawler = $this->createTestCrawler();
-        $this->assertCount(0, $crawler->filterXPath('/_root'), '->filterXPath() returns an empty result if the XPath references the fake root node');
-
-        $crawler = $this->createTestCrawler()->filterXPath('//body');
-        $this->assertCount(1, $crawler->filterXPath('/_root/body'));
     }
 
     public function testFilterXPathWithAncestorAxis()
@@ -583,9 +592,12 @@ EOF
 
         $this->assertCount(0, $crawler->filterXPath('self::a'), 'The fake root node has no "real" element name');
         $this->assertCount(0, $crawler->filterXPath('self::a/img'), 'The fake root node has no "real" element name');
-        $this->assertCount(10, $crawler->filterXPath('self::*/a'));
+        $this->assertCount(9, $crawler->filterXPath('self::*/a'));
     }
 
+    /**
+     * @covers Symfony\Component\DomCrawler\Crawler::filter
+     */
     public function testFilter()
     {
         $crawler = $this->createTestCrawler();
@@ -606,12 +618,16 @@ EOF
 
     public function testFilterWithNamespace()
     {
+        CssSelector::disableHtmlExtension();
+
         $crawler = $this->createTestXmlCrawler()->filter('yt|accessControl');
         $this->assertCount(2, $crawler, '->filter() automatically registers namespaces');
     }
 
     public function testFilterWithMultipleNamespaces()
     {
+        CssSelector::disableHtmlExtension();
+
         $crawler = $this->createTestXmlCrawler()->filter('media|group yt|aspectRatio');
         $this->assertCount(1, $crawler, '->filter() automatically registers namespaces');
         $this->assertSame('widescreen', $crawler->text());
@@ -678,7 +694,7 @@ EOF
 
     public function testSelectButtonWithSingleQuotesInNameAttribute()
     {
-        $html = <<<'HTML'
+        $html = <<<HTML
 <!DOCTYPE html>
 <html lang="en">
 <body>
@@ -699,7 +715,7 @@ HTML;
 
     public function testSelectButtonWithDoubleQuotesInNameAttribute()
     {
-        $html = <<<'HTML'
+        $html = <<<HTML
 <!DOCTYPE html>
 <html lang="en">
 <body>
@@ -736,29 +752,9 @@ HTML;
         }
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The selected node should be instance of DOMElement
-     */
-    public function testInvalidLink()
-    {
-        $crawler = $this->createTestCrawler('http://example.com/bar/');
-        $crawler->filterXPath('//li/text()')->link();
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The selected node should be instance of DOMElement
-     */
-    public function testInvalidLinks()
-    {
-        $crawler = $this->createTestCrawler('http://example.com/bar/');
-        $crawler->filterXPath('//li/text()')->link();
-    }
-
     public function testSelectLinkAndLinkFiltered()
     {
-        $html = <<<'HTML'
+        $html = <<<HTML
 <!DOCTYPE html>
 <html lang="en">
 <body>
@@ -826,16 +822,6 @@ HTML;
         } catch (\InvalidArgumentException $e) {
             $this->assertTrue(true, '->form() throws an \InvalidArgumentException if the node list is empty');
         }
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The selected node should be instance of DOMElement
-     */
-    public function testInvalidForm()
-    {
-        $crawler = $this->createTestCrawler('http://example.com/bar/');
-        $crawler->filterXPath('//li/text()')->form();
     }
 
     public function testLast()
@@ -1029,8 +1015,6 @@ HTML;
                     <a href="/bar"><img alt="\' Fabien&quot;s Bar"/></a>
 
                     <a href="?get=param">GetLink</a>
-
-                    <a href="/example">Klausi|Claudiu</a>
 
                     <form action="foo" id="FooFormId">
                         <input type="text" value="TextValue" name="TextName" />

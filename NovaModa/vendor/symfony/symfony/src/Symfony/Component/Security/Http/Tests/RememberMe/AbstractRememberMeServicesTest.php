@@ -25,10 +25,10 @@ class AbstractRememberMeServicesTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo', $service->getRememberMeParameter());
     }
 
-    public function testGetSecret()
+    public function testGetKey()
     {
         $service = $this->getService();
-        $this->assertEquals('foosecret', $service->getSecret());
+        $this->assertEquals('fookey', $service->getKey());
     }
 
     public function testAutoLoginReturnsNullWhenNoCookie()
@@ -78,36 +78,20 @@ class AbstractRememberMeServicesTest extends \PHPUnit_Framework_TestCase
         $returnedToken = $service->autoLogin($request);
 
         $this->assertSame($user, $returnedToken->getUser());
-        $this->assertSame('foosecret', $returnedToken->getSecret());
+        $this->assertSame('fookey', $returnedToken->getKey());
         $this->assertSame('fookey', $returnedToken->getProviderKey());
     }
 
-    /**
-     * @dataProvider provideOptionsForLogout
-     */
-    public function testLogout(array $options)
+    public function testLogout()
     {
-        $service = $this->getService(null, $options);
+        $service = $this->getService(null, array('name' => 'foo', 'path' => null, 'domain' => null));
         $request = new Request();
         $response = new Response();
         $token = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
-        $service->logout($request, $response, $token);
-        $cookie = $request->attributes->get(RememberMeServicesInterface::COOKIE_ATTR_NAME);
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Cookie', $cookie);
-        $this->assertTrue($cookie->isCleared());
-        $this->assertSame($options['name'], $cookie->getName());
-        $this->assertSame($options['path'], $cookie->getPath());
-        $this->assertSame($options['domain'], $cookie->getDomain());
-        $this->assertSame($options['secure'], $cookie->isSecure());
-        $this->assertSame($options['httponly'], $cookie->isHttpOnly());
-    }
 
-    public function provideOptionsForLogout()
-    {
-        return array(
-            array(array('name' => 'foo', 'path' => '/', 'domain' => null, 'secure' => false, 'httponly' => true)),
-            array(array('name' => 'foo', 'path' => '/bar', 'domain' => 'baz.com', 'secure' => true, 'httponly' => false)),
-        );
+        $service->logout($request, $response, $token);
+
+        $this->assertTrue($request->attributes->get(RememberMeServicesInterface::COOKIE_ATTR_NAME)->isCleared());
     }
 
     public function testLoginFail()
@@ -284,7 +268,7 @@ class AbstractRememberMeServicesTest extends \PHPUnit_Framework_TestCase
         }
 
         return $this->getMockForAbstractClass('Symfony\Component\Security\Http\RememberMe\AbstractRememberMeServices', array(
-            array($userProvider), 'foosecret', 'fookey', $options, $logger,
+            array($userProvider), 'fookey', 'fookey', $options, $logger,
         ));
     }
 

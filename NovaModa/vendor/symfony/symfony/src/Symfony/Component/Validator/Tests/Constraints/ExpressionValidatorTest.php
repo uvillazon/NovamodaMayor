@@ -40,7 +40,6 @@ class ExpressionValidatorTest extends AbstractConstraintValidatorTest
 
         $this->buildViolation('myMessage')
             ->setParameter('{{ value }}', 'null')
-            ->setCode(Expression::EXPRESSION_FAILED_ERROR)
             ->assertRaised();
     }
 
@@ -55,7 +54,6 @@ class ExpressionValidatorTest extends AbstractConstraintValidatorTest
 
         $this->buildViolation('myMessage')
             ->setParameter('{{ value }}', '""')
-            ->setCode(Expression::EXPRESSION_FAILED_ERROR)
             ->assertRaised();
     }
 
@@ -89,7 +87,6 @@ class ExpressionValidatorTest extends AbstractConstraintValidatorTest
 
         $this->buildViolation('myMessage')
             ->setParameter('{{ value }}', 'object')
-            ->setCode(Expression::EXPRESSION_FAILED_ERROR)
             ->assertRaised();
     }
 
@@ -126,9 +123,8 @@ class ExpressionValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate('2', $constraint);
 
         $this->buildViolation('myMessage')
-            ->atPath('data')
             ->setParameter('{{ value }}', '"2"')
-            ->setCode(Expression::EXPRESSION_FAILED_ERROR)
+            ->atPath('data')
             ->assertRaised();
     }
 
@@ -171,9 +167,8 @@ class ExpressionValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate('2', $constraint);
 
         $this->buildViolation('myMessage')
-            ->atPath('reference.data')
             ->setParameter('{{ value }}', '"2"')
-            ->setCode(Expression::EXPRESSION_FAILED_ERROR)
+            ->atPath('reference.data')
             ->assertRaised();
     }
 
@@ -212,33 +207,8 @@ class ExpressionValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate('2', $constraint);
 
         $this->buildViolation('myMessage')
-            ->atPath('')
             ->setParameter('{{ value }}', '"2"')
-            ->setCode(Expression::EXPRESSION_FAILED_ERROR)
+            ->atPath('')
             ->assertRaised();
-    }
-
-    public function testExpressionLanguageUsage()
-    {
-        $constraint = new Expression(array(
-            'expression' => 'false',
-        ));
-
-        $expressionLanguage = $this->getMock('Symfony\Component\ExpressionLanguage\ExpressionLanguage');
-
-        $used = false;
-
-        $expressionLanguage->method('evaluate')
-            ->will($this->returnCallback(function () use (&$used) {
-                $used = true;
-
-                return true;
-            }));
-
-        $validator = new ExpressionValidator(null, $expressionLanguage);
-        $validator->initialize($this->createContext());
-        $validator->validate(null, $constraint);
-
-        $this->assertTrue($used, 'Failed asserting that custom ExpressionLanguage instance is used.');
     }
 }

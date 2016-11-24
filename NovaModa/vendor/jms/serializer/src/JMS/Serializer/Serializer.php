@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,6 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Exception\UnsupportedFormatException;
-use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
-use JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface;
-use JMS\Serializer\ContextFactory\DefaultSerializationContextFactory;
-use JMS\Serializer\ContextFactory\DefaultDeserializationContextFactory;
 use Metadata\MetadataFactoryInterface;
 use PhpCollection\MapInterface;
 
@@ -35,7 +31,7 @@ use PhpCollection\MapInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class Serializer implements SerializerInterface, ArrayTransformerInterface
+class Serializer implements SerializerInterface
 {
     private $factory;
     private $handlerRegistry;
@@ -50,16 +46,6 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
     private $deserializationVisitors;
 
     private $navigator;
-
-    /**
-     * @var SerializationContextFactoryInterface
-     */
-    private $serializationContextFactory;
-
-    /**
-     * @var DeserializationContextFactoryInterface
-     */
-    private $deserializationContextFactory;
 
     /**
      * Constructor.
@@ -83,15 +69,12 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
         $this->deserializationVisitors = $deserializationVisitors;
 
         $this->navigator = new GraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
-
-        $this->serializationContextFactory = new DefaultSerializationContextFactory();
-        $this->deserializationContextFactory = new DefaultDeserializationContextFactory();
     }
 
     public function serialize($data, $format, SerializationContext $context = null)
     {
         if (null === $context) {
-            $context = $this->serializationContextFactory->createSerializationContext();
+            $context = new SerializationContext();
         }
 
         return $this->serializationVisitors->get($format)
@@ -107,7 +90,7 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
     public function deserialize($data, $type, $format, DeserializationContext $context = null)
     {
         if (null === $context) {
-            $context = $this->deserializationContextFactory->createDeserializationContext();
+            $context = new DeserializationContext();
         }
 
         return $this->deserializationVisitors->get($format)
@@ -122,12 +105,18 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
     }
 
     /**
-     * {@InheritDoc}
+     * Converts objects to an array structure.
+     *
+     * This is useful when the data needs to be passed on to other methods which expect array data.
+     *
+     * @param mixed $data anything that converts to an array, typically an object or an array of objects
+     *
+     * @return array
      */
     public function toArray($data, SerializationContext $context = null)
     {
         if (null === $context) {
-            $context = $this->serializationContextFactory->createSerializationContext();
+            $context = new SerializationContext();
         }
 
         return $this->serializationVisitors->get('json')
@@ -150,12 +139,17 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
     }
 
     /**
-     * {@InheritDoc}
+     * Restores objects from an array structure.
+     *
+     * @param array $data
+     * @param string $type
+     *
+     * @return mixed this returns whatever the passed type is, typically an object or an array of objects
      */
     public function fromArray(array $data, $type, DeserializationContext $context = null)
     {
         if (null === $context) {
-            $context = $this->deserializationContextFactory->createDeserializationContext();
+            $context = new DeserializationContext();
         }
 
         return $this->deserializationVisitors->get('json')
@@ -212,29 +206,5 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
     public function getMetadataFactory()
     {
         return $this->factory;
-    }
-
-    /**
-     * @param SerializationContextFactoryInterface $serializationContextFactory
-     *
-     * @return self
-     */
-    public function setSerializationContextFactory(SerializationContextFactoryInterface $serializationContextFactory)
-    {
-        $this->serializationContextFactory = $serializationContextFactory;
-
-        return $this;
-    }
-
-    /**
-     * @param DeserializationContextFactoryInterface $deserializationContextFactory
-     *
-     * @return self
-     */
-    public function setDeserializationContextFactory(DeserializationContextFactoryInterface $deserializationContextFactory)
-    {
-        $this->deserializationContextFactory = $deserializationContextFactory;
-
-        return $this;
     }
 }

@@ -12,10 +12,8 @@ definition_1
 - Public: yes
 - Synthetic: no
 - Lazy: yes
-- Shared: yes
 - Synchronized: no
 - Abstract: yes
-- Autowired: no
 - Factory Class: `Full\Qualified\FactoryClass`
 - Factory Method: `get`
 
@@ -27,10 +25,8 @@ definition_2
 - Public: no
 - Synthetic: yes
 - Lazy: no
-- Shared: yes
 - Synchronized: no
 - Abstract: no
-- Autowired: no
 - File: `/path/to/file`
 - Factory Service: `factory.service`
 - Factory Method: `get`

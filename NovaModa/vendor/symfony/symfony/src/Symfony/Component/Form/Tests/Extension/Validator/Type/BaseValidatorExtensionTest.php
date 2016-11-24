@@ -58,16 +58,16 @@ abstract class BaseValidatorExtensionTest extends TypeTestCase
             'validation_groups' => array($this, 'testValidationGroupsCanBeSetToCallback'),
         ));
 
-        $this->assertInternalType('callable', $form->getConfig()->getOption('validation_groups'));
+        $this->assertTrue(is_callable($form->getConfig()->getOption('validation_groups')));
     }
 
     public function testValidationGroupsCanBeSetToClosure()
     {
         $form = $this->createForm(array(
-            'validation_groups' => function (FormInterface $form) { },
+            'validation_groups' => function (FormInterface $form) { return; },
         ));
 
-        $this->assertInternalType('callable', $form->getConfig()->getOption('validation_groups'));
+        $this->assertTrue(is_callable($form->getConfig()->getOption('validation_groups')));
     }
 
     abstract protected function createForm(array $options = array());

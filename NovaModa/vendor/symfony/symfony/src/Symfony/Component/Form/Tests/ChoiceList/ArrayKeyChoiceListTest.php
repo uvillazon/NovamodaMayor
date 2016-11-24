@@ -15,8 +15,6 @@ use Symfony\Component\Form\ChoiceList\ArrayKeyChoiceList;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
- *
- * @group legacy
  */
 class ArrayKeyChoiceListTest extends AbstractChoiceListTest
 {

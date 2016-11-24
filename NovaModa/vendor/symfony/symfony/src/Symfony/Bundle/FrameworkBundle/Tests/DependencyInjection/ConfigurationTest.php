@@ -66,7 +66,6 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             array(array(), array()),
             array(array('10.0.0.0/8'), array('10.0.0.0/8')),
             array(array('::ffff:0:0/96'), array('::ffff:0:0/96')),
-            array(array('0.0.0.0/0'), array('0.0.0.0/0')),
         );
     }
 
@@ -158,7 +157,6 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                 'enabled' => false,
                 'fallbacks' => array('en'),
                 'logging' => true,
-                'paths' => array(),
             ),
             'validation' => array(
                 'enabled' => false,
@@ -170,7 +168,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             'annotations' => array(
                 'cache' => 'file',
                 'file_cache_dir' => '%kernel.cache_dir%/annotations',
-                'debug' => true,
+                'debug' => '%kernel.debug%',
             ),
             'serializer' => array(
                 'enabled' => false,
@@ -179,9 +177,6 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             'property_access' => array(
                 'magic_call' => false,
                 'throw_exception_on_invalid_index' => false,
-            ),
-            'property_info' => array(
-                'enabled' => false,
             ),
             'assets' => array(
                 'version' => null,

@@ -47,7 +47,7 @@ class RepeatedType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'type' => __NAMESPACE__.'\TextType',
+            'type' => 'text',
             'options' => array(),
             'first_options' => array(),
             'second_options' => array(),
@@ -65,14 +65,6 @@ class RepeatedType extends AbstractType
      * {@inheritdoc}
      */
     public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
     {
         return 'repeated';
     }

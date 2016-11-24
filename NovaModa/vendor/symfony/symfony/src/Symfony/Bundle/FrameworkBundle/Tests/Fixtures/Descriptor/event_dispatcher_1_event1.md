@@ -4,9 +4,7 @@
 
 - Type: `function`
 - Name: `global_function`
-- Priority: `255`
 
 ## Listener 2
 
 - Type: `closure`
-- Priority: `-1`

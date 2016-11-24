@@ -49,7 +49,7 @@ class AnnotationLoader implements LoaderInterface
         $attributesMetadata = $classMetadata->getAttributesMetadata();
 
         foreach ($reflectionClass->getProperties() as $property) {
-            if (!isset($attributesMetadata[$property->name])) {
+            if (!isset($attributeMetadata[$property->name])) {
                 $attributesMetadata[$property->name] = new AttributeMetadata($property->name);
                 $classMetadata->addAttributeMetadata($attributesMetadata[$property->name]);
             }

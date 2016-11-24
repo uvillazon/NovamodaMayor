@@ -19,6 +19,8 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
+ * @api
  */
 class EmailValidator extends ConstraintValidator
 {
@@ -56,8 +58,8 @@ class EmailValidator extends ConstraintValidator
         }
 
         if ($constraint->strict) {
-            if (!class_exists('\Egulias\EmailValidator\EmailValidator') || interface_exists('\Egulias\EmailValidator\Validation\EmailValidation')) {
-                throw new RuntimeException('Strict email validation requires egulias/email-validator:~1.2');
+            if (!class_exists('\Egulias\EmailValidator\EmailValidator')) {
+                throw new RuntimeException('Strict email validation requires egulias/email-validator');
             }
 
             $strictValidator = new \Egulias\EmailValidator\EmailValidator();
@@ -93,7 +95,7 @@ class EmailValidator extends ConstraintValidator
             return;
         }
 
-        $host = substr($value, strrpos($value, '@') + 1);
+        $host = substr($value, strpos($value, '@') + 1);
 
         // Check for host DNS resource records
         if ($constraint->checkMX) {

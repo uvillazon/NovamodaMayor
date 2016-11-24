@@ -6,14 +6,11 @@
             "public": false,
             "synthetic": true,
             "lazy": false,
-            "shared": true,
             "synchronized": false,
             "abstract": false,
             "file": "\/path\/to\/file",
             "factory_service": "factory.service",
-            "factory_method": "get",
-            "autowire": false,
-            "autowiring_types": []
+            "factory_method": "get"
         }
     ],
     "tag2": [
@@ -23,14 +20,11 @@
             "public": false,
             "synthetic": true,
             "lazy": false,
-            "shared": true,
             "synchronized": false,
             "abstract": false,
             "file": "\/path\/to\/file",
             "factory_service": "factory.service",
-            "factory_method": "get",
-            "autowire": false,
-            "autowiring_types": []
+            "factory_method": "get"
         }
     ]
 }

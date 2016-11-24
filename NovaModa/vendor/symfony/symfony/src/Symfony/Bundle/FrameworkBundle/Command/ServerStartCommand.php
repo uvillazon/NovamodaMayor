@@ -11,11 +11,11 @@
 
 namespace Symfony\Bundle\FrameworkBundle\Command;
 
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
 
@@ -33,11 +33,9 @@ class ServerStartCommand extends ServerCommand
     {
         $this
             ->setDefinition(array(
-                new InputArgument('address', InputArgument::OPTIONAL, 'Address:port', '127.0.0.1'),
-                new InputOption('port', 'p', InputOption::VALUE_REQUIRED, 'Address port number', '8000'),
+                new InputArgument('address', InputArgument::OPTIONAL, 'Address:port', '127.0.0.1:8000'),
                 new InputOption('docroot', 'd', InputOption::VALUE_REQUIRED, 'Document root', null),
                 new InputOption('router', 'r', InputOption::VALUE_REQUIRED, 'Path to custom router script'),
-                new InputOption('force', 'f', InputOption::VALUE_NONE, 'Force web server startup'),
             ))
             ->setName('server:start')
             ->setDescription('Starts PHP built-in web server in the background')
@@ -74,18 +72,14 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new SymfonyStyle($input, $cliOutput = $output);
-
         if (!extension_loaded('pcntl')) {
-            $io->error(array(
-                'This command needs the pcntl extension to run.',
-                'You can either install it or use the "server:run" command instead to run the built-in web server.',
-            ));
+            $output->writeln('<error>This command needs the pcntl extension to run.</error>');
+            $output->writeln('You can either install it or use the <info>server:run</info> command instead to run the built-in web server.');
 
-            if ($io->ask('Do you want to execute <info>server:run</info> immediately? [Yn] ', true)) {
+            if ($this->getHelper('question')->ask($input, $output, new ConfirmationQuestion('Do you want to start <info>server:run</info> immediately? [Yn] ', true))) {
                 $command = $this->getApplication()->find('server:run');
 
-                return $command->run($input, $cliOutput);
+                return $command->run($input, $output);
             }
 
             return 1;
@@ -98,57 +92,56 @@ EOF
         }
 
         if (!is_dir($documentRoot)) {
-            $io->error(sprintf('The given document root directory "%s" does not exist.', $documentRoot));
+            $output->writeln(sprintf('<error>The given document root directory "%s" does not exist</error>', $documentRoot));
 
             return 1;
         }
 
         $env = $this->getContainer()->getParameter('kernel.environment');
 
-        if (false === $router = $this->determineRouterScript($input->getOption('router'), $env, $io)) {
+        if (false === $router = $this->determineRouterScript($input->getOption('router'), $env, $output)) {
             return 1;
         }
 
         $address = $input->getArgument('address');
 
         if (false === strpos($address, ':')) {
-            $address = $address.':'.$input->getOption('port');
+            $output->writeln('The address has to be of the form <comment>bind-address:port</comment>.');
+
+            return 1;
         }
 
-        if (!$input->getOption('force') && $this->isOtherServerProcessRunning($address)) {
-            $io->error(array(
-                sprintf('A process is already listening on http://%s.', $address),
-                'Use the --force option if the server process terminated unexpectedly to start a new web server process.',
-            ));
+        if ($this->isOtherServerProcessRunning($address)) {
+            $output->writeln(sprintf('<error>A process is already listening on http://%s.</error>', $address));
 
             return 1;
         }
 
         if ('prod' === $env) {
-            $io->error('Running PHP built-in server in production environment is NOT recommended!');
+            $output->writeln('<error>Running PHP built-in server in production environment is NOT recommended!</error>');
         }
 
         $pid = pcntl_fork();
 
         if ($pid < 0) {
-            $io->error('Unable to start the server process.');
+            $output->writeln('<error>Unable to start the server process</error>');
 
             return 1;
         }
 
         if ($pid > 0) {
-            $io->success(sprintf('Web server listening on http://%s', $address));
+            $output->writeln(sprintf('<info>Web server listening on http://%s</info>', $address));
 
             return;
         }
 
         if (posix_setsid() < 0) {
-            $io->error('Unable to set the child process as session leader');
+            $output->writeln('<error>Unable to set the child process as session leader</error>');
 
             return 1;
         }
 
-        if (null === $process = $this->createServerProcess($io, $address, $documentRoot, $router)) {
+        if (null === $process = $this->createServerProcess($output, $address, $documentRoot, $router)) {
             return 1;
         }
 
@@ -158,7 +151,7 @@ EOF
         touch($lockFile);
 
         if (!$process->isRunning()) {
-            $io->error('Unable to start the server process');
+            $output->writeln('<error>Unable to start the server process</error>');
             unlink($lockFile);
 
             return 1;
@@ -178,13 +171,13 @@ EOF
      * Determine the absolute file path for the router script, using the environment to choose a standard script
      * if no custom router script is specified.
      *
-     * @param string|null  $router File path of the custom router script, if set by the user; otherwise null
-     * @param string       $env    The application environment
-     * @param SymfonyStyle $io     An SymfonyStyle instance
+     * @param string|null     $router File path of the custom router script, if set by the user; otherwise null
+     * @param string          $env    The application environment
+     * @param OutputInterface $output An OutputInterface instance
      *
      * @return string|bool The absolute file path of the router script, or false on failure
      */
-    private function determineRouterScript($router, $env, SymfonyStyle $io)
+    private function determineRouterScript($router, $env, OutputInterface $output)
     {
         if (null === $router) {
             $router = $this
@@ -195,7 +188,7 @@ EOF
         }
 
         if (false === $path = realpath($router)) {
-            $io->error(sprintf('The given router script "%s" does not exist.', $router));
+            $output->writeln(sprintf('<error>The given router script "%s" does not exist</error>', $router));
 
             return false;
         }
@@ -206,18 +199,18 @@ EOF
     /**
      * Creates a process to start PHP's built-in web server.
      *
-     * @param SymfonyStyle $io           A SymfonyStyle instance
-     * @param string       $address      IP address and port to listen to
-     * @param string       $documentRoot The application's document root
-     * @param string       $router       The router filename
+     * @param OutputInterface $output       A OutputInterface instance
+     * @param string          $address      IP address and port to listen to
+     * @param string          $documentRoot The application's document root
+     * @param string          $router       The router filename
      *
      * @return Process The process
      */
-    private function createServerProcess(SymfonyStyle $io, $address, $documentRoot, $router)
+    private function createServerProcess(OutputInterface $output, $address, $documentRoot, $router)
     {
         $finder = new PhpExecutableFinder();
         if (false === $binary = $finder->find()) {
-            $io->error('Unable to find PHP binary to start server.');
+            $output->writeln('<error>Unable to find PHP binary to start server</error>');
 
             return;
         }

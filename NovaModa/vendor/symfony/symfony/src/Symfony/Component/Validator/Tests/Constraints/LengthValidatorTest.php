@@ -89,6 +89,10 @@ class LengthValidatorTest extends AbstractConstraintValidatorTest
 
     public function getOneCharset()
     {
+        if (!function_exists('iconv') && !function_exists('mb_convert_encoding')) {
+            $this->markTestSkipped('Mbstring or iconv is required for this test.');
+        }
+
         return array(
             array('é', 'utf8', true),
             array("\xE9", 'CP1252', true),
@@ -237,7 +241,6 @@ class LengthValidatorTest extends AbstractConstraintValidatorTest
                 ->setParameter('{{ value }}', '"'.$value.'"')
                 ->setParameter('{{ charset }}', $charset)
                 ->setInvalidValue($value)
-                ->setCode(Length::INVALID_CHARACTERS_ERROR)
                 ->assertRaised();
         }
     }

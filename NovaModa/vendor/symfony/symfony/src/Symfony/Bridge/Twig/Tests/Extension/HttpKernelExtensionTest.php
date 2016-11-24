@@ -43,7 +43,7 @@ class HttpKernelExtensionTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock()
         ;
-        $renderer = new FragmentHandler($context);
+        $renderer = new FragmentHandler(array(), false, $context);
 
         $this->setExpectedException('InvalidArgumentException', 'The "inline" renderer does not exist.');
         $renderer->render('/foo');
@@ -62,7 +62,7 @@ class HttpKernelExtensionTest extends \PHPUnit_Framework_TestCase
 
         $context->expects($this->any())->method('getCurrentRequest')->will($this->returnValue(Request::create('/')));
 
-        $renderer = new FragmentHandler($context, array($strategy), false);
+        $renderer = new FragmentHandler(array($strategy), false, $context);
 
         return $renderer;
     }

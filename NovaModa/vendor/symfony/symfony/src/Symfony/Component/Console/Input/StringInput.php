@@ -11,8 +11,6 @@
 
 namespace Symfony\Component\Console\Input;
 
-use Symfony\Component\Console\Exception\InvalidArgumentException;
-
 /**
  * StringInput represents an input provided as a string.
  *
@@ -21,6 +19,8 @@ use Symfony\Component\Console\Exception\InvalidArgumentException;
  *     $input = new StringInput('foo --bar="foobar"');
  *
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @api
  */
 class StringInput extends ArgvInput
 {
@@ -34,6 +34,8 @@ class StringInput extends ArgvInput
      * @param InputDefinition $definition A InputDefinition instance
      *
      * @deprecated The second argument is deprecated as it does not work (will be removed in 3.0), use 'bind' method instead
+     *
+     * @api
      */
     public function __construct($input, InputDefinition $definition = null)
     {
@@ -57,7 +59,7 @@ class StringInput extends ArgvInput
      *
      * @return array An array of tokens
      *
-     * @throws InvalidArgumentException When unable to parse input (should never happen)
+     * @throws \InvalidArgumentException When unable to parse input (should never happen)
      */
     private function tokenize($input)
     {
@@ -74,7 +76,7 @@ class StringInput extends ArgvInput
                 $tokens[] = stripcslashes($match[1]);
             } else {
                 // should never happen
-                throw new InvalidArgumentException(sprintf('Unable to parse input near "... %s ..."', substr($input, $cursor, 10)));
+                throw new \InvalidArgumentException(sprintf('Unable to parse input near "... %s ..."', substr($input, $cursor, 10)));
             }
 
             $cursor += strlen($match[0]);

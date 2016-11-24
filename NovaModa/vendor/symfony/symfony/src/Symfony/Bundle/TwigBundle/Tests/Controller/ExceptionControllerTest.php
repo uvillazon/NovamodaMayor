@@ -18,11 +18,36 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ExceptionControllerTest extends TestCase
 {
+    public function testOnlyClearOwnOutputBuffers()
+    {
+        $flatten = $this->getMock('Symfony\Component\Debug\Exception\FlattenException');
+        $flatten
+            ->expects($this->once())
+            ->method('getStatusCode')
+            ->will($this->returnValue(404));
+        $twig = $this->getMockBuilder('\Twig_Environment')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $twig
+            ->expects($this->any())
+            ->method('render')
+            ->will($this->returnValue($this->getMock('Symfony\Component\HttpFoundation\Response')));
+        $twig
+            ->expects($this->any())
+            ->method('getLoader')
+            ->will($this->returnValue($this->getMock('\Twig_LoaderInterface')));
+        $request = Request::create('/');
+        $request->headers->set('X-Php-Ob-Level', 1);
+
+        $controller = new ExceptionController($twig, false);
+        $controller->showAction($request, $flatten);
+    }
+
     public function testShowActionCanBeForcedToShowErrorPage()
     {
         $twig = new \Twig_Environment(
             new \Twig_Loader_Array(array(
-                '@Twig/Exception/error404.html.twig' => 'ok',
+                'TwigBundle:Exception:error404.html.twig' => 'ok',
             ))
         );
 
@@ -42,7 +67,7 @@ class ExceptionControllerTest extends TestCase
     {
         $twig = new \Twig_Environment(
             new \Twig_Loader_Array(array(
-                '@Twig/Exception/error.html.twig' => 'html',
+                'TwigBundle:Exception:error.html.twig' => 'html',
             ))
         );
 

@@ -23,8 +23,7 @@ class CountryType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'choices' => array_flip(Intl::getRegionBundle()->getCountryNames()),
-            'choices_as_values' => true,
+            'choices' => Intl::getRegionBundle()->getCountryNames(),
             'choice_translation_domain' => false,
         ));
     }
@@ -34,21 +33,13 @@ class CountryType extends AbstractType
      */
     public function getParent()
     {
-        return __NAMESPACE__.'\ChoiceType';
+        return 'choice';
     }
 
     /**
      * {@inheritdoc}
      */
     public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
     {
         return 'country';
     }

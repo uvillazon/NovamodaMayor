@@ -16,11 +16,17 @@ namespace Symfony\Component\DependencyInjection;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  *
- * @deprecated since version 2.8, to be removed in 3.0.
+ * @api
  */
 interface ScopeInterface
 {
+    /**
+     * @api
+     */
     public function getName();
 
+    /**
+     * @api
+     */
     public function getParentName();
 }

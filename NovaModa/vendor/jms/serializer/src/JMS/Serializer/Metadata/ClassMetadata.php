@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -158,19 +158,6 @@ class ClassMetadata extends MergeableClassMetadata
                 $this->discriminatorBaseClass,
                 $this->discriminatorBaseClass
             ));
-        } elseif ( ! $this->discriminatorFieldName && $object->discriminatorFieldName) {
-            $this->discriminatorFieldName = $object->discriminatorFieldName;
-            $this->discriminatorMap = $object->discriminatorMap;
-        }
-
-        if ($object->discriminatorDisabled !== null) {
-            $this->discriminatorDisabled = $object->discriminatorDisabled;
-        }
-
-        if ($object->discriminatorMap) {
-            $this->discriminatorFieldName = $object->discriminatorFieldName;
-            $this->discriminatorMap = $object->discriminatorMap;
-            $this->discriminatorBaseClass = $object->discriminatorBaseClass;
         }
 
         if ($this->discriminatorMap && ! $this->reflection->isAbstract()) {
@@ -279,13 +266,12 @@ class ClassMetadata extends MergeableClassMetadata
 
             case self::ACCESSOR_ORDER_CUSTOM:
                 $order = $this->customOrder;
-                $currentSorting = $this->propertyMetadata ? array_combine(array_keys($this->propertyMetadata), range(1, count($this->propertyMetadata))) : [];
-                uksort($this->propertyMetadata, function($a, $b) use ($order, $currentSorting) {
+                uksort($this->propertyMetadata, function($a, $b) use ($order) {
                     $existsA = isset($order[$a]);
                     $existsB = isset($order[$b]);
 
                     if ( ! $existsA && ! $existsB) {
-                        return $currentSorting[$a] - $currentSorting[$b];
+                        return 0;
                     }
 
                     if ( ! $existsA) {

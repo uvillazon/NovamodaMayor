@@ -13,7 +13,6 @@ namespace Symfony\Component\Console;
 
 use Symfony\Component\Console\Descriptor\TextDescriptor;
 use Symfony\Component\Console\Descriptor\XmlDescriptor;
-use Symfony\Component\Console\Exception\ExceptionInterface;
 use Symfony\Component\Console\Helper\DebugFormatterHelper;
 use Symfony\Component\Console\Helper\ProcessHelper;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -39,9 +38,6 @@ use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleExceptionEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
-use Symfony\Component\Console\Exception\CommandNotFoundException;
-use Symfony\Component\Console\Exception\LogicException;
-use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -58,6 +54,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  *     $app->run();
  *
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @api
  */
 class Application
 {
@@ -79,6 +77,8 @@ class Application
      *
      * @param string $name    The name of the application
      * @param string $version The version of the application
+     *
+     * @api
      */
     public function __construct($name = 'UNKNOWN', $version = 'UNKNOWN')
     {
@@ -107,6 +107,8 @@ class Application
      * @return int 0 if everything went fine, or an error code
      *
      * @throws \Exception When doRun returns Exception
+     *
+     * @api
      */
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
@@ -200,6 +202,8 @@ class Application
      * Set a helper set to be used with the command.
      *
      * @param HelperSet $helperSet The helper set
+     *
+     * @api
      */
     public function setHelperSet(HelperSet $helperSet)
     {
@@ -210,6 +214,8 @@ class Application
      * Get the helper set associated with the command.
      *
      * @return HelperSet The HelperSet instance associated with this command
+     *
+     * @api
      */
     public function getHelperSet()
     {
@@ -217,9 +223,11 @@ class Application
     }
 
     /**
-     * Set an input definition to be used with this application.
+     * Set an input definition set to be used with this application.
      *
      * @param InputDefinition $definition The input definition
+     *
+     * @api
      */
     public function setDefinition(InputDefinition $definition)
     {
@@ -239,7 +247,7 @@ class Application
     /**
      * Gets the help message.
      *
-     * @return string A help message
+     * @return string A help message.
      */
     public function getHelp()
     {
@@ -250,6 +258,8 @@ class Application
      * Sets whether to catch exceptions or not during commands execution.
      *
      * @param bool $boolean Whether to catch exceptions or not during commands execution
+     *
+     * @api
      */
     public function setCatchExceptions($boolean)
     {
@@ -260,6 +270,8 @@ class Application
      * Sets whether to automatically exit after a command execution or not.
      *
      * @param bool $boolean Whether to automatically exit after a command execution or not
+     *
+     * @api
      */
     public function setAutoExit($boolean)
     {
@@ -270,6 +282,8 @@ class Application
      * Gets the name of the application.
      *
      * @return string The application name
+     *
+     * @api
      */
     public function getName()
     {
@@ -280,6 +294,8 @@ class Application
      * Sets the application name.
      *
      * @param string $name The application name
+     *
+     * @api
      */
     public function setName($name)
     {
@@ -290,6 +306,8 @@ class Application
      * Gets the application version.
      *
      * @return string The application version
+     *
+     * @api
      */
     public function getVersion()
     {
@@ -300,6 +318,8 @@ class Application
      * Sets the application version.
      *
      * @param string $version The application version
+     *
+     * @api
      */
     public function setVersion($version)
     {
@@ -310,15 +330,13 @@ class Application
      * Returns the long version of the application.
      *
      * @return string The long application version
+     *
+     * @api
      */
     public function getLongVersion()
     {
-        if ('UNKNOWN' !== $this->getName()) {
-            if ('UNKNOWN' !== $this->getVersion()) {
-                return sprintf('<info>%s</info> version <comment>%s</comment>', $this->getName(), $this->getVersion());
-            }
-
-            return sprintf('<info>%s</info>', $this->getName());
+        if ('UNKNOWN' !== $this->getName() && 'UNKNOWN' !== $this->getVersion()) {
+            return sprintf('<info>%s</info> version <comment>%s</comment>', $this->getName(), $this->getVersion());
         }
 
         return '<info>Console Tool</info>';
@@ -330,6 +348,8 @@ class Application
      * @param string $name The command name
      *
      * @return Command The newly created command
+     *
+     * @api
      */
     public function register($name)
     {
@@ -339,9 +359,9 @@ class Application
     /**
      * Adds an array of command objects.
      *
-     * If a Command is not enabled it will not be added.
-     *
      * @param Command[] $commands An array of commands
+     *
+     * @api
      */
     public function addCommands(array $commands)
     {
@@ -354,11 +374,12 @@ class Application
      * Adds a command object.
      *
      * If a command with the same name already exists, it will be overridden.
-     * If the command is not enabled it will not be added.
      *
      * @param Command $command A Command object
      *
-     * @return Command|null The registered command if enabled or null
+     * @return Command The registered command
+     *
+     * @api
      */
     public function add(Command $command)
     {
@@ -371,7 +392,7 @@ class Application
         }
 
         if (null === $command->getDefinition()) {
-            throw new LogicException(sprintf('Command class "%s" is not correctly initialized. You probably forgot to call the parent constructor.', get_class($command)));
+            throw new \LogicException(sprintf('Command class "%s" is not correctly initialized. You probably forgot to call the parent constructor.', get_class($command)));
         }
 
         $this->commands[$command->getName()] = $command;
@@ -390,12 +411,14 @@ class Application
      *
      * @return Command A Command object
      *
-     * @throws CommandNotFoundException When command name given does not exist
+     * @throws \InvalidArgumentException When command name given does not exist
+     *
+     * @api
      */
     public function get($name)
     {
         if (!isset($this->commands[$name])) {
-            throw new CommandNotFoundException(sprintf('The command "%s" does not exist.', $name));
+            throw new \InvalidArgumentException(sprintf('The command "%s" does not exist.', $name));
         }
 
         $command = $this->commands[$name];
@@ -418,6 +441,8 @@ class Application
      * @param string $name The command name or alias
      *
      * @return bool true if the command exists, false otherwise
+     *
+     * @api
      */
     public function has($name)
     {
@@ -427,14 +452,14 @@ class Application
     /**
      * Returns an array of all unique namespaces used by currently registered commands.
      *
-     * It does not return the global namespace which always exists.
+     * It does not returns the global namespace which always exists.
      *
-     * @return string[] An array of namespaces
+     * @return array An array of namespaces
      */
     public function getNamespaces()
     {
         $namespaces = array();
-        foreach ($this->all() as $command) {
+        foreach ($this->commands as $command) {
             $namespaces = array_merge($namespaces, $this->extractAllNamespaces($command->getName()));
 
             foreach ($command->getAliases() as $alias) {
@@ -452,7 +477,7 @@ class Application
      *
      * @return string A registered namespace
      *
-     * @throws CommandNotFoundException When namespace is incorrect or ambiguous
+     * @throws \InvalidArgumentException When namespace is incorrect or ambiguous
      */
     public function findNamespace($namespace)
     {
@@ -473,12 +498,12 @@ class Application
                 $message .= implode("\n    ", $alternatives);
             }
 
-            throw new CommandNotFoundException($message, $alternatives);
+            throw new \InvalidArgumentException($message);
         }
 
         $exact = in_array($namespace, $namespaces, true);
         if (count($namespaces) > 1 && !$exact) {
-            throw new CommandNotFoundException(sprintf('The namespace "%s" is ambiguous (%s).', $namespace, $this->getAbbreviationSuggestions(array_values($namespaces))), array_values($namespaces));
+            throw new \InvalidArgumentException(sprintf('The namespace "%s" is ambiguous (%s).', $namespace, $this->getAbbreviationSuggestions(array_values($namespaces))));
         }
 
         return $exact ? $namespace : reset($namespaces);
@@ -494,7 +519,9 @@ class Application
      *
      * @return Command A Command instance
      *
-     * @throws CommandNotFoundException When command name is incorrect or ambiguous
+     * @throws \InvalidArgumentException When command name is incorrect or ambiguous
+     *
+     * @api
      */
     public function find($name)
     {
@@ -519,7 +546,7 @@ class Application
                 $message .= implode("\n    ", $alternatives);
             }
 
-            throw new CommandNotFoundException($message, $alternatives);
+            throw new \InvalidArgumentException($message);
         }
 
         // filter out aliases for commands which are already on the list
@@ -536,7 +563,7 @@ class Application
         if (count($commands) > 1 && !$exact) {
             $suggestions = $this->getAbbreviationSuggestions(array_values($commands));
 
-            throw new CommandNotFoundException(sprintf('Command "%s" is ambiguous (%s).', $name, $suggestions), array_values($commands));
+            throw new \InvalidArgumentException(sprintf('Command "%s" is ambiguous (%s).', $name, $suggestions));
         }
 
         return $this->get($exact ? $name : reset($commands));
@@ -550,6 +577,8 @@ class Application
      * @param string $namespace A namespace name
      *
      * @return Command[] An array of Command instances
+     *
+     * @api
      */
     public function all($namespace = null)
     {
@@ -642,8 +671,6 @@ class Application
      */
     public function renderException($e, $output)
     {
-        $output->writeln('', OutputInterface::VERBOSITY_QUIET);
-
         do {
             $title = sprintf('  [%s]  ', get_class($e));
 
@@ -666,7 +693,7 @@ class Application
                 }
             }
 
-            $messages = array();
+            $messages = array('', '');
             $messages[] = $emptyLine = $formatter->format(sprintf('<error>%s</error>', str_repeat(' ', $len)));
             $messages[] = $formatter->format(sprintf('<error>%s%s</error>', $title, str_repeat(' ', max(0, $len - $this->stringWidth($title)))));
             foreach ($lines as $line) {
@@ -674,11 +701,12 @@ class Application
             }
             $messages[] = $emptyLine;
             $messages[] = '';
+            $messages[] = '';
 
-            $output->writeln($messages, OutputInterface::OUTPUT_RAW | OutputInterface::VERBOSITY_QUIET);
+            $output->writeln($messages, OutputInterface::OUTPUT_RAW);
 
             if (OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()) {
-                $output->writeln('<comment>Exception trace:</comment>', OutputInterface::VERBOSITY_QUIET);
+                $output->writeln('<comment>Exception trace:</comment>');
 
                 // exception related properties
                 $trace = $e->getTrace();
@@ -696,16 +724,18 @@ class Application
                     $file = isset($trace[$i]['file']) ? $trace[$i]['file'] : 'n/a';
                     $line = isset($trace[$i]['line']) ? $trace[$i]['line'] : 'n/a';
 
-                    $output->writeln(sprintf(' %s%s%s() at <info>%s:%s</info>', $class, $type, $function, $file, $line), OutputInterface::VERBOSITY_QUIET);
+                    $output->writeln(sprintf(' %s%s%s() at <info>%s:%s</info>', $class, $type, $function, $file, $line));
                 }
 
-                $output->writeln('', OutputInterface::VERBOSITY_QUIET);
+                $output->writeln('');
+                $output->writeln('');
             }
         } while ($e = $e->getPrevious());
 
         if (null !== $this->runningCommand) {
-            $output->writeln(sprintf('<info>%s</info>', sprintf($this->runningCommand->getSynopsis(), $this->getName())), OutputInterface::VERBOSITY_QUIET);
-            $output->writeln('', OutputInterface::VERBOSITY_QUIET);
+            $output->writeln(sprintf('<info>%s</info>', sprintf($this->runningCommand->getSynopsis(), $this->getName())));
+            $output->writeln('');
+            $output->writeln('');
         }
     }
 
@@ -811,7 +841,6 @@ class Application
 
         if (true === $input->hasParameterOption(array('--quiet', '-q'))) {
             $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
-            $input->setInteractive(false);
         } else {
             if ($input->hasParameterOption('-vvv') || $input->hasParameterOption('--verbose=3') || $input->getParameterOption('--verbose') === 3) {
                 $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
@@ -849,38 +878,22 @@ class Application
             return $command->run($input, $output);
         }
 
-        // bind before the console.command event, so the listeners have access to input options/arguments
-        try {
-            $command->mergeApplicationDefinition();
-            $input->bind($command->getDefinition());
-        } catch (ExceptionInterface $e) {
-            // ignore invalid options/arguments for now, to allow the event listeners to customize the InputDefinition
-        }
-
         $event = new ConsoleCommandEvent($command, $input, $output);
         $this->dispatcher->dispatch(ConsoleEvents::COMMAND, $event);
 
         if ($event->commandShouldRun()) {
             try {
-                $e = null;
                 $exitCode = $command->run($input, $output);
-            } catch (\Exception $x) {
-                $e = $x;
-            } catch (\Throwable $x) {
-                $e = new FatalThrowableError($x);
-            }
-            if (null !== $e) {
+            } catch (\Exception $e) {
                 $event = new ConsoleExceptionEvent($command, $input, $output, $e, $e->getCode());
                 $this->dispatcher->dispatch(ConsoleEvents::EXCEPTION, $event);
 
-                if ($e !== $event->getException()) {
-                    $x = $e = $event->getException();
-                }
+                $e = $event->getException();
 
                 $event = new ConsoleTerminateEvent($command, $input, $output, $e->getCode());
                 $this->dispatcher->dispatch(ConsoleEvents::TERMINATE, $event);
 
-                throw $x;
+                throw $e;
             }
         } else {
             $exitCode = ConsoleCommandEvent::RETURN_CODE_DISABLED;
@@ -978,7 +991,7 @@ class Application
     /**
      * Runs and parses mode CON if it's available, suppressing any error output.
      *
-     * @return string|null <width>x<height> or null if it could not be parsed
+     * @return string <width>x<height> or null if it could not be parsed
      */
     private function getConsoleMode()
     {
@@ -1037,7 +1050,7 @@ class Application
      * @param string             $name       The string
      * @param array|\Traversable $collection The collection
      *
-     * @return string[] A sorted array of similar string
+     * @return array A sorted array of similar string
      */
     private function findAlternatives($name, $collection)
     {
@@ -1093,7 +1106,11 @@ class Application
 
     private function stringWidth($string)
     {
-        if (false === $encoding = mb_detect_encoding($string, null, true)) {
+        if (!function_exists('mb_strwidth')) {
+            return strlen($string);
+        }
+
+        if (false === $encoding = mb_detect_encoding($string)) {
             return strlen($string);
         }
 
@@ -1105,7 +1122,12 @@ class Application
         // str_split is not suitable for multi-byte characters, we should use preg_split to get char array properly.
         // additionally, array_slice() is not enough as some character has doubled width.
         // we need a function to split string not by character count but by string width
-        if (false === $encoding = mb_detect_encoding($string, null, true)) {
+
+        if (!function_exists('mb_strwidth')) {
+            return str_split($string, $width);
+        }
+
+        if (false === $encoding = mb_detect_encoding($string)) {
             return str_split($string, $width);
         }
 
@@ -1136,7 +1158,7 @@ class Application
      *
      * @param string $name The full name of the command
      *
-     * @return string[] The namespaces of the command
+     * @return array The namespaces of the command
      */
     private function extractAllNamespaces($name)
     {

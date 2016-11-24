@@ -16,9 +16,6 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
 class AccessDecisionManagerTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @group legacy
-     */
     public function testSupportsClass()
     {
         $manager = new AccessDecisionManager(array(
@@ -34,9 +31,6 @@ class AccessDecisionManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($manager->supportsClass('FooClass'));
     }
 
-    /**
-     * @group legacy
-     */
     public function testSupportsAttribute()
     {
         $manager = new AccessDecisionManager(array(
@@ -50,6 +44,14 @@ class AccessDecisionManagerTest extends \PHPUnit_Framework_TestCase
             $this->getVoterSupportsAttribute(false),
         ));
         $this->assertFalse($manager->supportsAttribute('foo'));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testSetVotersEmpty()
+    {
+        $manager = new AccessDecisionManager(array());
     }
 
     /**
@@ -102,7 +104,7 @@ class AccessDecisionManagerTest extends \PHPUnit_Framework_TestCase
     protected function getVoterFor2Roles($token, $vote1, $vote2)
     {
         $voter = $this->getMock('Symfony\Component\Security\Core\Authorization\Voter\VoterInterface');
-        $voter->expects($this->any())
+        $voter->expects($this->exactly(2))
               ->method('vote')
               ->will($this->returnValueMap(array(
                   array($token, null, array('ROLE_FOO'), $vote1),

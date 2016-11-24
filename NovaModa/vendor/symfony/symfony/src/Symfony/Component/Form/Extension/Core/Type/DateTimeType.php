@@ -116,7 +116,6 @@ class DateTimeType extends AbstractType
                 'days',
                 'empty_value',
                 'placeholder',
-                'choice_translation_domain',
                 'required',
                 'translation_domain',
                 'html5',
@@ -132,7 +131,6 @@ class DateTimeType extends AbstractType
                 'with_seconds',
                 'empty_value',
                 'placeholder',
-                'choice_translation_domain',
                 'required',
                 'translation_domain',
                 'html5',
@@ -163,8 +161,8 @@ class DateTimeType extends AbstractType
                         'time' => $timeParts,
                     )),
                 )))
-                ->add('date', __NAMESPACE__.'\DateType', $dateOptions)
-                ->add('time', __NAMESPACE__.'\TimeType', $timeOptions)
+                ->add('date', 'date', $dateOptions)
+                ->add('time', 'time', $timeOptions)
             ;
         }
 
@@ -205,7 +203,7 @@ class DateTimeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $compound = function (Options $options) {
-            return 'single_text' !== $options['widget'];
+            return $options['widget'] !== 'single_text';
         };
 
         // Defaults to the value of "widget"
@@ -247,7 +245,6 @@ class DateTimeType extends AbstractType
         $resolver->setDefined(array(
             'empty_value', // deprecated
             'placeholder',
-            'choice_translation_domain',
             'years',
             'months',
             'days',
@@ -287,14 +284,6 @@ class DateTimeType extends AbstractType
      * {@inheritdoc}
      */
     public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
     {
         return 'datetime';
     }

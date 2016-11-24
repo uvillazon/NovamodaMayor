@@ -20,21 +20,13 @@ class RadioType extends AbstractType
      */
     public function getParent()
     {
-        return __NAMESPACE__.'\CheckboxType';
+        return 'checkbox';
     }
 
     /**
      * {@inheritdoc}
      */
     public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
     {
         return 'radio';
     }

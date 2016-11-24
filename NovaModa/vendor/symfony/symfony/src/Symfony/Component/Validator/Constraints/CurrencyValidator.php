@@ -21,7 +21,8 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
  * Validates whether a value is a valid currency.
  *
  * @author Miha Vrhovnik <miha.vrhovnik@pagein.si>
- * @author Bernhard Schussek <bschussek@gmail.com>
+ *
+ * @api
  */
 class CurrencyValidator extends ConstraintValidator
 {
@@ -49,12 +50,10 @@ class CurrencyValidator extends ConstraintValidator
             if ($this->context instanceof ExecutionContextInterface) {
                 $this->context->buildViolation($constraint->message)
                     ->setParameter('{{ value }}', $this->formatValue($value))
-                    ->setCode(Currency::NO_SUCH_CURRENCY_ERROR)
                     ->addViolation();
             } else {
                 $this->buildViolation($constraint->message)
                     ->setParameter('{{ value }}', $this->formatValue($value))
-                    ->setCode(Currency::NO_SUCH_CURRENCY_ERROR)
                     ->addViolation();
             }
         }

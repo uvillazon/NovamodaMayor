@@ -366,7 +366,7 @@ class XmlEncoder extends SerializerAwareEncoder implements EncoderInterface, Dec
     {
         $append = true;
 
-        if (is_array($data) || ($data instanceof \Traversable && !$this->serializer->supportsNormalization($data, $this->format))) {
+        if (is_array($data) || $data instanceof \Traversable) {
             foreach ($data as $key => $data) {
                 //Ah this is the magic @ attribute types.
                 if (0 === strpos($key, '@') && is_scalar($data) && $this->isElementNameValid($attributeName = substr($key, 1))) {
@@ -461,8 +461,6 @@ class XmlEncoder extends SerializerAwareEncoder implements EncoderInterface, Dec
      * @param mixed    $val
      *
      * @return bool
-     *
-     * @throws UnexpectedValueException
      */
     private function selectNodeType(\DOMNode $node, $val)
     {
@@ -508,7 +506,7 @@ class XmlEncoder extends SerializerAwareEncoder implements EncoderInterface, Dec
     /**
      * Create a DOM document, taking serializer options into account.
      *
-     * @param array $context options that the encoder has access to
+     * @param array $context options that the encoder has access to.
      *
      * @return \DOMDocument
      */

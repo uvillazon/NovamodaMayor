@@ -14,11 +14,8 @@ namespace Nelmio\ApiDocBundle\Tests\Fixtures\Controller;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Nelmio\ApiDocBundle\Tests\Fixtures\DependencyTypePath;
-use Nelmio\ApiDocBundle\Tests\Fixtures\RequestParamHelper;
-use Nelmio\ApiDocBundle\Util\LegacyFormHelper;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\Email;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -117,7 +114,7 @@ class TestController
      * @ApiDoc(
      *  views= { "default", "test" },
      *  description="create another test",
-     *  input=DependencyTypePath::TYPE
+     *  input="dependency_type"
      * )
      */
     public function anotherPostAction()
@@ -150,7 +147,7 @@ class TestController
 
     /**
      * @ApiDoc()
-     * @QueryParam(name="mail", requirements=@Assert\Email, description="Email of someone.")
+     * @QueryParam(name="mail", requirements=@Email, description="Email of someone.")
      */
     public function zActionWithConstraintAsRequirements()
     {
@@ -169,7 +166,7 @@ class TestController
     /**
      * @ApiDoc(
      *  description="Testing return",
-     *  output=DependencyTypePath::TYPE
+     *  output="dependency_type"
      * )
      */
     public function jmsReturnTestAction()
@@ -194,7 +191,7 @@ class TestController
 
     /**
      * @ApiDoc()
-     * @RequestParamHelper(name="param1", requirements="string", array=true)
+     * @RequestParam(name="param1", requirements="string", array=true)
      */
     public function zActionWithArrayRequestParamAction()
     {
@@ -335,91 +332,6 @@ class TestController
      * @link http://symfony.com
      */
     public function withLinkAction()
-    {
-    }
-
-    /**
-     * @ApiDoc(
-     *     output="Nelmio\ApiDocBundle\Tests\Fixtures\Model\JmsTest",
-     *     input={
-     *         "class" = "Nelmio\ApiDocBundle\Tests\Fixtures\Model\JmsTest"
-     *     },
-     *     parameters={
-     *          {
-     *              "name"="number",
-     *              "dataType"="integer",
-     *              "actualType"="string",
-     *              "subType"=null,
-     *              "required"=true,
-     *              "description"="This is the new description",
-     *              "readonly"=false,
-     *              "sinceVersion"="v3.0",
-     *              "untilVersion"="v4.0"
-     *          },
-     *          {
-     *              "name"="arr",
-     *              "dataType"="object (ArrayCollection)"
-     *          },
-     *          {
-     *              "name"="nested",
-     *              "dataType"="object (JmsNested)",
-     *              "children": {
-     *                  "bar": {
-     *                      "dataType"="integer",
-     *                      "format"="d+"
-     *                  }
-     *              }
-     *          }
-     *     }
-     * )
-     */
-    public function overrideJmsAnnotationWithApiDocParametersAction()
-    {
-    }
-
-    /**
-     * @ApiDoc(
-     *     output="Nelmio\ApiDocBundle\Tests\Fixtures\Model\JmsTest",
-     *     input={
-     *         "class" = "Nelmio\ApiDocBundle\Tests\Fixtures\Model\JmsTest"
-     *     }
-     * )
-     */
-    public function defaultJmsAnnotations()
-    {
-    }
-
-    /**
-     * @ApiDoc(
-     *  description="Route with host placeholder",
-     *  views={ "default" }
-     * )
-     */
-    public function routeWithHostAction()
-    {
-    }
-
-    /**
-     * @ApiDoc()
-     * @QueryParam(name="param1", requirements={"rule": "regexp", "error_message": "warning"}, description="Param1 description.")
-     */
-    public function routeWithQueryParamArrayRequirementsAction()
-    {
-    }
-
-    /**
-     * @ApiDoc()
-     * @QueryParam(name="param1", requirements={@Assert\NotNull(), @Assert\NotBlank()}, description="Param1 description.")
-     */
-    public function routeWithQueryParamPlainArrayRequirementsAction()
-    {
-    }
-
-    /**
-     * @ApiDoc()
-     * @QueryParam(name="param1", description="Param1 description.")
-     */
-    public function zActionWithRequirementParamNotSet()
     {
     }
 }

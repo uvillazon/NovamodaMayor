@@ -80,9 +80,9 @@ class FileTest extends \PHPUnit_Framework_TestCase
      * @dataProvider provideInValidSizes
      * @expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    public function testInvalidMaxSize($maxSize)
+    public function testInvalideMaxSize($maxSize)
     {
-        new File(array('maxSize' => $maxSize));
+        $file = new File(array('maxSize' => $maxSize));
     }
 
     /**

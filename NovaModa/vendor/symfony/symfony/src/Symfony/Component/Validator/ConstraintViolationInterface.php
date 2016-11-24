@@ -32,13 +32,17 @@ namespace Symfony\Component\Validator;
  * element is still the person, but the property path is "address.street".
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
+ * @api
  */
 interface ConstraintViolationInterface
 {
     /**
      * Returns the violation message.
      *
-     * @return string The violation message
+     * @return string The violation message.
+     *
+     * @api
      */
     public function getMessage();
 
@@ -49,7 +53,9 @@ interface ConstraintViolationInterface
      * returned by {@link getMessageParameters}. Typically you'll pass the
      * message template and parameters to a translation engine.
      *
-     * @return string The raw violation message
+     * @return string The raw violation message.
+     *
+     * @api
      */
     public function getMessageTemplate();
 
@@ -60,6 +66,9 @@ interface ConstraintViolationInterface
      *               that appear in the message template.
      *
      * @see getMessageTemplate()
+     *
+     * @api
+     *
      * @deprecated since version 2.7, to be replaced by getParameters() in 3.0.
      */
     public function getMessageParameters();
@@ -78,7 +87,7 @@ interface ConstraintViolationInterface
      * This method returns the value of the parameter for choosing the right
      * pluralization form (in this case "choices").
      *
-     * @return int|null The number to use to pluralize of the message
+     * @return int|null The number to use to pluralize of the message.
      *
      * @deprecated since version 2.7, to be replaced by getPlural() in 3.0.
      */
@@ -91,6 +100,8 @@ interface ConstraintViolationInterface
      *               the validation was started. Because the validator traverses
      *               the object graph, the value at which the violation occurs
      *               is not necessarily the value that was originally validated.
+     *
+     * @api
      */
     public function getRoot();
 
@@ -105,6 +116,8 @@ interface ConstraintViolationInterface
      *                path is "address.street". Property access is denoted by
      *                dots, while array access is denoted by square brackets,
      *                for example "addresses[1].street".
+     *
+     * @api
      */
     public function getPropertyPath();
 
@@ -113,13 +126,15 @@ interface ConstraintViolationInterface
      *
      * @return mixed The invalid value that caused the validated constraint to
      *               fail.
+     *
+     * @api
      */
     public function getInvalidValue();
 
     /**
      * Returns a machine-digestible error code for the violation.
      *
-     * @return string|null The error code
+     * @return mixed The error code.
      */
     public function getCode();
 }

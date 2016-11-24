@@ -87,7 +87,7 @@ class SerializerPassTest extends \PHPUnit_Framework_TestCase
 
         $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerBuilder', array('findTaggedServiceIds'));
 
-        $container->expects($this->any())
+        $container->expects($this->atLeastOnce())
             ->method('findTaggedServiceIds')
             ->will($this->returnValue($services));
 

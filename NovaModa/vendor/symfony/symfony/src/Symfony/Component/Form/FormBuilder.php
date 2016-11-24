@@ -99,7 +99,7 @@ class FormBuilder extends FormConfigBuilder implements \IteratorAggregate, FormB
         }
 
         if (null === $type && null === $this->getDataClass()) {
-            $type = 'Symfony\Component\Form\Extension\Core\Type\TextType';
+            $type = 'text';
         }
 
         if (null !== $type) {
@@ -231,8 +231,6 @@ class FormBuilder extends FormConfigBuilder implements \IteratorAggregate, FormB
 
     /**
      * {@inheritdoc}
-     *
-     * @return FormBuilderInterface[]
      */
     public function getIterator()
     {
@@ -246,9 +244,9 @@ class FormBuilder extends FormConfigBuilder implements \IteratorAggregate, FormB
     /**
      * Converts an unresolved child into a {@link FormBuilder} instance.
      *
-     * @param string $name The name of the unresolved child
+     * @param string $name The name of the unresolved child.
      *
-     * @return FormBuilder The created instance
+     * @return FormBuilder The created instance.
      */
     private function resolveChild($name)
     {
