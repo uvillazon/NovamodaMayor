@@ -7,5 +7,9 @@ novamoda_mayor:
     prefix:   /backend
 
 front-end-mayor-proformas:
-    pattern:  /proformas
-    defaults: { _controller: NovamodaMayorBundle:Proformas:index }
+    pattern:  /
+    defaults: { _controller: NovamodaMayorBundle:Default:index }
+
+front-end-logon:
+    pattern : /logon
+    defaults: { _controller: NovamodaMayorBundle:Default:logon }

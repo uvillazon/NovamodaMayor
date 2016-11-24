@@ -22,7 +22,8 @@
         "jms/serializer-bundle": "^1.1",
         "nelmio/api-doc-bundle": "^2.12",
         "jaspersoft/rest-client": "v2.0.0",
-        "ddeboer/data-import": "@stable"
+        "ddeboer/data-import": "@stable",
+        "firebase/php-jwt": "dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
