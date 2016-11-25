@@ -1,5 +1,15 @@
 # services definition for this particular bundle
 services:
+
+    jwt.security.authentication.provider:
+        class: Novamoda\MayorBundle\Security\Authentication\Provider\JWTProvider
+        arguments: ["", "%kernel.cache_dir%/security/nonces"]
+
+    jwt.security.authentication.listener:
+        class: Novamoda\MayorBundle\Security\Firewall\JWTListener
+        arguments: ["@security.token_storage", "@security.authentication.manager"]
+        calls:
+            - [ setContainer,[@service_container] ]
 #    servicios para proformas
     mayorbundle.proformas_service:
         class: Novamoda\MayorBundle\Services\ProformasService
@@ -23,4 +33,8 @@ services:
 #    servicios para proformas
     mayorbundle.clientes_service:
         class: Novamoda\MayorBundle\Services\ClientesService
+        arguments: ["@doctrine.orm.entity_manager"]
+
+    mayorbundle.autenticacion_service:
+        class: Novamoda\MayorBundle\Services\AutenticacionService
         arguments: ["@doctrine.orm.entity_manager"]

@@ -1,2 +1,0 @@
-[12-Dec-2015 14:43:16 America/Denver] PHP Fatal error:  Interface 'Doctrine\Instantiator\InstantiatorInterface' not found in /home3/novamod2/public_html/sistema/NovaModa/vendor/doctrine/instantiator/src/Doctrine/Instantiator/Instantiator.php on line 34
-[16-Dec-2015 12:59:09 America/Denver] PHP Fatal error:  Interface 'Doctrine\Instantiator\InstantiatorInterface' not found in /home3/novamod2/public_html/sistema/NovaModa/vendor/doctrine/instantiator/src/Doctrine/Instantiator/Instantiator.php on line 34
