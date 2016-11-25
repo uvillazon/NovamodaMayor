@@ -1,0 +1,20 @@
+NelmioApiDocBundle:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /doc/api
+
+novamoda_mayor:
+    resource: "@NovamodaMayorBundle/Resources/config/routing.yml"
+    prefix:   /backend
+
+front-end-mayor-proformas:
+    pattern:  /
+    defaults: { _controller: NovamodaMayorBundle:Default:index }
+
+front-end-logon:
+    pattern : /logon
+    defaults: { _controller: NovamodaMayorBundle:Default:logon }
+
+token:
+    type:     rest
+    prefix:   /auth
+    resource: Novamoda\MayorBundle\Controller\TokenController

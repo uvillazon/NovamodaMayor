@@ -1,0 +1,12 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: novamoda.com.bo
+    database_port: null
+    database_name: novamod2_balderrama
+    database_user: novamod2_tienda
+    database_password: 4r3Ep92gklLK6.
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    secret: 818715411c5a2dbed6dc38f12ed2c18c5ac293dc
